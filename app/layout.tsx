@@ -1,0 +1,45 @@
+import type { Metadata } from 'next';
+import './globals.css';
+
+export const metadata: Metadata = {
+  metadataBase: new URL('https://kukirin.ua'),
+  title: {
+    default: 'KUKIRIN Україна — електросамокати з гарантією',
+    template: '%s | KUKIRIN.UA',
+  },
+  description:
+    'Офіційний дистриб’ютор KUKIRIN в Україні. Електросамокати G2 Pro, G2 Master, G4 Max, M4 Pro. Гарантія 12 міс, доставка 1–3 дні, розстрочка 0%.',
+  keywords: [
+    'kukirin',
+    'кукірін',
+    'електросамокат',
+    'kukirin g2 pro',
+    'kukirin g4 max',
+    'kukirin україна',
+    'купити електросамокат',
+  ],
+  openGraph: {
+    title: 'KUKIRIN Україна — електросамокати з гарантією',
+    description:
+      'Офіційний KUKIRIN в Україні. До 70 км/год, 2000W, гарантія 12 міс.',
+    type: 'website',
+    locale: 'uk_UA',
+    siteName: 'KUKIRIN.UA',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="uk">
+      <body>{children}</body>
+    </html>
+  );
+}
