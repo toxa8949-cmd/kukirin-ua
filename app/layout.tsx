@@ -25,6 +25,25 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'uk_UA',
     siteName: 'KUKIRIN.UA',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'KUKIRIN.UA — FEEL THE RUSH',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'KUKIRIN Україна — електросамокати з гарантією',
+    description:
+      'Офіційний KUKIRIN в Україні. До 70 км/год, 2000W, гарантія 12 міс.',
+    images: ['/og-image.png'],
+  },
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
   },
   robots: {
     index: true,
