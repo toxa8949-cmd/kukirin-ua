@@ -2,9 +2,13 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowRight } from 'lucide-react';
 import PageShell from '@/components/kukirin/PageShell';
-import { KUKIRIN_SCOOTERS } from '@/lib/kukirin-data';
+import { getAllCategories, getCategoryBySlug } from '@/lib/data/categories';
+import { getProductsByCategorySlug, toKukirin } from '@/lib/data/products';
 
-const CATEGORY_INFO: Record<string, { title: string; subtitle: string; badge: string }> = {
+export const revalidate = 60;
+
+// Fallback meta for legacy category slugs that may still be linked from the UI.
+const LEGACY_INFO: Record<string, { title: string; subtitle: string; badge: string }> = {
   urban: {
     title: 'Міські самокати',
     subtitle: 'Легкі, компактні, надійні. Ідеальні для щоденних поїздок містом — робота, парк, кав\'ярня.',
@@ -22,29 +26,48 @@ const CATEGORY_INFO: Record<string, { title: string; subtitle: string; badge: st
   },
 };
 
-export function generateStaticParams() {
-  return Object.keys(CATEGORY_INFO).map((slug) => ({ slug }));
+export async function generateStaticParams() {
+  const cats = await getAllCategories().catch(() => []);
+  const fromDb = cats.map((c) => ({ slug: c.slug }));
+  const legacy = Object.keys(LEGACY_INFO).map((slug) => ({ slug }));
+  // De-dup
+  const seen = new Set<string>();
+  return [...fromDb, ...legacy].filter((p) => {
+    if (seen.has(p.slug)) return false;
+    seen.add(p.slug);
+    return true;
+  });
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const info = CATEGORY_INFO[slug];
-  if (!info) return { title: 'Категорія не знайдена' };
-  return { title: info.title };
+  const cat = await getCategoryBySlug(slug).catch(() => null);
+  if (cat) return { title: cat.name };
+  const info = LEGACY_INFO[slug];
+  if (info) return { title: info.title };
+  return { title: 'Категорія не знайдена' };
 }
 
 export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const info = CATEGORY_INFO[slug];
-  if (!info) notFound();
+  const cat = await getCategoryBySlug(slug).catch(() => null);
+  const legacy = LEGACY_INFO[slug];
 
-  const list = KUKIRIN_SCOOTERS.filter((s) => s.category === slug);
+  if (!cat && !legacy) notFound();
+
+  const title = cat?.name ?? legacy!.title;
+  const subtitle = cat?.description ?? legacy!.subtitle;
+  const badge = cat ? `${cat.slug.toUpperCase()} · KUKIRIN` : legacy!.badge;
+
+  const rows = await getProductsByCategorySlug(slug);
+  const list = rows.map(toKukirin);
 
   return (
-    <PageShell breadcrumb={info.badge} title={info.title} subtitle={info.subtitle}>
+    <PageShell breadcrumb={badge} title={title} subtitle={subtitle}>
       {list.length === 0 ? (
         <div className="rounded-sm border border-white/10 p-8 text-center text-white/55">
-          У цій категорії поки немає товарів. <Link href="/catalog" className="text-[#FF6B00] hover:underline">Дивитись усі моделі →</Link>
+          У цій категорії поки немає товарів.{' '}
+          <Link href="/catalog" className="text-[#FF6B00] hover:underline">Дивитись усі моделі →</Link>
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">

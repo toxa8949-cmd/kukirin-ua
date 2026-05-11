@@ -2,25 +2,50 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowRight, Check, Phone, Truck, Shield, Wrench } from 'lucide-react';
 import PageShell from '@/components/kukirin/PageShell';
-import { KUKIRIN_SCOOTERS } from '@/lib/kukirin-data';
+import {
+  getAllProducts,
+  getProductBySlug,
+  toKukirin,
+} from '@/lib/data/products';
 
-export function generateStaticParams() {
-  return KUKIRIN_SCOOTERS.map((s) => ({ slug: s.slug }));
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  const rows = await getAllProducts().catch(() => []);
+  return rows.map((r) => ({ slug: r.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const s = KUKIRIN_SCOOTERS.find((x) => x.slug === slug);
-  if (!s) return { title: 'Модель не знайдена' };
-  return { title: `${s.name} — купити в Україні`, description: `${s.name}: ${s.tagline}. ${s.power}W, до ${s.maxSpeed} км/год, ${s.range} км. Гарантія 12 міс.` };
+  const row = await getProductBySlug(slug).catch(() => null);
+  if (!row) return { title: 'Модель не знайдена' };
+  const s = toKukirin(row);
+  return {
+    title: `${s.name} — купити в Україні`,
+    description: `${s.name}: ${s.tagline}. ${s.power}W, до ${s.maxSpeed} км/год, ${s.range} км. Гарантія 12 міс.`,
+  };
 }
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const scooter = KUKIRIN_SCOOTERS.find((s) => s.slug === slug);
-  if (!scooter) notFound();
+  const row = await getProductBySlug(slug).catch(() => null);
+  if (!row) notFound();
 
-  const related = KUKIRIN_SCOOTERS.filter((s) => s.slug !== scooter.slug).slice(0, 3);
+  const scooter = toKukirin(row!);
+
+  // Related: other products, max 3
+  const all = await getAllProducts().catch(() => []);
+  const related = all
+    .filter((r) => r.slug !== scooter.slug)
+    .slice(0, 3)
+    .map(toKukirin);
+
+  // Primary image (if any)
+  const primaryImage =
+    row!.product_images?.find((img) => img.is_primary)?.url ??
+    row!.product_images?.[0]?.url ??
+    null;
+
   const features = [
     { icon: Truck, label: 'Доставка', value: '1–3 дні по Україні' },
     { icon: Shield, label: 'Гарантія', value: '12 місяців офіційно' },
@@ -33,7 +58,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
         {/* Visual */}
         <div className="relative aspect-square overflow-hidden rounded-sm border border-white/10 bg-gradient-to-br from-[#1a1a1a] to-[#0a0a0a]">
-          <div className="absolute left-5 top-5 flex flex-col gap-2">
+          <div className="absolute left-5 top-5 z-10 flex flex-col gap-2">
             {scooter.badge && (
               <span className="rounded-sm bg-[#FF6B00] px-2 py-1 text-[10px] font-medium tracking-[0.15em] text-black">
                 {scooter.badge.toUpperCase()}
@@ -43,12 +68,21 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               KUKIRIN · 2026
             </span>
           </div>
-          <div className="flex h-full w-full items-center justify-center text-[#FF6B00]/30">
-            <div className="text-center">
-              <div className="text-7xl font-medium tracking-tight">{scooter.name.split(' ').slice(-1)[0]}</div>
-              <div className="mt-2 text-xs tracking-[0.3em] text-white/30">// {scooter.tagline.toUpperCase()}</div>
+          {primaryImage ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={primaryImage}
+              alt={scooter.name}
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center text-[#FF6B00]/30">
+              <div className="text-center">
+                <div className="text-7xl font-medium tracking-tight">{scooter.name.split(' ').slice(-1)[0]}</div>
+                <div className="mt-2 text-xs tracking-[0.3em] text-white/30">// {scooter.tagline.toUpperCase()}</div>
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Details */}
@@ -113,24 +147,26 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       </div>
 
       {/* Related */}
-      <div className="mt-12 border-t border-white/10 pt-10">
-        <div className="mb-6 flex items-end justify-between">
-          <h2 className="text-2xl font-medium tracking-tight sm:text-3xl">Інші моделі</h2>
-          <Link href="/catalog" className="text-xs text-white/60 hover:text-white">Усі моделі →</Link>
+      {related.length > 0 && (
+        <div className="mt-12 border-t border-white/10 pt-10">
+          <div className="mb-6 flex items-end justify-between">
+            <h2 className="text-2xl font-medium tracking-tight sm:text-3xl">Інші моделі</h2>
+            <Link href="/catalog" className="text-xs text-white/60 hover:text-white">Усі моделі →</Link>
+          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            {related.map((s) => (
+              <Link key={s.slug} href={`/product/${s.slug}`} className="group rounded-sm border border-white/10 bg-[#0F0F0F] p-4 transition hover:border-[#FF6B00]">
+                <div className="mb-1 text-sm font-medium">{s.name}</div>
+                <div className="mb-3 text-xs text-white/45">{s.tagline}</div>
+                <div className="flex items-end justify-between">
+                  <div className="text-lg font-medium text-[#FF6B00]">{s.price.toLocaleString('uk-UA')} ₴</div>
+                  <span className="text-xs text-white/60 group-hover:text-white">→</span>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          {related.map((s) => (
-            <Link key={s.slug} href={`/product/${s.slug}`} className="group rounded-sm border border-white/10 bg-[#0F0F0F] p-4 transition hover:border-[#FF6B00]">
-              <div className="mb-1 text-sm font-medium">{s.name}</div>
-              <div className="mb-3 text-xs text-white/45">{s.tagline}</div>
-              <div className="flex items-end justify-between">
-                <div className="text-lg font-medium text-[#FF6B00]">{s.price.toLocaleString('uk-UA')} ₴</div>
-                <span className="text-xs text-white/60 group-hover:text-white">→</span>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
+      )}
     </PageShell>
   );
 }

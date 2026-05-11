@@ -1,5 +1,5 @@
 import { ArrowUpRight } from 'lucide-react';
-import { KUKIRIN_SCOOTERS } from '@/lib/kukirin-data';
+import { getFeaturedProducts, getAllProducts, toKukirin } from '@/lib/data/products';
 
 const CATEGORY_LABELS: Record<string, string> = {
   urban: 'Міський',
@@ -23,7 +23,14 @@ function formatPrice(price: number) {
   return new Intl.NumberFormat('uk-UA').format(price);
 }
 
-export default function KukirinModels() {
+export default async function KukirinModels() {
+  // Featured first; fall back to all if no featured ones in DB.
+  let rows = await getFeaturedProducts().catch(() => []);
+  if (rows.length === 0) {
+    rows = await getAllProducts().catch(() => []);
+  }
+  const list = rows.slice(0, 6).map(toKukirin);
+
   return (
     <section id="models" className="bg-[#0A0A0A] py-16 text-white lg:py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
@@ -42,14 +49,13 @@ export default function KukirinModels() {
             href="/catalog"
             className="inline-flex items-center gap-2 text-sm text-white/70 transition hover:text-white"
           >
-            Усі моделі
-            <ArrowUpRight size={16} />
+            Усі моделі <ArrowUpRight size={16} />
           </a>
         </div>
 
         {/* Сітка моделей */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {KUKIRIN_SCOOTERS.map((scooter, i) => (
+          {list.map((scooter, i) => (
             <a
               key={scooter.slug}
               href={`/product/${scooter.slug}`}
@@ -58,9 +64,9 @@ export default function KukirinModels() {
               {/* Бейдж */}
               {scooter.badge && (
                 <span
-                  className={`absolute left-5 top-5 z-10 rounded-sm px-2 py-1 text-[9px] font-medium tracking-[0.1em] ${BADGE_STYLES[scooter.badge]}`}
+                  className={`absolute left-5 top-5 z-10 rounded-sm px-2 py-1 text-[9px] font-medium tracking-[0.1em] ${BADGE_STYLES[scooter.badge] ?? 'bg-white/10 text-white'}`}
                 >
-                  {BADGE_LABELS[scooter.badge]}
+                  {BADGE_LABELS[scooter.badge] ?? scooter.badge.toUpperCase()}
                 </span>
               )}
 
@@ -82,7 +88,7 @@ export default function KukirinModels() {
 
               {/* Категорія */}
               <div className="mb-1 text-[10px] tracking-[0.2em] text-[#FF6B00]">
-                {CATEGORY_LABELS[scooter.category]}
+                {CATEGORY_LABELS[scooter.category] ?? scooter.category}
               </div>
 
               {/* Назва */}
@@ -111,7 +117,8 @@ export default function KukirinModels() {
               <div className="mt-auto flex items-baseline justify-between">
                 <div>
                   <div className="text-xl font-medium text-white">
-                    {formatPrice(scooter.price)} <span className="text-xs text-white/50">₴</span>
+                    {formatPrice(scooter.price)}
+                    <span className="text-xs text-white/50">₴</span>
                   </div>
                   {scooter.oldPrice && (
                     <div className="text-xs text-white/30 line-through">
