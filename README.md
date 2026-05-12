@@ -1,46 +1,82 @@
-# Block 6.1 — Fix ERR_TOO_MANY_REDIRECTS
+# Block 7 — Admin Products CRUD + stub admin tabs
 
-## Що було не так
+## Що в цьому пакеті
 
-Block 6 додавав redirect-логіку у трьох місцях:
-1. `lib/supabase/middleware.ts` (вже існував раніше)
-2. `app/admin/layout.tsx` (нове)
-3. `app/admin/login/page.tsx` (нове)
+### Products (повний CRUD)
+- `/admin/products` — список з пошуком, мініатюрами, бейджами `off`/`feat`
+- `/admin/products/new` — форма створення
+- `/admin/products/[id]/edit` — форма редагування + кнопка Видалити з підтвердженням
+- `/admin/products/actions.ts` — server actions (`createProduct`, `updateProduct`, `deleteProduct`, `uploadProductImage`)
+- Поля: основне, ціна/склад, характеристики (специфікації структуровано), фото (URL + upload)
+- Upload: натискаєш «Завантажити» → файл їде в Supabase Storage `product-images` → URL автоматично вставляється
 
-Cookies оновлюються між запитами не миттєво, тому коли middleware виставив
-session cookie, а layout читає той самий cookie на наступному redirect-у —
-вони могли бачити різні стани і відбивати один в одного. Звідси
-`ERR_TOO_MANY_REDIRECTS`.
+### Stub-сторінки (щоб не було 404)
+- `/admin/categories` — read-only список
+- `/admin/orders` — read-only список з останніми 50 замовленнями
+- `/admin/news` — read-only список новин
 
-## Виправлення
+### Інфраструктура
+- `next.config.ts` — додано `remotePatterns` для `kukirin.com.ua` і Supabase Storage
+- `sql/storage-bucket.sql` — створення bucket `product-images` з public read + admin-only write
 
-**Middleware — єдина точка контролю доступу до `/admin/*`.**
-Layout і login сторінка більше НЕ роблять redirect — просто рендерять.
+## Послідовність дій
 
-## Файли
+### 1. SQL у Supabase (ДО заливки коду!)
 
-```
-lib/supabase/middleware.ts   — оновлений: вся логіка тут
-app/admin/layout.tsx         — без redirect, тільки рендер
-app/admin/login/page.tsx     — без redirect, тільки рендер
-```
+Supabase → SQL Editor → New query → встав `sql/storage-bucket.sql` → Run.
 
-## Як залити
+Внизу побачиш:
+- `product-images | public: true` — bucket створений
+- 4 політики на `storage.objects` (read, insert, update, delete)
 
-1. Розпакуй ZIP
-2. GitHub → Add file → Upload files → перетягни папки `app` і `lib`
-   (вони змерджаться поверх існуючих)
-3. Commit: `Block 6.1: fix /admin redirect loop`
-4. Чекай Vercel Ready (1-2 хв)
+### 2. Залий код у репо
 
-## Як перевірити
+GitHub → Add file → Upload files → перетягни папки `app`, `components` і файл `next.config.ts` → Commit: `Block 7: products CRUD + admin tabs stub` → у `main`.
 
-1. **Очисти cookies** для `kukirin-ua-gpbw.vercel.app`
-   (правою кнопкою на `i` біля URL → Cookies → Видалити)
-2. Відкрий **інкогніто-вкладку**: `/admin/login`
-3. Має зʼявитися форма
-4. Введи `toxa8949@gmail.com` + пароль (той, що ставив при створенні user-а)
-5. Має зредіректити на `/admin` з дашбордом
+⚠️ **Перед заливкою:** перевір, що твій локальний `next.config.ts` не має додаткових налаштувань, яких немає в моєму. Якщо є — змерджи руками.
 
-Якщо знову loop — кинь скрін з DevTools → Network, де видно ланцюжок
-редіректів (статуси 307/308). Це покаже, з якого URL на який летить.
+### 3. Smoke-test
+
+1. `/admin` → дашборд
+2. Тицяй на «Товари» → побачиш список 6 моделей
+3. Натисни «Редагувати» на G3 Pro → відкриється форма з усіма заповненими полями
+4. Поміняй tagline, збережи → побачиш «Збережено», відкрий `/product/kukirin-g3-pro` — оновлене
+5. На сторінці редагування натисни «Завантажити» біля Cover URL → вибери будь-яке зображення з компʼютера → URL заповниться, мінікартинка зʼявиться → збережи → перевір на сайті
+6. «Додати товар» → заповни форму → створи → відкриється сторінка редагування з повідомленням «Товар створено»
+7. «Видалити» на тестовому товарі → confirm → редірект на список
+
+### 4. Категорії / Замовлення / Новини
+
+Це stub-и (read-only). Просто переконайся, що:
+- `/admin/categories` показує 3 категорії
+- `/admin/orders` показує 1 твоє замовлення A2749686
+- `/admin/news` пустий, без помилки
+
+Повний CRUD для них — Block 8/9.
+
+## Як заповнити фото KUKIRIN з kukirin.com.ua
+
+1. Відкрий kukirin.com.ua, знайди потрібну модель
+2. Правою кнопкою на фото → «Copy image address»
+3. Встав у Cover URL у формі редагування товара → Зберегти
+4. Перевір на `/catalog` — фото має зʼявитись
+
+Кілька фото — вставляй URL у блок «Додаткові фото» з нового рядка.
+
+## Безпека
+
+- Всі server actions перевіряють `is_admin()` перед записом — дублюємо захист середини middleware
+- Upload обмежений 5 МБ і тільки `image/*` (перевіряється на клієнті, але також BUCKET-level можна додати)
+- Storage bucket — public read (так треба для `<img src>`), запис — тільки адміни (через `is_admin()` в storage policies)
+- `service_role` ніколи не йде в браузер — тільки в server actions
+
+## Чого ще немає
+
+- Drag-and-drop сортування `product_images` (вони впорядковуються по черзі введення URL)
+- Drag-and-drop reorder для категорій
+- Bulk-операції (масове редагування)
+- Це все можна додати пізніше якщо знадобиться
+
+## Наступний крок
+
+**Block 8** — Categories + News CRUD (аналогічні формі товара, простіше).
