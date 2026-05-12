@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArrowRight, Check, Phone, Truck, Shield, Wrench } from 'lucide-react';
+import { Check, Phone, Truck, Shield, Wrench } from 'lucide-react';
 import PageShell from '@/components/kukirin/PageShell';
+import AddToCartButton from '@/components/cart/AddToCartButton';
 import {
   getAllProducts,
   getProductBySlug,
@@ -33,14 +34,12 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
   const scooter = toKukirin(row!);
 
-  // Related: other products, max 3
   const all = await getAllProducts().catch(() => []);
   const related = all
     .filter((r) => r.slug !== scooter.slug)
     .slice(0, 3)
     .map(toKukirin);
 
-  // Primary image (if any)
   const primaryImage =
     row!.product_images?.find((img) => img.is_primary)?.url ??
     row!.product_images?.[0]?.url ??
@@ -99,9 +98,12 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           </div>
 
           <div className="mb-6 flex flex-col gap-3 sm:flex-row">
-            <button className="inline-flex items-center justify-center gap-2 rounded-sm bg-[#FF6B00] px-6 py-3 text-xs font-medium tracking-[0.1em] text-black transition hover:bg-[#FF8A33]">
-              ДОДАТИ В КОШИК <ArrowRight size={14} />
-            </button>
+            <AddToCartButton
+              slug={scooter.slug}
+              name={scooter.name}
+              price={scooter.price}
+              image={primaryImage}
+            />
             <Link href="/test-drive" className="inline-flex items-center justify-center rounded-sm border border-white/25 px-6 py-3 text-xs font-medium tracking-wide text-white transition hover:border-white/50">
               Тест-драйв
             </Link>
@@ -135,7 +137,6 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         </div>
       </div>
 
-      {/* Service blocks */}
       <div className="mt-12 grid grid-cols-2 gap-3 border-t border-white/10 pt-8 sm:grid-cols-4">
         {features.map((f) => (
           <div key={f.label} className="flex flex-col gap-2">
@@ -146,7 +147,6 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         ))}
       </div>
 
-      {/* Related */}
       {related.length > 0 && (
         <div className="mt-12 border-t border-white/10 pt-10">
           <div className="mb-6 flex items-end justify-between">

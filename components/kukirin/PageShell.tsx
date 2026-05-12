@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { Search, User, ShoppingCart, Menu, Instagram, Facebook, Youtube, Send } from 'lucide-react';
+import { Search, User, Menu, Instagram, Facebook, Youtube, Send } from 'lucide-react';
+import CartIcon from '@/components/cart/CartIcon';
 
 export default function PageShell({
   children,
@@ -30,7 +31,7 @@ export default function PageShell({
           <div className="flex items-center gap-3 sm:gap-4">
             <button aria-label="Пошук" className="text-white/80 hover:text-white"><Search size={18} /></button>
             <Link href="/account" aria-label="Кабінет" className="text-white/80 hover:text-white"><User size={18} /></Link>
-            <Link href="/cart" aria-label="Кошик" className="text-white/80 hover:text-white"><ShoppingCart size={18} /></Link>
+            <CartIcon />
             <details className="relative md:hidden">
               <summary className="list-none cursor-pointer text-white/80 hover:text-white"><Menu size={20} /></summary>
               <div className="absolute right-0 mt-3 w-48 rounded-sm border border-white/10 bg-[#111] p-3 text-sm shadow-xl">
@@ -44,7 +45,6 @@ export default function PageShell({
           </div>
         </div>
       </header>
-
       {(title || breadcrumb) && (
         <section className="border-b border-white/10 bg-[#0A0A0A]">
           <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-10">
@@ -60,9 +60,7 @@ export default function PageShell({
           </div>
         </section>
       )}
-
       <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-10">{children}</main>
-
       <footer className="border-t border-white/10 bg-[#070707] py-12 text-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
           <div className="grid grid-cols-2 gap-8 border-b border-white/10 pb-10 md:grid-cols-4">
