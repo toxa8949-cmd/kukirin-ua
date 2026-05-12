@@ -1,82 +1,57 @@
-# Block 7 — Admin Products CRUD + stub admin tabs
+# Block 8 — Categories + News CRUD
 
 ## Що в цьому пакеті
 
-### Products (повний CRUD)
-- `/admin/products` — список з пошуком, мініатюрами, бейджами `off`/`feat`
-- `/admin/products/new` — форма створення
-- `/admin/products/[id]/edit` — форма редагування + кнопка Видалити з підтвердженням
-- `/admin/products/actions.ts` — server actions (`createProduct`, `updateProduct`, `deleteProduct`, `uploadProductImage`)
-- Поля: основне, ціна/склад, характеристики (специфікації структуровано), фото (URL + upload)
-- Upload: натискаєш «Завантажити» → файл їде в Supabase Storage `product-images` → URL автоматично вставляється
+### Categories (повний CRUD)
+- `/admin/categories` — список з лічильником товарів у кожній категорії
+- `/admin/categories/new` — створення
+- `/admin/categories/[id]/edit` — редагування + delete (захист: не можна видалити категорію з товарами)
+- `/admin/categories/actions.ts` — server actions
 
-### Stub-сторінки (щоб не було 404)
-- `/admin/categories` — read-only список
-- `/admin/orders` — read-only список з останніми 50 замовленнями
-- `/admin/news` — read-only список новин
+### News (повний CRUD)
+- `/admin/news` — список з фільтрами «Усі / Опубліковані / Чернетки», мініатюрами
+- `/admin/news/new` — створення
+- `/admin/news/[id]/edit` — редагування + delete
+- `/admin/news/actions.ts` — server actions
+- Контент — Markdown textarea (рендер на блог-сторінці буде у Block 11)
+- Toggle published автоматично проставляє `published_at` при першій публікації
 
-### Інфраструктура
-- `next.config.ts` — додано `remotePatterns` для `kukirin.com.ua` і Supabase Storage
-- `sql/storage-bucket.sql` — створення bucket `product-images` з public read + admin-only write
+## Як залити
 
-## Послідовність дій
+GitHub → Add file → Upload files → перетягни папки `app` і `components` (вони змерджаться поверх існуючих з Block 7) → Commit: `Block 8: categories + news CRUD` → у `main`.
 
-### 1. SQL у Supabase (ДО заливки коду!)
+⚠️ Ніяких SQL — все вже є в БД.
 
-Supabase → SQL Editor → New query → встав `sql/storage-bucket.sql` → Run.
+## Smoke-test
 
-Внизу побачиш:
-- `product-images | public: true` — bucket створений
-- 4 політики на `storage.objects` (read, insert, update, delete)
+### Categories
+1. `/admin/categories` → бачиш 3 категорії (urban / offroad / flagship) з лічильниками товарів
+2. **ДОДАТИ КАТЕГОРІЮ** → створи `accessory` (Аксесуари) з sort_order=10 → СТВОРИТИ → попадаєш на edit
+3. **Редагувати** будь-яку з існуючих → поміняй опис → ЗБЕРЕГТИ → перевір `/category/urban` на сайті — опис оновився
+4. На щойно створеній `accessory` натисни **Видалити** → confirm → редірект на список (там її більше немає)
+5. Спробуй видалити `urban` (там є товари) → отримаєш помилку «Не можна видалити: у категорії N товар(ів)»
 
-### 2. Залий код у репо
+### News
+1. `/admin/news` → пусто, бо новин ще немає
+2. **ДОДАТИ СТАТТЮ** → заповни:
+   - Заголовок: «Привіт, KUKIRIN.UA»
+   - Slug: `welcome`
+   - Анонс: «Перша стаття на нашому блозі»
+   - Контент: довільний Markdown
+   - Cover URL: будь-який публічний URL зображення
+   - Чекбокс «Опублікувати» → ✅
+3. СТВОРИТИ → відкриється edit з повідомленням
+4. Поміняй заголовок → ЗБЕРЕГТИ → побачиш «Збережено»
+5. У списку `/admin/news` → фільтр «Чернетки» → пусто (бо ти опублікував)
+6. Зніми галку «Опублікувати» → ЗБЕРЕГТИ → у фільтрі «Чернетки» зʼявиться
+7. **Видалити** → confirm → редірект на список
 
-GitHub → Add file → Upload files → перетягни папки `app`, `components` і файл `next.config.ts` → Commit: `Block 7: products CRUD + admin tabs stub` → у `main`.
+## Що далі
 
-⚠️ **Перед заливкою:** перевір, що твій локальний `next.config.ts` не має додаткових налаштувань, яких немає в моєму. Якщо є — змерджи руками.
+Окрема сторінка `/blog/[slug]` для перегляду статей на сайті — це **Block 11** (рендер Markdown через `marked` або `remark`).
 
-### 3. Smoke-test
-
-1. `/admin` → дашборд
-2. Тицяй на «Товари» → побачиш список 6 моделей
-3. Натисни «Редагувати» на G3 Pro → відкриється форма з усіма заповненими полями
-4. Поміняй tagline, збережи → побачиш «Збережено», відкрий `/product/kukirin-g3-pro` — оновлене
-5. На сторінці редагування натисни «Завантажити» біля Cover URL → вибери будь-яке зображення з компʼютера → URL заповниться, мінікартинка зʼявиться → збережи → перевір на сайті
-6. «Додати товар» → заповни форму → створи → відкриється сторінка редагування з повідомленням «Товар створено»
-7. «Видалити» на тестовому товарі → confirm → редірект на список
-
-### 4. Категорії / Замовлення / Новини
-
-Це stub-и (read-only). Просто переконайся, що:
-- `/admin/categories` показує 3 категорії
-- `/admin/orders` показує 1 твоє замовлення A2749686
-- `/admin/news` пустий, без помилки
-
-Повний CRUD для них — Block 8/9.
-
-## Як заповнити фото KUKIRIN з kukirin.com.ua
-
-1. Відкрий kukirin.com.ua, знайди потрібну модель
-2. Правою кнопкою на фото → «Copy image address»
-3. Встав у Cover URL у формі редагування товара → Зберегти
-4. Перевір на `/catalog` — фото має зʼявитись
-
-Кілька фото — вставляй URL у блок «Додаткові фото» з нового рядка.
-
-## Безпека
-
-- Всі server actions перевіряють `is_admin()` перед записом — дублюємо захист середини middleware
-- Upload обмежений 5 МБ і тільки `image/*` (перевіряється на клієнті, але також BUCKET-level можна додати)
-- Storage bucket — public read (так треба для `<img src>`), запис — тільки адміни (через `is_admin()` в storage policies)
-- `service_role` ніколи не йде в браузер — тільки в server actions
-
-## Чого ще немає
-
-- Drag-and-drop сортування `product_images` (вони впорядковуються по черзі введення URL)
-- Drag-and-drop reorder для категорій
-- Bulk-операції (масове редагування)
-- Це все можна додати пізніше якщо знадобиться
+Поки що адмінка створює статті, вони лежать у БД, але на сайті їх ще не видно (бо немає сторінки рендера).
 
 ## Наступний крок
 
-**Block 8** — Categories + News CRUD (аналогічні формі товара, простіше).
+**Block 9** — Admin Orders: деталь замовлення з ким контактувати, зміна статусу (new → confirmed → shipped → completed / canceled), історія в `notes`.
