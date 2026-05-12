@@ -1,183 +1,176 @@
-# Blocks 11 + 12 — Public blog + Navigation sync
+# Block 12 — Site Settings + Dynamic Header/Footer
 
 ## Що в цьому пакеті
 
-### Block 11 — публічний блог (нові файли, нічого не ламає)
+Це фінальний блок. Все що ти хотів змінювати руками — телефон, email, адреса,
+соцмережі, копірайт — тепер живе в БД у таблиці `site_settings` і
+редагується в адмінці. Хедер і футер на сайті беруть значення з БД.
+
+### Файли (заливаються в репо)
 
 ```
-app/blog/page.tsx              — список опублікованих статей
-app/blog/[slug]/page.tsx       — сторінка статті з рендером Markdown
-app/prose-kukirin.css          — стилі для тексту статей
-lib/markdown.ts                — обгортка над marked
+sql/site-settings.sql              — нова таблиця + RLS + seed дефолтних ключів
+lib/site-settings.ts               — server util getSiteSettings()
+app/admin/settings/page.tsx        — нова сторінка адмінки
+app/admin/settings/actions.ts      — server action оновлення
+components/admin/SettingsForm.tsx  — клієнтська форма
+components/admin/AdminNav.tsx      — оновлений (нова вкладка "Налаштування")
 ```
 
-### Block 12 — синхронізація навігації
+### Файли-приклади (НЕ заливаються, дивись і копіюй що потрібно)
 
-Тут я **не генерую файли**, а даю інструкцію редагування руками,
-бо без точного перегляду твого Header/Footer я можу зламати верстку.
-Інструкція — нижче, у розділі «Block 12».
+```
+examples/Header.example.tsx        — приклад async Header з БД
+examples/Footer.example.tsx        — приклад async Footer з БД
+```
 
 ---
 
-## Послідовність кроків
+## Послідовність дій
 
-### 1. Додай залежність `marked` у `package.json`
+### 1. SQL у Supabase (першим!)
 
-GitHub → відкрий `package.json` → редактор (олівець) →
-у блок `"dependencies"` додай рядок:
+Supabase → SQL Editor → New query → встав `sql/site-settings.sql` → Run.
 
-```json
-"marked": "^14.1.3",
-```
+Внизу побачиш таблицю з усіма ключами (phone, email, address, telegram_url
+і т.д.) зі значеннями `(пусто)` для більшості і двома заповненими
+(`site_title`, `footer_about`, `copyright`, `work_hours`).
 
-(Не забудь кому в кінці, якщо є наступний рядок.)
-
-Commit → Vercel автоматично запустить `npm install` при наступному деплої.
-Цей файл деплоємо разом з рештою — без окремого комміту.
-
-### 2. Додай імпорт стилів у `app/layout.tsx`
-
-Відкрий `app/layout.tsx` → у самому верху файлу (поряд з імпортом `globals.css`)
-додай:
-
-```ts
-import './prose-kukirin.css';
-```
-
-Все. Решта `layout.tsx` залишається як є.
-
-### 3. Залий код Block 11
+### 2. Залий код адмінки
 
 GitHub → Add file → Upload files → перетягни:
-- папку `app` (там нові `blog/`, `prose-kukirin.css`)
-- папку `lib` (там новий `markdown.ts`)
+- `lib/site-settings.ts` (новий файл)
+- `app/admin/settings/` (нова папка з 2 файлами)
+- `components/admin/SettingsForm.tsx` (новий)
+- `components/admin/AdminNav.tsx` (⚠️ замінює існуючий — додано іконку "Налаштування")
 
-Commit: `Block 11: public blog + markdown rendering`.
+Commit: `Block 12: site settings admin`.
 
-⚠️ Окремо: переконайся, що `package.json` оновлено (крок 1) — інакше деплой впаде з `Module not found: 'marked'`.
+⚠️ Якщо твій поточний `AdminNav.tsx` має додаткові кастомні елементи —
+дивись на наш файл і додай тільки рядок з `Settings` icon в масив `NAV`,
+не заміняй цілий файл.
 
-### 4. Smoke-test (Block 11)
+### 3. Перевір адмінку
 
-1. **`/blog`** на сайті:
-   - Якщо в БД немає опублікованих статей — побачиш порожній стан «Поки що тут порожньо».
-   - Якщо є — побачиш картки з мініатюрами, датою, заголовком, анонсом.
-2. Зайди в адмінку → `/admin/news/new` → створи тестову статтю:
-   - Заголовок: `Привіт KUKIRIN.UA`
-   - Slug: `welcome`
-   - Анонс: `Перша стаття в нашому блозі`
-   - Контент (Markdown):
-     ```
-     # Що нового
+1. `/admin` — у сайдбарі зʼявилась нова вкладка **Налаштування** (іконка шестерні)
+2. Клік → відкривається сторінка з 3 групами: Контакти / Соцмережі / Інше
+3. Заповни поля: телефон, email, адресу, telegram_url (якщо є) і т.д.
+4. Внизу — велика помаранчева кнопка **ЗБЕРЕГТИ ВСІ** (sticky)
+5. Натисни → побачиш «Оновлено N параметрів»
+6. Перезавантаж сторінку — значення збереглись
 
-     Ми відкрили **офіційний інтернет-магазин KUKIRIN в Україні**.
+### 4. Оновлення Header/Footer на сайті
 
-     ## Що нас вирізняє
+⚠️ **Це найделікатніша частина.** Я не бачив твоїх поточних `Header.tsx` і
+`Footer.tsx`, тому даю **приклади** в папці `examples/`. Дивись на них і
+вирішуй сам, що робити:
 
-     - Офіційна гарантія від виробника
-     - Швидка доставка Новою Поштою
-     - Сервіс в Києві
+#### Варіант A — повна заміна (якщо твоя розмітка близька до моєї)
 
-     > Тримай руку на пульсі — далі буде більше.
+Скопіюй вміст `examples/Header.example.tsx` → встав у твій
+`components/site/Header.tsx` → перевір що імпорт `Phone`, `Search`, `User`
+тощо приходить з `lucide-react` (вже є в проєкті).
 
-     [Перейти до каталогу](/catalog)
-     ```
-   - Cover URL: будь-який публічний URL зображення
-   - ✅ Опублікувати → СТВОРИТИ
-3. Поверни на `/blog` — побачиш свою статтю.
-4. Клікни → відкриється `/blog/welcome` з відрендереним Markdown:
-   - заголовки `# Що нового`, `## Що нас вирізняє`
-   - список з трьох пунктів
-   - блок цитати з помаранчевою лівою смугою
-   - помаранчеве посилання «Перейти до каталогу»
-5. Внизу — блок «Ще почитати» (буде пустий, бо це поки єдина стаття).
+Те саме для `Footer.example.tsx` → `components/site/Footer.tsx`.
 
----
+#### Варіант B — частковий патч (рекомендую)
 
-## Block 12 — синхронізація навігації (manual edits)
+У твоєму поточному `Header.tsx`:
 
-В адмінці ти бачиш реальні категорії: `electric-scooters`, `e-bikes`, `accessories`.
-Але хедер і футер досі ведуть на legacy slug `urban`, `offroad`, `flagship`.
-
-Як виправити без ризику зламати верстку — два варіанти на вибір:
-
-### Варіант A (рекомендований) — динамічний хедер з БД
-
-У `components/site/Header.tsx` зараз масив категорій захардкоджений
-(шось типу `[{ name: 'Самокати', href: '/category/urban' }, ...]`).
-
-Поміняй цей **жорсткий масив** на **динамічне завантаження**.
-
-Знайди початок файлу і додай:
-
-```ts
-import { createClient } from '@/lib/supabase/server';
-
-// ...
-
-async function getNavCategories() {
-  const supabase = await createClient();
-  const { data } = await supabase
-    .from('categories')
-    .select('slug, name')
-    .order('sort_order', { ascending: true, nullsFirst: false });
-  return (data ?? []) as Array<{ slug: string; name: string }>;
-}
-```
-
-Зроби компонент `async` (якщо це server component — а він має таким бути)
-і в render отримуй категорії:
-
+**1. Зроби компонент `async`** (якщо ще не є):
 ```tsx
 export default async function Header() {
-  const cats = await getNavCategories();
-  // ...
-  // У місці, де було щось типу:
-  //   {NAV_LINKS.map((l) => <Link href={l.href}>{l.name}</Link>)}
-  // заміни на:
-  //   {cats.map((c) => (
-  //     <Link key={c.slug} href={`/category/${c.slug}`}>{c.name}</Link>
-  //   ))}
+```
+
+**2. Додай нагорі імпорти:**
+```tsx
+import { createClient } from '@/lib/supabase/server';
+import { getSiteSettings } from '@/lib/site-settings';
+```
+
+**3. Перед `return` додай завантаження даних:**
+```tsx
+const supabase = await createClient();
+const [{ data: cats }, settings] = await Promise.all([
+  supabase.from('categories').select('slug, name').order('sort_order'),
+  getSiteSettings(),
+]);
+const categories = (cats ?? []) as Array<{ slug: string; name: string }>;
+```
+
+**4. Знайди місце, де у тебе хардкорний масив навігації** (щось типу
+`const NAV = [{ name: 'Самокати', href: '/category/urban' }, ...]`) і
+**заміни** його використання в JSX на:
+
+```tsx
+{categories.map((c) => (
+  <Link key={c.slug} href={`/category/${c.slug}`}>
+    {c.name}
+  </Link>
+))}
+```
+
+**5. Де хардкорний телефон** (`+380...`) — заміни на `{settings.phone}`.
+Аналогічно для всіх інших захардкорджених контактів.
+
+Для Footer — те саме плюс соцмережі і копірайт.
+
+#### Якщо твій Header — `'use client'`
+
+Server component не можна позначати `'use client'`. Якщо твій Header
+використовує `useState` (наприклад для мобільного меню), розділи:
+
+```tsx
+// Header.tsx — server, тягне дані з БД
+import HeaderClient from './HeaderClient';
+
+export default async function Header() {
+  const categories = ...;
+  const settings = await getSiteSettings();
+  return <HeaderClient categories={categories} settings={settings} />;
 }
 ```
 
-Якщо Header у тебе **'use client'** — створи поряд `HeaderShell.tsx` як server
-component, який передає категорії props-ом в існуючий клієнт-компонент. Якщо
-не впевнений як це робити — скинь мені поточний код `components/site/Header.tsx`
-і я зроблю патч на тих самих стилях.
+```tsx
+// HeaderClient.tsx — 'use client', твоя поточна логіка
+'use client';
+export default function HeaderClient({ categories, settings }) {
+  const [open, setOpen] = useState(false);
+  // ... твій код ...
+}
+```
 
-### Варіант B (швидший, але крихкий) — просто заміни slug-и руками
+Якщо застрягнеш — скинь мені поточний `Header.tsx` і я зроблю патч руками.
 
-У `components/site/Header.tsx` і `components/site/Footer.tsx` знайди
-рядки з URL і поміняй:
+### 5. Smoke-test усього
 
-| Було                       | Має бути                          |
-| -------------------------- | --------------------------------- |
-| `/category/urban`          | `/category/electric-scooters`     |
-| `/category/offroad`        | `/category/electric-scooters`     |
-| `/category/flagship`       | `/category/electric-scooters`     |
-
-(Усі три старі категорії об'єднано в одну "Електросамокати". Аксесуари і
-велосипеди залишаються окремо як `/category/accessories` і `/category/e-bikes`.)
-
-Поміняй назви відповідно — наприклад «Самокати» → «Електросамокати»,
-додай посилання на «Електровелосипеди» якщо в хедері їх ще немає.
-
-⚠️ Якщо в Header у тебе є dropdown або кастомні стилі для активного стану,
-то Варіант B зачепить менше. Якщо це просто список лінків — Варіант A
-кращий, бо потім ти можеш додавати/видаляти категорії в адмінці і
-хедер сам оновиться.
+1. `/admin/settings` → встав свій реальний телефон і email → ЗБЕРЕГТИ
+2. Відкрий головну сторінку сайту → у хедері/футері має зʼявитись твій
+   телефон (з кліком `tel:`)
+3. У футері — соцмережі (якщо заповнив URL-и)
+4. Категорії в хедері — це твої реальні з БД (Електросамокати, Електровелосипеди,
+   Аксесуари), а не legacy urban/offroad/flagship
 
 ---
 
-## Що буде далі
+## Що це закриває
 
-Це фактично закриває проєкт. Залишаються опційні косметичні речі:
-- Видалити дублікатний Vercel проєкт `kukirin-ua` (тільки `kukirin-ua-gpbw`
-  залишити)
-- Прибрати `ignoreBuildErrors` у `next.config.ts` і пофіксити TS errors чесно
-  (я це робив через `as any` де треба, щоб не блокувати деплой; найкраще
-  було б згенерувати свіжі типи через `supabase gen types typescript`)
+✅ Контакти редагуються через адмінку без коммітів
+✅ Соцмережі редагуються без коммітів
+✅ Текст футера, копірайт — редагуються без коммітів
+✅ Хедер і футер показують реальні категорії з БД
+✅ Додаєш категорію в адмінці → вона зразу зʼявляється у навігації
 
-Якщо хочеш — після Block 11 скинь мені поточний `Header.tsx` (raw github
-URL через GitHub UI: відкрий файл → кнопка "Raw" → URL), і я зроблю
-точний патч під Block 12 з твоєю розміткою.
+---
+
+## Опціональні фінальні чищення (не блок, просто чек-лист)
+
+- [ ] Видалити дублікатний Vercel проєкт `kukirin-ua` (failed deploys)
+- [ ] Зняти `ignoreBuildErrors: true` у `next.config.ts` і пофіксити TS errors
+  чесно (для цього треба згенерувати свіжі типи: `npx supabase gen types
+  typescript --project-id ssxygllbnkjoklfhdfkb > lib/types/database.ts`)
+- [ ] Перенести решту 2 самокатів у Products → буде 6 моделей замість 4
+- [ ] Додати favicon, opengraph image у `app/icon.tsx` і `app/opengraph-image.tsx`
+- [ ] Підключити аналітику — Google Analytics або Vercel Analytics
+
+Усе це — окремі маленькі задачі, можна робити по одній коли буде час.
