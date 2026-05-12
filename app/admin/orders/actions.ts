@@ -3,15 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { createClient } from '@/lib/supabase/server';
-
-export const ORDER_STATUSES = [
-  'new',
-  'confirmed',
-  'shipped',
-  'completed',
-  'canceled',
-] as const;
-export type OrderStatus = (typeof ORDER_STATUSES)[number];
+import { ORDER_STATUSES, type OrderStatus } from './constants';
 
 export type ActionResult =
   | { ok: true; id: string }
@@ -34,7 +26,7 @@ export async function updateOrderStatus(formData: FormData): Promise<ActionResul
   const status = String(formData.get('status') ?? '').trim() as OrderStatus;
 
   if (!id) return { ok: false, error: 'Відсутній id замовлення.' };
-  if (!ORDER_STATUSES.includes(status)) {
+  if (!(ORDER_STATUSES as readonly string[]).includes(status)) {
     return { ok: false, error: `Невідомий статус: ${status}` };
   }
 

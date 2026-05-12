@@ -5,16 +5,11 @@ import { AlertCircle, CheckCircle2, Save, MessageSquarePlus } from 'lucide-react
 import {
   updateOrderStatus,
   appendOrderNote,
-  ORDER_STATUSES,
 } from '@/app/admin/orders/actions';
-
-const STATUS_LABEL: Record<string, string> = {
-  new: 'нове',
-  confirmed: 'підтверджене',
-  shipped: 'відправлене',
-  completed: 'завершене',
-  canceled: 'скасоване',
-};
+import {
+  ORDER_STATUSES,
+  ORDER_STATUS_LABEL,
+} from '@/app/admin/orders/constants';
 
 export default function OrderActions({
   id,
@@ -89,7 +84,7 @@ export default function OrderActions({
         >
           {ORDER_STATUSES.map((s) => (
             <option key={s} value={s}>
-              {STATUS_LABEL[s]} · {s}
+              {ORDER_STATUS_LABEL[s]} · {s}
             </option>
           ))}
         </select>

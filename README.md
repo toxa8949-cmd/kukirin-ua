@@ -1,57 +1,37 @@
-# Block 9 — Admin Orders + status management
+# Block 9.1 — Fix "u.map is not a function"
 
-## Що в цьому пакеті
+## Що було не так
 
-### Orders list (повна версія)
-- `/admin/orders` — список з фільтрами за статусом (Усі / нові / підтверджені / відправлені / завершені / скасовані) з лічильниками
-- Пошук за імʼям, телефоном або email
-- Клік на рядок → детальна сторінка замовлення
+У `OrderActions.tsx` (client component) я імпортував константу-масив
+`ORDER_STATUSES` з `actions.ts` (server actions, помічений `'use server'`).
 
-### Order detail
-- `/admin/orders/[id]` — деталь з 4 блоками:
-  - **Клієнт**: імʼя, телефон (з `tel:` лінком), email, адреса
-  - **Товари**: список позицій з посиланнями на сторінку товара, кількість, ціна, сума
-  - **Деталі та історія**: вміст `notes` (включає delivery/payment, які ми сюди записали в Block 5.1, плюс нотатки які додаєш в адмінці)
-  - **Дії** (правий блок): зміна статусу + додавання нотатки
+Next.js дозволяє експортувати з файлу `'use server'` **тільки async функції**.
+Якщо звідти експортується ще щось (масив, об'єкт), Next.js серіалізує це
+як proxy. На клієнті `proxy.map(...)` падає з `TypeError: u.map is not a function`.
 
-### Server actions
-- `updateOrderStatus(id, status)` — змінює статус
-- `appendOrderNote(id, note)` — дописує нотатку з timestamp у `notes`
+## Виправлення
+
+Виніс константи в окремий файл `app/admin/orders/constants.ts` (без
+`'use server'`). І `actions.ts`, і `OrderActions.tsx` тепер імпортують їх
+звідти.
 
 ## Файли
 
 ```
-app/admin/orders/page.tsx              — список (замінює stub з Block 7)
-app/admin/orders/actions.ts            — server actions
-app/admin/orders/[id]/page.tsx         — деталь
-components/admin/OrderActions.tsx      — клієнтський блок дій
+app/admin/orders/constants.ts    — NEW (ORDER_STATUSES, ORDER_STATUS_LABEL)
+app/admin/orders/actions.ts      — імпортує з constants.ts
+components/admin/OrderActions.tsx — імпортує з constants.ts
 ```
 
 ## Як залити
 
-GitHub → Add file → Upload files → перетягни папки `app` і `components` (змерджать поверх Block 7-8) → Commit: `Block 9: orders admin + status management` → у `main`.
+GitHub → Add file → Upload files → перетягни папки `app` і `components` →
+Commit: `Block 9.1: fix server-action constant export` → у `main`.
 
-⚠️ SQL не потрібен.
+Чекай Vercel Ready (1-2 хв).
 
 ## Smoke-test
 
-1. `/admin/orders` — бачиш своє замовлення `A2749686` зі статусом `new`
-2. Перевір вкладки-лічильники: "Усі · 1", "нові · 1", решта по нулях
-3. Введи у пошуку "Serhii" → залишиться твоє замовлення
-4. Очисти пошук, клік на рядок → відкриється деталь
-5. На деталі бачиш:
-   - Клієнт: Serhii Shapoval, телефон-лінк, email-лінк, адреса
-   - Товари: Kukirin G3 Pro, 1 × 54 999 ₴, сума 54 999 ₴
-   - Деталі: Доставка: nova-poshta / Адреса: ... / Оплата: cod
-6. Правий блок: dropdown зі статусами → вибери "підтверджене" → кнопка стає активною → ЗБЕРЕГТИ СТАТУС → "Статус оновлено"
-7. Поверніться на `/admin/orders` — лічильники змінились ("підтверджені · 1")
-8. На деталі знову відкрий → додай нотатку "Передзвонив, підтвердив адресу" → Додати → в блоці "Деталі та історія" зʼявиться нотатка з timestamp
-
-## Що НЕ робить (зумисно)
-
-- Видалити замовлення з адмінки **не можна** — це навмисно, замовлення видаляти не варто навіть скасовані (для звітності). Статус `canceled` робить те ж саме функціонально.
-- Редагувати товари в замовленні теж не можна — це snapshot, історія. Якщо клієнт хоче змінити склад — створюємо нове замовлення.
-
-## Наступний крок
-
-**Block 10** — Dashboard з recharts: графік замовлень по днях, топ-продукти, KPI трендами.
+1. `/admin/orders/<id>` — має відкритись без 500
+2. Зміни статус `new` → `confirmed` → ЗБЕРЕГТИ → бачиш "Статус оновлено"
+3. Додай нотатку → ОК
