@@ -7,7 +7,7 @@ export async function getPublishedNews(limit?: number): Promise<NewsPost[]> {
   let q = supabase
     .from("news")
     .select("*")
-    .eq("is_published", true)
+    .eq("published", true)
     .order("published_at", { ascending: false, nullsFirst: false })
     .order("created_at", { ascending: false });
   if (typeof limit === "number") q = q.limit(limit);
@@ -25,7 +25,7 @@ export async function getNewsBySlug(slug: string): Promise<NewsPost | null> {
     .from("news")
     .select("*")
     .eq("slug", slug)
-    .eq("is_published", true)
+    .eq("published", true)
     .maybeSingle();
   if (error) {
     console.error("[getNewsBySlug]", error);

@@ -30,7 +30,7 @@ type ProductLookup = {
   slug: string;
   name: string;
   price: number;
-  is_active: boolean;
+  is_active: boolean | null;
 };
 
 function isValidPhone(s: string) {
@@ -42,6 +42,19 @@ function isValidEmail(s: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
 }
 
+/**
+ * Creates an order using the service_role client (bypasses RLS).
+ *
+ * Real DB schema:
+ *   orders(id uuid, customer_name, phone, email, address, total numeric,
+ *          status text, notes, created_at)
+ *   order_items(id uuid, order_id, product_id, name_snapshot,
+ *               price_snapshot numeric, quantity int)
+ *
+ * Delivery and payment options are not separate columns in the DB.
+ * We concatenate them into the `notes` field so nothing is lost.
+ * Returns the order UUID as "orderNumber" (used in the success URL).
+ */
 export async function createOrder(input: CheckoutInput): Promise<CheckoutResult> {
   try {
     const name = (input.customerName ?? '').trim();
@@ -81,47 +94,55 @@ export async function createOrder(input: CheckoutInput): Promise<CheckoutResult>
 
     for (const it of input.items) {
       const p = bySlug.get(it.slug);
-      if (!p || !p.is_active) {
+      if (!p || p.is_active === false) {
         return { ok: false, error: `Товар недоступний: ${it.slug}` };
       }
     }
 
+    // Build line items with server-side authoritative price.
     const lineItems = input.items.map((it) => {
       const p = bySlug.get(it.slug)!;
       const qty = Math.max(1, Math.floor(Number(it.quantity) || 1));
       const unit = Number(p.price);
       return {
         product_id: p.id,
-        product_slug: p.slug,
-        product_name: p.name,
-        unit_price: unit,
+        name_snapshot: p.name,
+        price_snapshot: unit,
         quantity: qty,
-        subtotal: unit * qty,
       };
     });
 
-    const subtotal = lineItems.reduce((s, x) => s + x.subtotal, 0);
-    const shippingCost = 0;
-    const total = subtotal + shippingCost;
+    const total = lineItems.reduce(
+      (s, x) => s + x.price_snapshot * x.quantity,
+      0,
+    );
+
+    // Combine extra metadata (delivery, payment, customer notes) into `notes`
+    // because the real schema does not have separate columns for them.
+    const combinedNotes = [
+      `Доставка: ${deliveryMethod}`,
+      `Адреса: ${deliveryAddress}`,
+      `Оплата: ${paymentMethod}`,
+      notes ? `Коментар: ${notes}` : null,
+    ]
+      .filter(Boolean)
+      .join('\n');
 
     const orderInsert: TablesInsert<'orders'> = {
       customer_name: name,
-      customer_phone: phone,
-      customer_email: email || null,
-      delivery_method: deliveryMethod,
-      delivery_address: deliveryAddress,
-      payment_method: paymentMethod,
-      subtotal,
-      shipping_cost: shippingCost,
+      phone,
+      email: email || null,
+      address: deliveryAddress,
       total,
-      notes: notes || null,
+      status: 'new',
+      notes: combinedNotes,
     };
 
     const { data: orderData, error: orderErr } = await supabase
       .from('orders')
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .insert(orderInsert as any)
-      .select('id, order_number')
+      .select('id')
       .single();
 
     if (orderErr || !orderData) {
@@ -129,16 +150,14 @@ export async function createOrder(input: CheckoutInput): Promise<CheckoutResult>
       return { ok: false, error: 'Не вдалось створити замовлення. Спробуйте ще раз.' };
     }
 
-    const order = orderData as unknown as { id: string; order_number: string };
+    const order = orderData as unknown as { id: string };
 
     const itemsInsert: TablesInsert<'order_items'>[] = lineItems.map((li) => ({
       order_id: order.id,
       product_id: li.product_id,
-      product_slug: li.product_slug,
-      product_name: li.product_name,
-      unit_price: li.unit_price,
+      name_snapshot: li.name_snapshot,
+      price_snapshot: li.price_snapshot,
       quantity: li.quantity,
-      subtotal: li.subtotal,
     }));
 
     const { error: itemsErr } = await supabase
@@ -152,7 +171,7 @@ export async function createOrder(input: CheckoutInput): Promise<CheckoutResult>
       return { ok: false, error: 'Не вдалось зберегти товари замовлення.' };
     }
 
-    return { ok: true, orderNumber: order.order_number };
+    return { ok: true, orderNumber: order.id };
   } catch (e) {
     console.error('createOrder: unexpected error', e);
     return { ok: false, error: 'Внутрішня помилка. Спробуйте пізніше.' };

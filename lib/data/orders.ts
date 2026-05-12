@@ -7,6 +7,10 @@ import type { Order, OrderItem, OrderWithItems } from "@/lib/types/database";
  * but READING them requires service_role, because anon RLS has no read policy.
  * All functions here use the admin client and must only be called from
  * the admin area (guarded by middleware is_admin check).
+ *
+ * Real schema:
+ *   orders(id, customer_name, phone, email, address, total, status, notes, created_at)
+ *   order_items(id, order_id, product_id, name_snapshot, price_snapshot, quantity)
  */
 
 export type OrderFilter = {
@@ -31,7 +35,7 @@ export async function listOrders(filter: OrderFilter = {}): Promise<{
   if (filter.search && filter.search.trim()) {
     const s = `%${filter.search.trim()}%`;
     q = q.or(
-      `customer_name.ilike.${s},customer_phone.ilike.${s},customer_email.ilike.${s},order_number.ilike.${s}`,
+      `customer_name.ilike.${s},phone.ilike.${s},email.ilike.${s},id.ilike.${s}`,
     );
   }
   if (typeof filter.limit === "number") {
@@ -91,8 +95,7 @@ export async function getOrderStats(days = 30) {
         .gte("created_at", since),
       supabase
         .from("order_items")
-        .select("product_slug,product_name,quantity,subtotal,created_at")
-        .gte("created_at", since),
+        .select("order_id,product_id,name_snapshot,price_snapshot,quantity"),
     ]);
 
   if (oerr) console.error("[getOrderStats orders]", oerr);
@@ -102,7 +105,7 @@ export async function getOrderStats(days = 30) {
     Pick<Order, "id" | "status" | "total" | "created_at">
   >;
   const itemsList = (items ?? []) as unknown as Array<
-    Pick<OrderItem, "product_slug" | "product_name" | "quantity" | "subtotal" | "created_at">
+    Pick<OrderItem, "order_id" | "product_id" | "name_snapshot" | "price_snapshot" | "quantity">
   >;
 
   const totalRevenue = ordersList.reduce((s, o) => s + Number(o.total ?? 0), 0);
@@ -127,18 +130,22 @@ export async function getOrderStats(days = 30) {
   }
   const ordersByDay = Array.from(byDay.values());
 
-  const top = new Map<string, { slug: string; name: string; quantity: number; revenue: number }>();
+  // Build a set of order_ids in our window so we can scope item aggregation.
+  const recentOrderIds = new Set(ordersList.map((o) => o.id));
+
+  const top = new Map<string, { name: string; quantity: number; revenue: number }>();
   for (const it of itemsList) {
-    const key = it.product_slug ?? it.product_name;
+    if (!recentOrderIds.has(it.order_id)) continue;
+    const key = it.name_snapshot;
     if (!key) continue;
     const cur = top.get(key) ?? {
-      slug: it.product_slug ?? "",
-      name: it.product_name,
+      name: it.name_snapshot,
       quantity: 0,
       revenue: 0,
     };
-    cur.quantity += Number(it.quantity ?? 0);
-    cur.revenue += Number(it.subtotal ?? 0);
+    const qty = Number(it.quantity ?? 0);
+    cur.quantity += qty;
+    cur.revenue += Number(it.price_snapshot ?? 0) * qty;
     top.set(key, cur);
   }
   const topProducts = Array.from(top.values())

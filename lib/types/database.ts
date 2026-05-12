@@ -1,10 +1,12 @@
 /**
  * Database types for Supabase (kukirin-ua).
  *
- * Mirrors the schema: categories, products, product_images,
- * orders, order_items, news, admins.
+ * Mirrors the ACTUAL schema in DB ssxygllbnkjoklfhdfkb as of 2026-05-12.
  *
- * These types can later be regenerated automatically with:
+ * Tables: categories, products, product_images, orders, order_items,
+ *         news, admins.
+ *
+ * Can later be regenerated automatically with:
  *   npx supabase gen types typescript --project-id ssxygllbnkjoklfhdfkb > lib/types/database.ts
  */
 
@@ -26,10 +28,8 @@ export interface Database {
           name: string;
           description: string | null;
           image_url: string | null;
-          sort_order: number;
-          is_active: boolean;
-          created_at: string;
-          updated_at: string;
+          sort_order: number | null;
+          created_at: string | null;
         };
         Insert: {
           id?: string;
@@ -37,10 +37,8 @@ export interface Database {
           name: string;
           description?: string | null;
           image_url?: string | null;
-          sort_order?: number;
-          is_active?: boolean;
-          created_at?: string;
-          updated_at?: string;
+          sort_order?: number | null;
+          created_at?: string | null;
         };
         Update: {
           id?: string;
@@ -48,157 +46,116 @@ export interface Database {
           name?: string;
           description?: string | null;
           image_url?: string | null;
-          sort_order?: number;
-          is_active?: boolean;
-          created_at?: string;
-          updated_at?: string;
+          sort_order?: number | null;
+          created_at?: string | null;
         };
       };
 
       products: {
         Row: {
           id: string;
-          category_id: string | null;
           slug: string;
           name: string;
-          short_description: string | null;
           description: string | null;
           price: number;
           old_price: number | null;
-          currency: string;
-          stock: number;
-          sku: string | null;
+          category_id: string | null;
           specs: Json | null;
-          is_active: boolean;
-          is_featured: boolean;
-          sort_order: number;
-          created_at: string;
-          updated_at: string;
+          stock: number | null;
+          is_active: boolean | null;
+          featured: boolean | null;
+          cover_url: string | null;
+          created_at: string | null;
+          updated_at: string | null;
         };
         Insert: {
           id?: string;
-          category_id?: string | null;
           slug: string;
           name: string;
-          short_description?: string | null;
           description?: string | null;
           price: number;
           old_price?: number | null;
-          currency?: string;
-          stock?: number;
-          sku?: string | null;
+          category_id?: string | null;
           specs?: Json | null;
-          is_active?: boolean;
-          is_featured?: boolean;
-          sort_order?: number;
-          created_at?: string;
-          updated_at?: string;
+          stock?: number | null;
+          is_active?: boolean | null;
+          featured?: boolean | null;
+          cover_url?: string | null;
+          created_at?: string | null;
+          updated_at?: string | null;
         };
         Update: {
           id?: string;
-          category_id?: string | null;
           slug?: string;
           name?: string;
-          short_description?: string | null;
           description?: string | null;
           price?: number;
           old_price?: number | null;
-          currency?: string;
-          stock?: number;
-          sku?: string | null;
+          category_id?: string | null;
           specs?: Json | null;
-          is_active?: boolean;
-          is_featured?: boolean;
-          sort_order?: number;
-          created_at?: string;
-          updated_at?: string;
+          stock?: number | null;
+          is_active?: boolean | null;
+          featured?: boolean | null;
+          cover_url?: string | null;
+          created_at?: string | null;
+          updated_at?: string | null;
         };
       };
 
       product_images: {
         Row: {
           id: string;
-          product_id: string;
+          product_id: string | null;
           url: string;
-          alt: string | null;
-          sort_order: number;
-          is_primary: boolean;
-          created_at: string;
+          sort_order: number | null;
         };
         Insert: {
           id?: string;
-          product_id: string;
+          product_id?: string | null;
           url: string;
-          alt?: string | null;
-          sort_order?: number;
-          is_primary?: boolean;
-          created_at?: string;
+          sort_order?: number | null;
         };
         Update: {
           id?: string;
-          product_id?: string;
+          product_id?: string | null;
           url?: string;
-          alt?: string | null;
-          sort_order?: number;
-          is_primary?: boolean;
-          created_at?: string;
+          sort_order?: number | null;
         };
       };
 
       orders: {
         Row: {
           id: string;
-          order_number: string;
-          status: string;
           customer_name: string;
-          customer_phone: string;
-          customer_email: string | null;
-          delivery_method: string | null;
-          delivery_address: string | null;
-          payment_method: string | null;
-          subtotal: number;
-          shipping_cost: number;
+          phone: string;
+          email: string | null;
+          address: string | null;
           total: number;
-          currency: string;
+          status: string;
           notes: string | null;
-          created_at: string;
-          updated_at: string;
+          created_at: string | null;
         };
         Insert: {
           id?: string;
-          order_number?: string;
-          status?: string;
           customer_name: string;
-          customer_phone: string;
-          customer_email?: string | null;
-          delivery_method?: string | null;
-          delivery_address?: string | null;
-          payment_method?: string | null;
-          subtotal: number;
-          shipping_cost?: number;
+          phone: string;
+          email?: string | null;
+          address?: string | null;
           total: number;
-          currency?: string;
+          status?: string;
           notes?: string | null;
-          created_at?: string;
-          updated_at?: string;
+          created_at?: string | null;
         };
         Update: {
           id?: string;
-          order_number?: string;
-          status?: string;
           customer_name?: string;
-          customer_phone?: string;
-          customer_email?: string | null;
-          delivery_method?: string | null;
-          delivery_address?: string | null;
-          payment_method?: string | null;
-          subtotal?: number;
-          shipping_cost?: number;
+          phone?: string;
+          email?: string | null;
+          address?: string | null;
           total?: number;
-          currency?: string;
+          status?: string;
           notes?: string | null;
-          created_at?: string;
-          updated_at?: string;
+          created_at?: string | null;
         };
       };
 
@@ -207,34 +164,25 @@ export interface Database {
           id: string;
           order_id: string;
           product_id: string | null;
-          product_name: string;
-          product_slug: string | null;
-          unit_price: number;
+          name_snapshot: string;
+          price_snapshot: number;
           quantity: number;
-          subtotal: number;
-          created_at: string;
         };
         Insert: {
           id?: string;
           order_id: string;
           product_id?: string | null;
-          product_name: string;
-          product_slug?: string | null;
-          unit_price: number;
+          name_snapshot: string;
+          price_snapshot: number;
           quantity: number;
-          subtotal: number;
-          created_at?: string;
         };
         Update: {
           id?: string;
           order_id?: string;
           product_id?: string | null;
-          product_name?: string;
-          product_slug?: string | null;
-          unit_price?: number;
+          name_snapshot?: string;
+          price_snapshot?: number;
           quantity?: number;
-          subtotal?: number;
-          created_at?: string;
         };
       };
 
@@ -246,10 +194,9 @@ export interface Database {
           excerpt: string | null;
           content: string | null;
           cover_url: string | null;
-          is_published: boolean;
+          published: boolean | null;
           published_at: string | null;
-          created_at: string;
-          updated_at: string;
+          created_at: string | null;
         };
         Insert: {
           id?: string;
@@ -258,10 +205,9 @@ export interface Database {
           excerpt?: string | null;
           content?: string | null;
           cover_url?: string | null;
-          is_published?: boolean;
+          published?: boolean | null;
           published_at?: string | null;
-          created_at?: string;
-          updated_at?: string;
+          created_at?: string | null;
         };
         Update: {
           id?: string;
@@ -270,34 +216,24 @@ export interface Database {
           excerpt?: string | null;
           content?: string | null;
           cover_url?: string | null;
-          is_published?: boolean;
+          published?: boolean | null;
           published_at?: string | null;
-          created_at?: string;
-          updated_at?: string;
+          created_at?: string | null;
         };
       };
 
       admins: {
         Row: {
-          id: string;
-          user_id: string | null;
-          email: string;
-          role: string;
-          created_at: string;
+          user_id: string;
+          created_at: string | null;
         };
         Insert: {
-          id?: string;
-          user_id?: string | null;
-          email: string;
-          role?: string;
-          created_at?: string;
+          user_id: string;
+          created_at?: string | null;
         };
         Update: {
-          id?: string;
-          user_id?: string | null;
-          email?: string;
-          role?: string;
-          created_at?: string;
+          user_id?: string;
+          created_at?: string | null;
         };
       };
     };
@@ -336,8 +272,8 @@ export type Admin = Tables<"admins">;
 
 /** Product enriched with its category and images (typical catalog query). */
 export type ProductWithRelations = Product & {
-  category: Category | null;
-  images: ProductImage[];
+  category: Pick<Category, "slug" | "name"> | null;
+  images: Pick<ProductImage, "url" | "sort_order">[];
 };
 
 /** Order with its line items (typical admin/orders query). */

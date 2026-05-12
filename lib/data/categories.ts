@@ -7,8 +7,7 @@ export async function getAllCategories(): Promise<Category[]> {
   const { data, error } = await supabase
     .from("categories")
     .select("*")
-    .eq("is_active", true)
-    .order("sort_order", { ascending: true });
+    .order("sort_order", { ascending: true, nullsFirst: false });
   if (error) {
     console.error("[getAllCategories]", error);
     return [];

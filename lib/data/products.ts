@@ -5,12 +5,21 @@ import type { Product, ProductImage, Category, Json } from "@/lib/types/database
 
 type ProductRow = Product & {
   category: Pick<Category, "slug" | "name"> | null;
-  images: Pick<ProductImage, "url" | "is_primary" | "sort_order">[];
+  images: Pick<ProductImage, "url" | "sort_order">[];
 };
 
 /**
  * Maps a Supabase row to the legacy KukirinScooter shape so existing UI
  * components keep working without changes.
+ *
+ * NOTE: real DB schema (2026-05-12):
+ *   products(id, slug, name, description, price, old_price, category_id,
+ *            specs jsonb, stock, is_active, featured, cover_url,
+ *            created_at, updated_at)
+ *   product_images(id, product_id, url, sort_order)
+ *     -- no is_primary, no alt
+ *   categories(id, slug, name, description, image_url, sort_order, created_at)
+ *     -- no is_active
  */
 
 function pickPrimaryImage(
@@ -18,9 +27,9 @@ function pickPrimaryImage(
   fallback?: string | null,
 ): string | undefined {
   if (!images || images.length === 0) return fallback ?? undefined;
-  const primary = images.find((i) => i.is_primary);
-  if (primary?.url) return primary.url;
-  const sorted = [...images].sort((a, b) => a.sort_order - b.sort_order);
+  const sorted = [...images].sort(
+    (a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0),
+  );
   return sorted[0]?.url ?? fallback ?? undefined;
 }
 
@@ -49,15 +58,17 @@ function toKukirin(row: ProductRow): KukirinScooter {
     battery: String(specsField<string>(specs, "battery") ?? ""),
     price: Number(row.price),
     oldPrice: row.old_price != null ? Number(row.old_price) : undefined,
-    image: pickPrimaryImage(row.images, specsField<string>(specs, "image")),
-    tagline: specsField<string>(specs, "tagline") ?? row.short_description ?? "",
+    image: pickPrimaryImage(row.images, row.cover_url ?? specsField<string>(specs, "image")),
+    tagline:
+      specsField<string>(specs, "tagline") ??
+      (row.description ? row.description.slice(0, 120) : ""),
   };
 }
 
 const PRODUCT_SELECT = `
   *,
   category:categories(slug,name),
-  images:product_images(url,is_primary,sort_order)
+  images:product_images(url,sort_order)
 `;
 
 export async function getAllProducts(): Promise<KukirinScooter[]> {
@@ -66,7 +77,6 @@ export async function getAllProducts(): Promise<KukirinScooter[]> {
     .from("products")
     .select(PRODUCT_SELECT)
     .eq("is_active", true)
-    .order("sort_order", { ascending: true })
     .order("created_at", { ascending: false });
   if (error) {
     console.error("[getAllProducts]", error);
@@ -94,7 +104,7 @@ export async function getProductsByCategorySlug(
       .select(PRODUCT_SELECT)
       .eq("is_active", true)
       .eq("category_id", catId)
-      .order("sort_order", { ascending: true });
+      .order("created_at", { ascending: false });
     if (error) {
       console.error("[getProductsByCategorySlug]", error);
       return [];
@@ -137,17 +147,15 @@ export async function getProductBySlug(slug: string): Promise<
   const row = data as unknown as ProductRow;
   const base = toKukirin(row);
   const gallery = [...(row.images ?? [])]
-    .sort(
-      (a, b) =>
-        Number(b.is_primary) - Number(a.is_primary) || a.sort_order - b.sort_order,
-    )
+    .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
     .map((i) => i.url);
+  if (gallery.length === 0 && row.cover_url) gallery.push(row.cover_url);
   return {
     ...base,
     id: row.id,
     description: row.description,
     gallery,
-    stock: row.stock,
+    stock: row.stock ?? 0,
   };
 }
 
@@ -159,8 +167,8 @@ export async function getFeaturedProducts(
     .from("products")
     .select(PRODUCT_SELECT)
     .eq("is_active", true)
-    .eq("is_featured", true)
-    .order("sort_order", { ascending: true })
+    .eq("featured", true)
+    .order("created_at", { ascending: false })
     .limit(limit);
   if (error) {
     console.error("[getFeaturedProducts]", error);

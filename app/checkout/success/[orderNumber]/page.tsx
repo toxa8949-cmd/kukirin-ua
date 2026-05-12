@@ -8,45 +8,66 @@ export const metadata = { title: 'Дякуємо за замовлення' };
 
 type SuccessOrder = {
   id: string;
-  order_number: string;
   status: string;
   customer_name: string;
-  customer_phone: string;
+  phone: string;
   total: number;
-  currency: string;
-  created_at: string;
+  notes: string | null;
+  created_at: string | null;
 };
 
 type SuccessItem = {
-  product_name: string;
-  product_slug: string | null;
-  unit_price: number;
+  name_snapshot: string;
+  price_snapshot: number;
   quantity: number;
-  subtotal: number;
+  product_id: string | null;
 };
 
-async function getOrderByNumber(orderNumber: string): Promise<{ order: SuccessOrder; items: SuccessItem[] } | null> {
+async function getOrderById(
+  orderId: string,
+): Promise<{ order: SuccessOrder; items: SuccessItem[]; slugs: Map<string, string> } | null> {
   try {
     const supabase = createAdminClient();
     const { data, error } = await supabase
       .from('orders')
-      .select('id, order_number, status, customer_name, customer_phone, total, currency, created_at')
-      .eq('order_number', orderNumber)
+      .select('id, status, customer_name, phone, total, notes, created_at')
+      .eq('id', orderId)
       .maybeSingle();
     if (error || !data) return null;
     const order = data as unknown as SuccessOrder;
 
     const { data: itemsData } = await supabase
       .from('order_items')
-      .select('product_name, product_slug, unit_price, quantity, subtotal')
+      .select('name_snapshot, price_snapshot, quantity, product_id')
       .eq('order_id', order.id);
 
     const items = (itemsData ?? []) as unknown as SuccessItem[];
 
-    return { order, items };
+    // Resolve product slugs for items that still have a product_id, so we can
+    // link back to the product page.
+    const slugs = new Map<string, string>();
+    const productIds = items
+      .map((i) => i.product_id)
+      .filter((v): v is string => typeof v === 'string');
+    if (productIds.length > 0) {
+      const { data: prods } = await supabase
+        .from('products')
+        .select('id, slug')
+        .in('id', productIds);
+      for (const p of (prods ?? []) as unknown as { id: string; slug: string }[]) {
+        slugs.set(p.id, p.slug);
+      }
+    }
+
+    return { order, items, slugs };
   } catch {
     return null;
   }
+}
+
+function shortRef(orderId: string) {
+  // Show only the first segment of the UUID — easier to read on success page.
+  return orderId.split('-')[0]?.toUpperCase() ?? orderId;
 }
 
 export default async function CheckoutSuccessPage({
@@ -55,10 +76,11 @@ export default async function CheckoutSuccessPage({
   params: Promise<{ orderNumber: string }>;
 }) {
   const { orderNumber } = await params;
-  const data = await getOrderByNumber(orderNumber);
+  const data = await getOrderById(orderNumber);
+  const displayRef = data ? shortRef(data.order.id) : shortRef(orderNumber);
 
   return (
-    <PageShell breadcrumb={`ORDER · ${orderNumber}`} title="Дякуємо за замовлення!">
+    <PageShell breadcrumb={`ORDER · ${displayRef}`} title="Дякуємо за замовлення!">
       <div className="mx-auto max-w-2xl space-y-6">
         <div className="rounded-sm border border-emerald-500/30 bg-emerald-500/10 p-6">
           <div className="mb-2 flex items-center gap-2 text-emerald-300">
@@ -69,7 +91,7 @@ export default async function CheckoutSuccessPage({
             Менеджер передзвонить протягом 15 хвилин для підтвердження. Номер вашого замовлення:
           </p>
           <div className="mt-2 text-2xl font-medium tracking-tight text-[#FF6B00]">
-            {orderNumber}
+            #{displayRef}
           </div>
         </div>
 
@@ -84,7 +106,7 @@ export default async function CheckoutSuccessPage({
                 </div>
                 <div>
                   <dt className="text-xs text-white/45">Телефон</dt>
-                  <dd>{data.order.customer_phone}</dd>
+                  <dd>{data.order.phone}</dd>
                 </div>
                 <div>
                   <dt className="text-xs text-white/45">Статус</dt>
@@ -92,7 +114,9 @@ export default async function CheckoutSuccessPage({
                 </div>
                 <div>
                   <dt className="text-xs text-white/45">Сума</dt>
-                  <dd className="font-medium text-[#FF6B00]">{Number(data.order.total).toLocaleString('uk-UA')} ₴</dd>
+                  <dd className="font-medium text-[#FF6B00]">
+                    {Number(data.order.total).toLocaleString('uk-UA')} ₴
+                  </dd>
                 </div>
               </dl>
             </div>
@@ -101,26 +125,42 @@ export default async function CheckoutSuccessPage({
               <div className="rounded-sm border border-white/10 bg-[#0F0F0F] p-5">
                 <div className="mb-3 text-[10px] tracking-[0.2em] text-[#FF8A33]">// ТОВАРИ</div>
                 <ul className="space-y-2 text-sm">
-                  {data.items.map((it, idx) => (
-                    <li key={idx} className="flex items-center justify-between gap-3 border-b border-white/5 pb-2 last:border-0 last:pb-0">
-                      <div>
-                        {it.product_slug ? (
-                          <Link href={`/product/${it.product_slug}`} className="hover:text-[#FF6B00]">
-                            {it.product_name}
-                          </Link>
-                        ) : (
-                          <span>{it.product_name}</span>
-                        )}
-                        <div className="text-xs text-white/45">
-                          {it.quantity} × {Number(it.unit_price).toLocaleString('uk-UA')} ₴
+                  {data.items.map((it, idx) => {
+                    const slug = it.product_id ? data.slugs.get(it.product_id) : undefined;
+                    const subtotal = Number(it.price_snapshot) * Number(it.quantity);
+                    return (
+                      <li
+                        key={idx}
+                        className="flex items-center justify-between gap-3 border-b border-white/5 pb-2 last:border-0 last:pb-0"
+                      >
+                        <div>
+                          {slug ? (
+                            <Link href={`/product/${slug}`} className="hover:text-[#FF6B00]">
+                              {it.name_snapshot}
+                            </Link>
+                          ) : (
+                            <span>{it.name_snapshot}</span>
+                          )}
+                          <div className="text-xs text-white/45">
+                            {it.quantity} × {Number(it.price_snapshot).toLocaleString('uk-UA')} ₴
+                          </div>
                         </div>
-                      </div>
-                      <div className="text-sm font-medium text-white">
-                        {Number(it.subtotal).toLocaleString('uk-UA')} ₴
-                      </div>
-                    </li>
-                  ))}
+                        <div className="text-sm font-medium text-white">
+                          {subtotal.toLocaleString('uk-UA')} ₴
+                        </div>
+                      </li>
+                    );
+                  })}
                 </ul>
+              </div>
+            )}
+
+            {data.order.notes && (
+              <div className="rounded-sm border border-white/10 bg-[#0F0F0F] p-5">
+                <div className="mb-3 text-[10px] tracking-[0.2em] text-[#FF8A33]">// ДЕТАЛІ</div>
+                <pre className="whitespace-pre-wrap text-xs leading-relaxed text-white/65">
+                  {data.order.notes}
+                </pre>
               </div>
             )}
           </>
