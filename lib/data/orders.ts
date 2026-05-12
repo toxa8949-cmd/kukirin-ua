@@ -1,6 +1,6 @@
 import "server-only";
 import { createAdminClient } from "@/lib/supabase/admin";
-import type { Order, OrderItem, OrderWithItems } from "@/lib/types/database";
+import type { Order, OrderItem, OrderWithItems, TablesUpdate } from "@/lib/types/database";
 
 /**
  * NB: orders are written from the public checkout (anon insert allowed by RLS)
@@ -43,7 +43,7 @@ export async function listOrders(filter: OrderFilter = {}): Promise<{
     console.error("[listOrders]", error);
     return { rows: [], total: 0 };
   }
-  return { rows: data ?? [], total: count ?? 0 };
+  return { rows: (data ?? []) as unknown as Order[], total: count ?? 0 };
 }
 
 export async function getOrder(id: string): Promise<OrderWithItems | null> {
@@ -65,9 +65,11 @@ export async function updateOrderStatus(
   status: Order["status"],
 ): Promise<{ ok: boolean; error?: string }> {
   const supabase = createAdminClient();
+  const patch: TablesUpdate<"orders"> = { status };
   const { error } = await supabase
     .from("orders")
-    .update({ status })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    .update(patch as any)
     .eq("id", id);
   if (error) {
     console.error("[updateOrderStatus]", error);
@@ -96,10 +98,10 @@ export async function getOrderStats(days = 30) {
   if (oerr) console.error("[getOrderStats orders]", oerr);
   if (ierr) console.error("[getOrderStats items]", ierr);
 
-  const ordersList = (orders ?? []) as Array<
+  const ordersList = (orders ?? []) as unknown as Array<
     Pick<Order, "id" | "status" | "total" | "created_at">
   >;
-  const itemsList = (items ?? []) as Array<
+  const itemsList = (items ?? []) as unknown as Array<
     Pick<OrderItem, "product_slug" | "product_name" | "quantity" | "subtotal" | "created_at">
   >;
 
