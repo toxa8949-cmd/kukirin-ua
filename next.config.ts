@@ -8,8 +8,6 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: 'ssxygllbnkjoklfhdfkb.supabase.co' },
     ],
   },
-  // Type errors from external libs (Supabase generic narrowing) are tracked separately;
-  // do not block deploys on them.
   typescript: {
     ignoreBuildErrors: true,
   },
