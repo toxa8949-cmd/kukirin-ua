@@ -1,6 +1,6 @@
 import "server-only";
 import { createAdminClient } from "@/lib/supabase/admin";
-import type { Order, OrderItem, OrderWithItems, TablesUpdate } from "@/lib/types/database";
+import type { Order, OrderItem, OrderWithItems } from "@/lib/types/database";
 
 /**
  * NB: orders are written from the public checkout (anon insert allowed by RLS)
@@ -21,7 +21,8 @@ export async function listOrders(filter: OrderFilter = {}): Promise<{
   total: number;
 }> {
   const supabase = createAdminClient();
-  let q = supabase
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let q: any = supabase
     .from("orders")
     .select("*", { count: "exact" })
     .order("created_at", { ascending: false });
@@ -48,8 +49,9 @@ export async function listOrders(filter: OrderFilter = {}): Promise<{
 
 export async function getOrder(id: string): Promise<OrderWithItems | null> {
   const supabase = createAdminClient();
-  const { data, error } = await supabase
-    .from("orders")
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data, error } = await (supabase
+    .from("orders") as any)
     .select("*, items:order_items(*)")
     .eq("id", id)
     .maybeSingle();
@@ -65,11 +67,9 @@ export async function updateOrderStatus(
   status: Order["status"],
 ): Promise<{ ok: boolean; error?: string }> {
   const supabase = createAdminClient();
-  const patch: TablesUpdate<"orders"> = { status };
-  const { error } = await supabase
-    .from("orders")
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    .update(patch as any)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { error } = await (supabase.from("orders") as any)
+    .update({ status })
     .eq("id", id);
   if (error) {
     console.error("[updateOrderStatus]", error);
