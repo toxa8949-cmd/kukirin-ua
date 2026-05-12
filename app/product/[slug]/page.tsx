@@ -6,7 +6,6 @@ import AddToCartButton from '@/components/cart/AddToCartButton';
 import {
   getAllProducts,
   getProductBySlug,
-  toKukirin,
 } from '@/lib/data/products';
 
 export const revalidate = 60;
@@ -18,9 +17,8 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const row = await getProductBySlug(slug).catch(() => null);
-  if (!row) return { title: 'Модель не знайдена' };
-  const s = toKukirin(row);
+  const s = await getProductBySlug(slug).catch(() => null);
+  if (!s) return { title: 'Модель не знайдена' };
   return {
     title: `${s.name} — купити в Україні`,
     description: `${s.name}: ${s.tagline}. ${s.power}W, до ${s.maxSpeed} км/год, ${s.range} км. Гарантія 12 міс.`,
@@ -29,21 +27,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const row = await getProductBySlug(slug).catch(() => null);
-  if (!row) notFound();
-
-  const scooter = toKukirin(row!);
+  const scooter = await getProductBySlug(slug).catch(() => null);
+  if (!scooter) notFound();
 
   const all = await getAllProducts().catch(() => []);
-  const related = all
-    .filter((r) => r.slug !== scooter.slug)
-    .slice(0, 3)
-    .map(toKukirin);
+  const related = all.filter((r) => r.slug !== scooter.slug).slice(0, 3);
 
-  const primaryImage =
-    row!.product_images?.find((img) => img.is_primary)?.url ??
-    row!.product_images?.[0]?.url ??
-    null;
+  const primaryImage = scooter.gallery?.[0] ?? scooter.image ?? null;
 
   const features = [
     { icon: Truck, label: 'Доставка', value: '1–3 дні по Україні' },

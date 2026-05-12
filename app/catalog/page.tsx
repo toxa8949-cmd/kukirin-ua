@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import PageShell from '@/components/kukirin/PageShell';
-import { getAllProducts, toKukirin } from '@/lib/data/products';
+import { getAllProducts } from '@/lib/data/products';
 
 export const metadata = { title: 'Каталог самокатів' };
 export const revalidate = 60;
@@ -13,8 +13,7 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 export default async function CatalogPage() {
-  const rows = await getAllProducts();
-  const list = rows.map(toKukirin);
+  const list = await getAllProducts();
 
   return (
     <PageShell

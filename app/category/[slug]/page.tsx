@@ -3,11 +3,10 @@ import { notFound } from 'next/navigation';
 import { ArrowRight } from 'lucide-react';
 import PageShell from '@/components/kukirin/PageShell';
 import { getAllCategories, getCategoryBySlug } from '@/lib/data/categories';
-import { getProductsByCategorySlug, toKukirin } from '@/lib/data/products';
+import { getProductsByCategorySlug } from '@/lib/data/products';
 
 export const revalidate = 60;
 
-// Fallback meta for legacy category slugs that may still be linked from the UI.
 const LEGACY_INFO: Record<string, { title: string; subtitle: string; badge: string }> = {
   urban: {
     title: 'Міські самокати',
@@ -30,7 +29,6 @@ export async function generateStaticParams() {
   const cats = await getAllCategories().catch(() => []);
   const fromDb = cats.map((c) => ({ slug: c.slug }));
   const legacy = Object.keys(LEGACY_INFO).map((slug) => ({ slug }));
-  // De-dup
   const seen = new Set<string>();
   return [...fromDb, ...legacy].filter((p) => {
     if (seen.has(p.slug)) return false;
@@ -59,8 +57,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
   const subtitle = cat?.description ?? legacy!.subtitle;
   const badge = cat ? `${cat.slug.toUpperCase()} · KUKIRIN` : legacy!.badge;
 
-  const rows = await getProductsByCategorySlug(slug);
-  const list = rows.map(toKukirin);
+  const list = await getProductsByCategorySlug(slug);
 
   return (
     <PageShell breadcrumb={badge} title={title} subtitle={subtitle}>
