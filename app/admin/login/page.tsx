@@ -1,29 +1,19 @@
-import { redirect } from 'next/navigation';
-import { createClient } from '@/lib/supabase/server';
 import LoginForm from '@/components/admin/LoginForm';
 import PageShell from '@/components/kukirin/PageShell';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Вхід в адмінку' };
 
+/**
+ * Middleware handles the "already logged in → /admin" redirect, so this
+ * page just renders the form. Adding another redirect here would loop.
+ */
 export default async function AdminLoginPage({
   searchParams,
 }: {
   searchParams: Promise<{ error?: string; next?: string }>;
 }) {
   const { error, next } = await searchParams;
-
-  // If already logged in AND is admin → straight to /admin.
-  // Middleware already handles this for direct visits, but server-render guards
-  // against stale auth cookies.
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (user) {
-    const { data: isAdmin } = await supabase.rpc('is_admin');
-    if (isAdmin) redirect(next || '/admin');
-  }
 
   const errorMessage =
     error === 'not_admin'
