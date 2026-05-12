@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import './kukirin-accents.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://kukirin.ua'),
