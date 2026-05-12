@@ -9,19 +9,17 @@ type ProductRow = Product & {
 };
 
 /**
- * Maps a Supabase row to the legacy KukirinScooter shape so existing UI
- * components keep working without changes.
+ * Maps a Supabase row to the legacy KukirinScooter shape.
  *
- * NOTE: real DB schema (2026-05-12):
+ * Real DB schema (2026-05-12):
  *   products(id, slug, name, description, price, old_price, category_id,
  *            specs jsonb, stock, is_active, featured, cover_url,
  *            created_at, updated_at)
  *   product_images(id, product_id, url, sort_order)
  *   categories(id, slug, name, description, image_url, sort_order, created_at)
  *
- * specs values may be strings with unit suffixes ("600W", "55 km", "15Ah")
- * and keys may be snake_case (range_km, max_speed). We strip suffixes and
- * try several aliases so the UI never gets NaN.
+ * Tolerates string specs with unit suffixes ("600W", "55 km", "15Ah")
+ * and dual-motor notation ("2x1200W", "2 × 1200 W").
  */
 
 function pickPrimaryImage(
@@ -47,16 +45,31 @@ function readSpec<T = unknown>(
   return undefined;
 }
 
-/** Parse a numeric value from a JSON cell that may be a number or a string
- *  with a unit suffix (e.g. "600W", "55 km", "15Ah"). Returns 0 on failure. */
+/**
+ * Parse a numeric value from a JSON cell that may be:
+ *   - a number: 600
+ *   - a string with a unit suffix: "600W", "55 km", "15Ah"
+ *   - a multiplier expression: "2x1200W", "2 × 1200 W" → 2400
+ *   - a range "40-55 km" → first number
+ * Returns 0 on failure.
+ */
 function parseNumeric(v: unknown): number {
   if (typeof v === "number" && Number.isFinite(v)) return v;
-  if (typeof v === "string") {
-    const m = v.replace(",", ".").match(/-?\d+(?:\.\d+)?/);
-    if (m) {
-      const n = Number(m[0]);
-      if (Number.isFinite(n)) return n;
-    }
+  if (typeof v !== "string") return 0;
+
+  const s = v.replace(",", ".").trim();
+  // Detect multiplier patterns: N × M, N x M, N*M
+  const mul = s.match(/(\d+(?:\.\d+)?)\s*[x×*]\s*(\d+(?:\.\d+)?)/i);
+  if (mul) {
+    const a = Number(mul[1]);
+    const b = Number(mul[2]);
+    if (Number.isFinite(a) && Number.isFinite(b)) return a * b;
+  }
+  // Fallback: first numeric token
+  const m = s.match(/-?\d+(?:\.\d+)?/);
+  if (m) {
+    const n = Number(m[0]);
+    if (Number.isFinite(n)) return n;
   }
   return 0;
 }

@@ -1,144 +1,86 @@
-# KUKIRIN.UA
+# Block 6 — Admin Auth + Dashboard skeleton
 
-Окремий e-commerce сайт офіційного дистриб'ютора електросамокатів KUKIRIN в Україні.
+Email/password логін через Supabase Auth, гейтинг `/admin/*`, sidebar-навігація, базовий dashboard з KPI і списком останніх замовлень.
 
-**Стек:** Next.js 16 (App Router) · React 19 · Tailwind v4 · TypeScript · Vercel
+Включає також фікс `parseNumeric` для `"2x1200W"` → `2400` (G3 Pro).
 
-## 📁 Структура
+## Файли
 
 ```
-kukirin-ua/
-├── app/
-│   ├── globals.css          ← Tailwind + усі анімації (гліч, треки, fade-up)
-│   ├── layout.tsx           ← root layout + SEO metadata
-│   └── page.tsx             ← головна сторінка (збирає всі секції)
-├── components/
-│   └── kukirin/
-│       ├── KukirinHero.tsx       ← герой з гліч-заголовком FEEL THE RUSH
-│       ├── KukirinModels.tsx     ← сітка 6 моделей з цінами і бейджами
-│       ├── KukirinFeatures.tsx   ← 6 переваг (доставка, гарантія, …)
-│       ├── KukirinCTA.tsx        ← форма зворотного дзвінка
-│       └── KukirinFooter.tsx     ← футер
-├── lib/
-│   └── kukirin-data.ts      ← дані моделей (поки захардкожено)
-├── public/                  ← сюди потім фото в /kukirin/g2-pro.webp і т.д.
-├── package.json
-├── tsconfig.json
-├── next.config.ts
-├── postcss.config.mjs
-├── next-env.d.ts
-└── .gitignore
+app/admin/login/page.tsx         — server component сторінки логіну
+app/admin/actions.ts             — signIn / signOut server actions
+app/admin/layout.tsx             — server component, перевірка через is_admin()
+app/admin/page.tsx               — dashboard (KPI + останні замовлення)
+components/admin/LoginForm.tsx   — client форма
+components/admin/AdminNav.tsx    — sidebar з активним станом + logout
+lib/data/products.ts             — фікс для 2x1200W
 ```
 
-## 🚀 Як задеплоїти (без терміналу, через GitHub web UI)
+## Як налаштувати після деплою
 
-### 1. Створити репозиторій на GitHub
+### 1. Створи admin user у Supabase
 
-1. Зайди на https://github.com/new
-2. Назва: `kukirin-ua` (або як зручніше)
-3. Public або Private — як хочеш
-4. **НЕ** ставити галочки "Add a README", "Add .gitignore", "Choose a license"
-5. Натиснути **Create repository**
+Supabase Dashboard → **Authentication** → **Users** → **Add user → Create new user**
 
-### 2. Завантажити файли
+- Email: твій email (напр. `admin@kukirin.ua` або твій реальний)
+- Password: придумай і запиши (мін. 6 символів)
+- ✅ Auto-confirm user (щоб не вимагало підтвердження email)
 
-1. На сторінці нового пустого репо натиснути **"uploading an existing file"**
-2. Розпакувати ZIP на комп'ютері
-3. Перетягнути **вміст папки `kukirin-ua/`** (не саму папку — а все, що всередині) у вікно завантаження GitHub
-4. Унизу: commit message `Initial commit`
-5. Натиснути **Commit changes**
+Натисни **Create user**. У списку Users скопіюй `User UID` (UUID користувача).
 
-### 3. Підключити Vercel
+### 2. Додай user_id у public.admins
 
-1. Зайти на https://vercel.com/new
-2. Імпортувати створений репозиторій
-3. Framework: Next.js — підставиться автоматично
-4. Натиснути **Deploy** — нічого більше налаштовувати не треба
+Supabase Dashboard → **Table Editor** → `admins` → **Insert row**
 
-За ~2 хвилини сайт буде доступний на `kukirin-ua-xxxxx.vercel.app`.
+- `user_id`: встав скопійований UUID
+- `created_at`: лиши default
 
-### 4. Прив'язати домен `kukirin.ua` (коли купиш)
+Натисни **Save**.
 
-1. У Vercel: проєкт → Settings → Domains → Add → `kukirin.ua`
-2. У реєстратора домена прописати DNS-записи, які покаже Vercel (зазвичай це A-запис на `76.76.21.21` і CNAME для `www`)
-3. SSL Vercel випустить сам
+Або зроби це SQL-ом:
 
-## ✅ Що вже зроблено
-
-- 🎨 **Hero** з гліч-анімацією `FEEL THE RUSH` (помаранчевий + блакитний RGB-зсув кожні 4 сек)
-- 🎨 Миготливий курсор `_`, пульсуюча точка "В наявності", 4 анімовані треки швидкості фоном
-- 🎨 Стаггер-поява блоків при завантаженні
-- 🛴 **6 моделей** з цінами, бейджами ХІТ/NEW/TOP, hover-станами
-- ✅ **6 переваг** сіткою
-- 📞 **Форма зворотного дзвінка** → `POST /api/callback`
-- 🦶 **Футер** з соц-мережами, навігацією, контактами
-- 🔍 **SEO metadata** (title, description, OG, robots) і `lang="uk"`
-- ♿ **prefers-reduced-motion** — для людей з обмеженнями анімації вимикаються
-- 📱 **Адаптив** — mobile-first
-
-## ⚙️ Що треба ще зробити
-
-### 1. Фотографії моделей
-Зараз SVG-плейсхолдер. Додай у `public/kukirin/`:
-- `g2-pro.webp`
-- `g2-master.webp`
-- `g4-max.webp`
-- `m4-pro.webp`
-- `g3-pro.webp`
-- `c1-pro.webp`
-
-У `lib/kukirin-data.ts` у кожного скутера заповни поле `image: '/kukirin/g2-pro.webp'`.
-У `KukirinModels.tsx` заміни SVG-плейсхолдер на `<Image src={scooter.image} alt={scooter.name} ... />` з `next/image`.
-
-### 2. Supabase (як в Ausom)
-Створи проєкт Supabase під KUKIRIN.UA, таблицю `kukirin_scooters` зі стовпцями з типу `KukirinScooter` (`lib/kukirin-data.ts`). Зроби серверну функцію, яка тягне з Supabase, передай у компонент:
-
-```tsx
-// app/page.tsx
-const scooters = await getKukirinScooters();
-<KukirinModels scooters={scooters} />
+```sql
+insert into public.admins (user_id)
+values ('<встав_сюди_UUID>')
+on conflict (user_id) do nothing;
 ```
 
-### 3. API роут для форми зворотного дзвінка
-Створи `app/api/callback/route.ts`:
-```ts
-export async function POST(req: Request) {
-  const data = await req.formData();
-  const phone = data.get('phone');
-  // 1) збереження в Supabase (таблиця callbacks)
-  // 2) Telegram-нотифікація
-  return Response.redirect(new URL('/?callback=ok', req.url), 303);
-}
-```
+### 3. Залий цей блок
 
-### 4. Сторінки товарів і категорій
-Зараз посилання `/product/g2-pro` і `/category/urban` ведуть в нікуди (404). Треба зробити:
-- `app/product/[slug]/page.tsx` — детальна сторінка моделі
-- `app/category/[slug]/page.tsx` — фільтрована сторінка категорії
-- `app/accessories/page.tsx`, `app/service/page.tsx`, `app/blog/page.tsx`, …
+GitHub → Add file → Upload files → перетягни папки `app`, `components`, `lib` з архіву → Commit: `Block 6: admin auth + dashboard skeleton + power parse fix` → у `main`.
 
-### 5. SEO + аналітика
-- Article+Breadcrumb schema (як у Ausom)
-- Google Analytics + Meta Pixel
-- `sitemap.ts` і `robots.ts` у корені `app/`
-- `favicon.ico` у корені `app/`
+Чекай Vercel Ready.
 
-## 🎨 Кольори бренду
+### 4. Перевір вхід
 
-| Значення | Колір | Де використовується |
-|---|---|---|
-| `#0A0A0A` | основний фон | сайт |
-| `#FF6B00` | акцентний помаранчевий | кнопки, бейджі, акценти |
-| `#FF8A33` | світліший помаранчевий | системні теги, hover-стани |
-| `#00D9FF` | блакитний | гліч-ефект (тільки RGB-зсув) |
-| `#070707` | темніший фон | футер |
+1. Зайди на `https://kukirin-ua-gpbw.vercel.app/admin/login`
+2. Введи email + пароль з кроку 1
+3. Має зредіректити на `/admin` — побачиш дашборд
 
-CSS-змінні в `app/globals.css`: `--kukirin-bg`, `--kukirin-orange`, `--kukirin-orange-light`, `--kukirin-cyan`.
+Якщо вводиш правильний email/пароль, але отримуєш «Цей акаунт не має прав адміністратора» — значить ти забув крок 2 (додати user_id в `admins`).
 
-## 💡 Якщо хочеш локально протестувати
+## Smoke-test
 
-Дві опції:
-- StackBlitz: https://stackblitz.com/github/{твій-юзер}/kukirin-ua — відкриється в браузері без локального npm
-- На комп'ютері: `npm install && npm run dev` → http://localhost:3000
+1. `/admin/login` без логіну → форма
+2. Невірний пароль → червона помилка "Невірний email або пароль"
+3. Правильний email/пароль, але user_id НЕ в `admins` → редірект назад на login з "Цей акаунт не має прав адміністратора"
+4. Правильний логін + є в `admins` → редірект на `/admin`
+5. `/admin` без логіну → автоматично редіректить на `/admin/login?next=/admin`
+6. У `/admin` бачиш:
+   - KPI плитки (Виручка, Замовлень, Середній чек, Очікують)
+   - Список останніх замовлень (зокрема твій тестовий A2749686)
+   - Кнопку "Вийти" в сайдбарі
+7. Натиснув "Вийти" → редірект на `/admin/login`
+8. Каталог працює як раніше — admin зміни нічого не зламали
+9. G3 Pro на каталозі тепер показує `2400W` замість `2W`
 
-Але це не обов'язково — Vercel показуватиме preview-білд на кожен commit.
+## Безпека
+
+- Middleware ставить редірект до того, як рендериться будь-який код сторінки.
+- `/admin/layout.tsx` додатково перевіряє `is_admin()` на кожен SSR (defense-in-depth).
+- Якщо хтось залогінений але НЕ в `admins` — session видаляється у `signIn` action.
+- Service_role клієнт (`createAdminClient`) використовується ТІЛЬКИ всередині `/admin/*` коду, що захищений middleware + layout-перевіркою.
+
+## Наступний крок
+
+Block 7 — Admin Products CRUD: створення/редагування/видалення товарів + upload фото в Storage.
