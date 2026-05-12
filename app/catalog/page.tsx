@@ -4,12 +4,13 @@ import PageShell from '@/components/kukirin/PageShell';
 import { getAllProducts } from '@/lib/data/products';
 
 export const metadata = { title: 'Каталог самокатів' };
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 const CATEGORY_LABELS: Record<string, string> = {
   urban: 'Місто',
   offroad: 'Off-road',
   flagship: 'Флагман',
+  accessory: 'Аксесуар',
 };
 
 export default async function CatalogPage() {
@@ -45,24 +46,33 @@ export default async function CatalogPage() {
               <div className="mb-4 text-xs text-white/45">{s.tagline}</div>
               <div className="mb-4 grid grid-cols-3 gap-2 border-y border-white/10 py-3 text-center">
                 <div>
-                  <div className="text-sm font-medium">{s.power}<span className="text-[10px] text-white/40">W</span></div>
+                  <div className="text-sm font-medium">
+                    {s.power > 0 ? s.power : '—'}
+                    {s.power > 0 && <span className="text-[10px] text-white/40">W</span>}
+                  </div>
                   <div className="text-[8px] tracking-[0.15em] text-white/40">МОТОР</div>
                 </div>
                 <div>
-                  <div className="text-sm font-medium">{s.maxSpeed}<span className="text-[10px] text-white/40">km/h</span></div>
+                  <div className="text-sm font-medium">
+                    {s.maxSpeed > 0 ? s.maxSpeed : '—'}
+                    {s.maxSpeed > 0 && <span className="text-[10px] text-white/40">km/h</span>}
+                  </div>
                   <div className="text-[8px] tracking-[0.15em] text-white/40">ШВИДК.</div>
                 </div>
                 <div>
-                  <div className="text-sm font-medium">{s.range}<span className="text-[10px] text-white/40">km</span></div>
+                  <div className="text-sm font-medium">
+                    {s.range > 0 ? s.range : '—'}
+                    {s.range > 0 && <span className="text-[10px] text-white/40">km</span>}
+                  </div>
                   <div className="text-[8px] tracking-[0.15em] text-white/40">ЗАПАС</div>
                 </div>
               </div>
               <div className="mt-auto flex items-end justify-between">
                 <div>
                   {s.oldPrice && (
-                    <div className="text-[11px] text-white/30 line-through">{s.oldPrice.toLocaleString('uk-UA')} ₴</div>
+                    <div className="text-[11px] text-white/30 line-through">{Number(s.oldPrice).toLocaleString('uk-UA')} ₴</div>
                   )}
-                  <div className="text-xl font-medium text-[#FF6B00]">{s.price.toLocaleString('uk-UA')} ₴</div>
+                  <div className="text-xl font-medium text-[#FF6B00]">{Number(s.price).toLocaleString('uk-UA')} ₴</div>
                 </div>
                 <div className="flex items-center gap-1 text-xs text-white/60 transition group-hover:text-white">
                   Детальніше <ArrowRight size={14} />

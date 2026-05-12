@@ -8,26 +8,37 @@ import {
   getProductBySlug,
 } from '@/lib/data/products';
 
-export const revalidate = 60;
-
-export async function generateStaticParams() {
-  const rows = await getAllProducts().catch(() => []);
-  return rows.map((r) => ({ slug: r.slug }));
-}
+// Force per-request rendering. Prevents Vercel from serving a stale 500
+// generated before RLS / schema-sync were applied. Also stops generateStaticParams
+// from baking the slug set at build time (we now resolve everything at request time).
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
-  const s = await getProductBySlug(slug).catch(() => null);
-  if (!s) return { title: 'Модель не знайдена' };
-  return {
-    title: `${s.name} — купити в Україні`,
-    description: `${s.name}: ${s.tagline}. ${s.power}W, до ${s.maxSpeed} км/год, ${s.range} км. Гарантія 12 міс.`,
-  };
+  try {
+    const { slug } = await params;
+    const s = await getProductBySlug(slug).catch(() => null);
+    if (!s) return { title: 'Модель не знайдена' };
+    const parts: string[] = [];
+    if (s.power)    parts.push(`${s.power}W`);
+    if (s.maxSpeed) parts.push(`до ${s.maxSpeed} км/год`);
+    if (s.range)    parts.push(`${s.range} км ходу`);
+    const specs = parts.length ? ` ${parts.join(', ')}.` : '';
+    const tag = s.tagline ? `${s.tagline}.` : '';
+    return {
+      title: `${s.name} — купити в Україні`,
+      description: `${s.name}.${tag ? ` ${tag}` : ''}${specs} Гарантія 12 міс, доставка 1–3 дні.`,
+    };
+  } catch {
+    return { title: 'Модель' };
+  }
 }
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const scooter = await getProductBySlug(slug).catch(() => null);
+  const scooter = await getProductBySlug(slug).catch((e) => {
+    console.error('[ProductPage] getProductBySlug threw', e);
+    return null;
+  });
   if (!scooter) notFound();
 
   const all = await getAllProducts().catch(() => []);
@@ -35,11 +46,26 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
   const primaryImage = scooter.gallery?.[0] ?? scooter.image ?? null;
 
+  // Defensive defaults for everything the UI reads.
+  const safeName     = scooter.name ?? 'KUKIRIN';
+  const safeTagline  = scooter.tagline ?? '';
+  const safeCategory = scooter.category ?? 'urban';
+  const safeBattery  = scooter.battery ?? '—';
+  const safePower    = Number.isFinite(scooter.power)    ? scooter.power    : 0;
+  const safeSpeed    = Number.isFinite(scooter.maxSpeed) ? scooter.maxSpeed : 0;
+  const safeRange    = Number.isFinite(scooter.range)    ? scooter.range    : 0;
+
+  // Avoid `.split(' ').slice(-1)[0]` on a possibly empty name.
+  const placeholderLabel = (() => {
+    const parts = safeName.split(' ').filter(Boolean);
+    return parts.length > 0 ? parts[parts.length - 1] : 'KUKIRIN';
+  })();
+
   const features = [
-    { icon: Truck, label: 'Доставка', value: '1–3 дні по Україні' },
-    { icon: Shield, label: 'Гарантія', value: '12 місяців офіційно' },
-    { icon: Wrench, label: 'Сервіс', value: 'Власні майстерні' },
-    { icon: Phone, label: 'Підтримка', value: '0 800 33 88 99' },
+    { icon: Truck,  label: 'Доставка',   value: '1–3 дні по Україні' },
+    { icon: Shield, label: 'Гарантія',   value: '12 місяців офіційно' },
+    { icon: Wrench, label: 'Сервіс',     value: 'Власні майстерні' },
+    { icon: Phone,  label: 'Підтримка',  value: '0 800 33 88 99' },
   ];
 
   return (
@@ -61,14 +87,16 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={primaryImage}
-              alt={scooter.name}
+              alt={safeName}
               className="h-full w-full object-cover"
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center text-[#FF6B00]/30">
               <div className="text-center">
-                <div className="text-7xl font-medium tracking-tight">{scooter.name.split(' ').slice(-1)[0]}</div>
-                <div className="mt-2 text-xs tracking-[0.3em] text-white/30">// {scooter.tagline.toUpperCase()}</div>
+                <div className="text-7xl font-medium tracking-tight">{placeholderLabel}</div>
+                <div className="mt-2 text-xs tracking-[0.3em] text-white/30">
+                  // {safeTagline ? safeTagline.toUpperCase() : 'KUKIRIN'}
+                </div>
               </div>
             </div>
           )}
@@ -76,22 +104,30 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
         {/* Details */}
         <div>
-          <div className="mb-2 text-[11px] tracking-[0.2em] text-[#FF8A33]">// {scooter.category.toUpperCase()}</div>
-          <h1 className="mb-2 text-3xl font-medium leading-tight tracking-tight sm:text-4xl">{scooter.name}</h1>
-          <p className="mb-6 text-sm text-white/55">{scooter.tagline}. Офіційно від KUKIRIN.UA з гарантією та сервісом.</p>
+          <div className="mb-2 text-[11px] tracking-[0.2em] text-[#FF8A33]">
+            // {safeCategory.toUpperCase()}
+          </div>
+          <h1 className="mb-2 text-3xl font-medium leading-tight tracking-tight sm:text-4xl">{safeName}</h1>
+          <p className="mb-6 text-sm text-white/55">
+            {safeTagline || 'Електросамокат KUKIRIN'}. Офіційно від KUKIRIN.UA з гарантією та сервісом.
+          </p>
 
           <div className="mb-6 flex items-end gap-3">
-            <div className="text-3xl font-medium text-[#FF6B00] sm:text-4xl">{scooter.price.toLocaleString('uk-UA')} ₴</div>
+            <div className="text-3xl font-medium text-[#FF6B00] sm:text-4xl">
+              {Number(scooter.price).toLocaleString('uk-UA')} ₴
+            </div>
             {scooter.oldPrice && (
-              <div className="text-base text-white/30 line-through">{scooter.oldPrice.toLocaleString('uk-UA')} ₴</div>
+              <div className="text-base text-white/30 line-through">
+                {Number(scooter.oldPrice).toLocaleString('uk-UA')} ₴
+              </div>
             )}
           </div>
 
           <div className="mb-6 flex flex-col gap-3 sm:flex-row">
             <AddToCartButton
               slug={scooter.slug}
-              name={scooter.name}
-              price={scooter.price}
+              name={safeName}
+              price={Number(scooter.price)}
               image={primaryImage}
             />
             <Link href="/test-drive" className="inline-flex items-center justify-center rounded-sm border border-white/25 px-6 py-3 text-xs font-medium tracking-wide text-white transition hover:border-white/50">
@@ -101,19 +137,28 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
           <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
             <div className="rounded-sm border border-white/10 p-3">
-              <div className="text-xl font-medium">{scooter.power}<span className="ml-1 text-xs text-white/40">W</span></div>
+              <div className="text-xl font-medium">
+                {safePower > 0 ? safePower : '—'}
+                {safePower > 0 && <span className="ml-1 text-xs text-white/40">W</span>}
+              </div>
               <div className="text-[9px] tracking-[0.2em] text-[#FF6B00]">МОТОР</div>
             </div>
             <div className="rounded-sm border border-white/10 p-3">
-              <div className="text-xl font-medium">{scooter.maxSpeed}<span className="ml-1 text-xs text-white/40">km/h</span></div>
+              <div className="text-xl font-medium">
+                {safeSpeed > 0 ? safeSpeed : '—'}
+                {safeSpeed > 0 && <span className="ml-1 text-xs text-white/40">km/h</span>}
+              </div>
               <div className="text-[9px] tracking-[0.2em] text-[#FF6B00]">ШВИДКІСТЬ</div>
             </div>
             <div className="rounded-sm border border-white/10 p-3">
-              <div className="text-xl font-medium">{scooter.range}<span className="ml-1 text-xs text-white/40">km</span></div>
+              <div className="text-xl font-medium">
+                {safeRange > 0 ? safeRange : '—'}
+                {safeRange > 0 && <span className="ml-1 text-xs text-white/40">km</span>}
+              </div>
               <div className="text-[9px] tracking-[0.2em] text-[#FF6B00]">ЗАПАС</div>
             </div>
             <div className="rounded-sm border border-white/10 p-3">
-              <div className="text-xs font-medium">{scooter.battery}</div>
+              <div className="text-xs font-medium">{safeBattery}</div>
               <div className="text-[9px] tracking-[0.2em] text-[#FF6B00]">БАТАРЕЯ</div>
             </div>
           </div>
@@ -124,6 +169,12 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <li className="flex gap-2"><Check size={16} className="mt-0.5 text-[#FF6B00]" /> Розстрочка 0% до 12 місяців</li>
             <li className="flex gap-2"><Check size={16} className="mt-0.5 text-[#FF6B00]" /> Передпродажна підготовка</li>
           </ul>
+
+          {scooter.description && (
+            <div className="prose prose-invert mt-2 max-w-none text-sm leading-relaxed text-white/65">
+              <p>{scooter.description}</p>
+            </div>
+          )}
         </div>
       </div>
 
@@ -149,7 +200,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                 <div className="mb-1 text-sm font-medium">{s.name}</div>
                 <div className="mb-3 text-xs text-white/45">{s.tagline}</div>
                 <div className="flex items-end justify-between">
-                  <div className="text-lg font-medium text-[#FF6B00]">{s.price.toLocaleString('uk-UA')} ₴</div>
+                  <div className="text-lg font-medium text-[#FF6B00]">{Number(s.price).toLocaleString('uk-UA')} ₴</div>
                   <span className="text-xs text-white/60 group-hover:text-white">→</span>
                 </div>
               </Link>
