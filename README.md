@@ -1,37 +1,70 @@
-# Block 9.1 — Fix "u.map is not a function"
+# Block 10 — Dashboard with recharts
 
-## Що було не так
+## Що в цьому пакеті
 
-У `OrderActions.tsx` (client component) я імпортував константу-масив
-`ORDER_STATUSES` з `actions.ts` (server actions, помічений `'use server'`).
+Замінює skeleton-сторінку `/admin` повним дашбордом з графіками.
 
-Next.js дозволяє експортувати з файлу `'use server'` **тільки async функції**.
-Якщо звідти експортується ще щось (масив, об'єкт), Next.js серіалізує це
-як proxy. На клієнті `proxy.map(...)` падає з `TypeError: u.map is not a function`.
-
-## Виправлення
-
-Виніс константи в окремий файл `app/admin/orders/constants.ts` (без
-`'use server'`). І `actions.ts`, і `OrderActions.tsx` тепер імпортують їх
-звідти.
-
-## Файли
+### Файли
 
 ```
-app/admin/orders/constants.ts    — NEW (ORDER_STATUSES, ORDER_STATUS_LABEL)
-app/admin/orders/actions.ts      — імпортує з constants.ts
-components/admin/OrderActions.tsx — імпортує з constants.ts
+app/admin/page.tsx                          — замінює існуючий dashboard
+app/admin/dashboard-data.ts                 — server-only, агрегує статистику
+components/admin/DashboardCharts.tsx        — recharts, client component
 ```
+
+### Що показує
+
+- **KPI трендами** (порівняння з попередніми 30 днями):
+  - Виручка (30 днів) ▲/▼ %
+  - Замовлень ▲/▼ %
+  - Середній чек ▲/▼ %
+  - Очікують обробки (new + confirmed)
+
+- **Графік замовлень по днях** (за 30 днів):
+  - LineChart з двома осями: кількість замовлень (помаранчева) + виручка (бірюзова)
+
+- **Pie chart по статусах** — розподіл замовлень за всіма статусами (з кольорами)
+
+- **Топ-5 продуктів** — горизонтальний BarChart за виручкою (за 30 днів)
+
+- **Останні 5 замовлень** — клікабельні, ведуть на деталь
 
 ## Як залити
 
-GitHub → Add file → Upload files → перетягни папки `app` і `components` →
-Commit: `Block 9.1: fix server-action constant export` → у `main`.
+⚠️ Цей блок **замінює** існуючий `app/admin/page.tsx`. У GitHub при upload буде запитано підтвердження.
 
-Чекай Vercel Ready (1-2 хв).
+GitHub → Add file → Upload files → перетягни папки `app` і `components` → коли запитає про конфлікт у `app/admin/page.tsx` → підтверди заміну → Commit: `Block 10: dashboard with recharts` → у `main`.
+
+Жодних SQL.
+
+## Залежності
+
+`recharts` має бути у `package.json`. Перевір — якщо ні (малоймовірно, бо у попередніх блоках використовувався), додай через GitHub:
+```json
+"recharts": "^2.13.0"
+```
 
 ## Smoke-test
 
-1. `/admin/orders/<id>` — має відкритись без 500
-2. Зміни статус `new` → `confirmed` → ЗБЕРЕГТИ → бачиш "Статус оновлено"
-3. Додай нотатку → ОК
+1. `/admin` — бачиш новий дашборд
+2. **KPI**: 4 плитки, на першій лінії «Виручка / Замовлень / Середній чек / Очікують обробки». У вас зараз тільки 1 замовлення — на трендах буде «100%» (бо за попередні 30 днів було 0)
+3. **Графік замовлень по днях**: лінія з однією точкою (день вашого тестового замовлення) + ось виручки праворуч
+4. **Статуси**: pie з 1 сегментом — поточний статус замовлення (`confirmed` чи який ви залишили)
+5. **Топ-продукти**: 1 рядок «Kukirin G3 Pro» з виручкою 54 999 ₴
+6. **Останні замовлення**: 1 рядок з Serhii Shapoval, клікабельний
+
+## Чому це працює правильно з твоїм 1 замовленням
+
+`getDashboardStats(30)` бере:
+- Усі замовлення за 60 днів (current 30 + previous 30 для порівняння)
+- Усі `order_items` (агрегуємо у JS)
+- Кількість products і categories через `count: 'exact', head: true` (не тягне самі рядки)
+
+Це достатньо легкий запит для дашборда — приблизно 100ms на безкоштовному Supabase Free tier.
+
+Якщо коли-небудь буде 1000+ замовлень — переробимо через RPC-функцію в Supabase (агрегування на стороні Postgres). Поки не потрібно.
+
+## Наступні кроки
+
+- **Block 11** — публічна сторінка `/blog` + `/blog/[slug]` з рендером Markdown
+- **Фінал** — синхронізація хедера/футера зі справжніми категоріями з БД, виправлення TS errors (зняти `ignoreBuildErrors`)
