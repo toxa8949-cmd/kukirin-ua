@@ -1,36 +1,96 @@
-import PageShell from '@/components/kukirin/PageShell';
-import { Calendar, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
+import { createClient } from '@/lib/supabase/server';
 
-export const metadata = { title: 'Блог · поради й огляди' };
+export const dynamic = 'force-dynamic';
+export const metadata = {
+  title: 'Блог · KUKIRIN.UA',
+  description: 'Новини, огляди та поради про електросамокати Kukirin.',
+};
 
-const POSTS = [
-  { date: '12.05.2026', tag: 'ОГЛЯД', title: 'KUKIRIN G2 Pro проти G2 Master: який обрати у 2026', excerpt: 'Розбираємо різницю в мощності, запасі ходу і ціні, щоб ви не переплатили за непотрібні Вати.' },
-  { date: '03.05.2026', tag: 'ПОРАДА', title: 'Як зимувати літій-іонний акумулятор самоката', excerpt: 'Прості правила зберігання батареї восени–взимку, щоб навесні вона видала ті самі 60 км запасу.' },
-  { date: '21.04.2026', tag: 'ЗАКОН', title: 'Нові правила ПДР для електросамокатів 2026', excerpt: 'Де можна їздити, з якою швидкістю, чи потрібні шолом і ОСЦПВ — коротко по суті.' },
-  { date: '08.04.2026', tag: 'СЕРВІС', title: 'Топ-5 поломок самокатів і як їх уникнути', excerpt: 'Контролер, гальма, дисплей, шини, болти. Розповідаємо, що і як перевіряти кожні 500 км.' },
-  { date: '27.03.2026', tag: 'ГІД', title: 'Перший самокат: чек-лист новачка', excerpt: 'Що подивитись у документах, як перевірити батарею в магазині і не потрапити на сірий імпорт.' },
-  { date: '15.03.2026', tag: 'ОГЛЯД', title: 'KUKIRIN G4 Max: 2000W flagship на тестах', excerpt: 'Заміряли реальні цифри: 0–30 за 3.4 с, реальний запас 72 км при +15°C і вазі райдера 80 кг.' },
-];
+type NewsCard = {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string | null;
+  cover_url: string | null;
+  published_at: string | null;
+};
 
-export default function BlogPage() {
+export default async function BlogIndexPage() {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('news')
+    .select('id, slug, title, excerpt, cover_url, published_at')
+    .eq('published', true)
+    .order('published_at', { ascending: false, nullsFirst: false })
+    .limit(50);
+
+  if (error) {
+    console.error('BlogIndexPage:', error);
+  }
+  const items = (data ?? []) as unknown as NewsCard[];
+
   return (
-    <PageShell breadcrumb="BLOG · 6 СТАТЕЙ" title="Блог KUKIRIN" subtitle="Огляди моделей, поради по сервісу, новини законодавства і реальні тести.">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        {POSTS.map((p) => (
-          <article key={p.title} className="group rounded-sm border border-white/10 bg-[#0F0F0F] p-5 transition hover:border-[#FF6B00]">
-            <div className="mb-3 flex items-center gap-3 text-[10px] tracking-[0.2em] text-white/40">
-              <span className="rounded-sm bg-[#FF6B00]/20 px-2 py-0.5 text-[#FF8A33]">{p.tag}</span>
-              <span className="flex items-center gap-1"><Calendar size={12} /> {p.date}</span>
-            </div>
-            <h3 className="mb-2 text-lg font-medium leading-snug tracking-tight group-hover:text-[#FF6B00]">{p.title}</h3>
-            <p className="mb-4 text-sm leading-relaxed text-white/55">{p.excerpt}</p>
-            <span className="inline-flex items-center gap-1 text-xs text-white/60 group-hover:text-white">
-              Читати <ArrowRight size={14} />
-            </span>
-          </article>
-        ))}
-      </div>
-      <div className="mt-10 text-center text-xs text-white/45">// Скоро тут зʼявляться повноцінні статті з картинками і коментарями</div>
-    </PageShell>
+    <div className="mx-auto max-w-6xl px-4 py-10 sm:py-14">
+      <header className="mb-10 sm:mb-14">
+        <div className="mb-2 text-[10px] tracking-[0.2em] text-[#FF8A33]">// BLOG</div>
+        <h1 className="text-4xl font-medium tracking-tight sm:text-5xl">Блог</h1>
+        <p className="mt-3 max-w-xl text-sm text-white/55">
+          Новини, огляди, технічні поради й порівняння моделей KUKIRIN.
+        </p>
+      </header>
+
+      {items.length === 0 ? (
+        <div className="rounded-sm border border-dashed border-white/15 bg-[#0A0A0A] p-12 text-center">
+          <p className="text-sm text-white/55">
+            Поки що тут порожньо. Перші статті зʼявляться найближчим часом.
+          </p>
+        </div>
+      ) : (
+        <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {items.map((n) => (
+            <li key={n.id}>
+              <Link
+                href={`/blog/${n.slug}`}
+                className="group flex h-full flex-col overflow-hidden rounded-sm border border-white/10 bg-[#0F0F0F] transition hover:border-[#FF6B00]/40"
+              >
+                <div className="aspect-[16/10] overflow-hidden bg-gradient-to-br from-[#1a1a1a] to-[#0a0a0a]">
+                  {n.cover_url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={n.cover_url}
+                      alt={n.title}
+                      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center text-[10px] tracking-[0.2em] text-white/30">
+                      KUKIRIN.UA
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex flex-1 flex-col p-5">
+                  {n.published_at && (
+                    <div className="mb-2 text-[10px] tracking-[0.15em] text-white/40">
+                      {new Date(n.published_at).toLocaleDateString('uk-UA', {
+                        day: '2-digit',
+                        month: 'long',
+                        year: 'numeric',
+                      })}
+                    </div>
+                  )}
+                  <h2 className="line-clamp-2 text-lg font-medium leading-snug tracking-tight transition group-hover:text-[#FF8A33]">
+                    {n.title}
+                  </h2>
+                  {n.excerpt && (
+                    <p className="mt-2 line-clamp-3 text-sm text-white/55">{n.excerpt}</p>
+                  )}
+                </div>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }

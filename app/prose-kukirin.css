@@ -1,0 +1,161 @@
+/* Styles for rendered Markdown articles (.prose-kukirin) */
+
+.prose-kukirin {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.prose-kukirin > * + * {
+  margin-top: 1.25em;
+}
+
+.prose-kukirin h1,
+.prose-kukirin h2,
+.prose-kukirin h3,
+.prose-kukirin h4 {
+  color: #ffffff;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+
+.prose-kukirin h1 {
+  font-size: 2rem;
+  margin-top: 2em;
+}
+
+.prose-kukirin h2 {
+  font-size: 1.6rem;
+  margin-top: 2em;
+}
+
+.prose-kukirin h3 {
+  font-size: 1.25rem;
+  margin-top: 1.75em;
+}
+
+.prose-kukirin h4 {
+  font-size: 1.05rem;
+  margin-top: 1.5em;
+}
+
+.prose-kukirin p {
+  margin: 0;
+}
+
+.prose-kukirin a {
+  color: #ff8a33;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.prose-kukirin a:hover {
+  color: #ff6b00;
+}
+
+.prose-kukirin strong {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.prose-kukirin em {
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.prose-kukirin ul,
+.prose-kukirin ol {
+  padding-left: 1.5em;
+}
+
+.prose-kukirin ul {
+  list-style: disc;
+}
+
+.prose-kukirin ol {
+  list-style: decimal;
+}
+
+.prose-kukirin li + li {
+  margin-top: 0.5em;
+}
+
+.prose-kukirin li > ul,
+.prose-kukirin li > ol {
+  margin-top: 0.5em;
+}
+
+.prose-kukirin blockquote {
+  margin-left: 0;
+  padding: 0.5em 1.25em;
+  border-left: 3px solid #ff6b00;
+  background: rgba(255, 107, 0, 0.04);
+  color: rgba(255, 255, 255, 0.8);
+  font-style: italic;
+}
+
+.prose-kukirin blockquote p {
+  margin: 0;
+}
+
+.prose-kukirin hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 2.5em 0;
+}
+
+.prose-kukirin code {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  padding: 0.1em 0.4em;
+  font-size: 0.9em;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  color: #ffd1b0;
+}
+
+.prose-kukirin pre {
+  background: #0a0a0a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  padding: 1em 1.25em;
+  overflow-x: auto;
+  font-size: 0.875em;
+  line-height: 1.6;
+}
+
+.prose-kukirin pre code {
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.prose-kukirin img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.prose-kukirin table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9em;
+}
+
+.prose-kukirin th,
+.prose-kukirin td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 0.6em 0.75em;
+  text-align: left;
+}
+
+.prose-kukirin th {
+  color: #ffffff;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.02);
+}
