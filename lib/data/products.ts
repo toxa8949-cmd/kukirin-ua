@@ -17,9 +17,11 @@ type ProductRow = Product & {
  *            specs jsonb, stock, is_active, featured, cover_url,
  *            created_at, updated_at)
  *   product_images(id, product_id, url, sort_order)
- *     -- no is_primary, no alt
  *   categories(id, slug, name, description, image_url, sort_order, created_at)
- *     -- no is_active
+ *
+ * specs values may be strings with unit suffixes ("600W", "55 km", "15Ah")
+ * and keys may be snake_case (range_km, max_speed). We strip suffixes and
+ * try several aliases so the UI never gets NaN.
  */
 
 function pickPrimaryImage(
@@ -33,34 +35,65 @@ function pickPrimaryImage(
   return sorted[0]?.url ?? fallback ?? undefined;
 }
 
-function specsField<T = unknown>(specs: Json | null, key: string): T | undefined {
+function readSpec<T = unknown>(
+  specs: Json | null,
+  keys: string[],
+): T | undefined {
   if (!specs || typeof specs !== "object" || Array.isArray(specs)) return undefined;
-  return (specs as Record<string, unknown>)[key] as T | undefined;
+  const o = specs as Record<string, unknown>;
+  for (const k of keys) {
+    if (o[k] !== undefined && o[k] !== null && o[k] !== "") return o[k] as T;
+  }
+  return undefined;
+}
+
+/** Parse a numeric value from a JSON cell that may be a number or a string
+ *  with a unit suffix (e.g. "600W", "55 km", "15Ah"). Returns 0 on failure. */
+function parseNumeric(v: unknown): number {
+  if (typeof v === "number" && Number.isFinite(v)) return v;
+  if (typeof v === "string") {
+    const m = v.replace(",", ".").match(/-?\d+(?:\.\d+)?/);
+    if (m) {
+      const n = Number(m[0]);
+      if (Number.isFinite(n)) return n;
+    }
+  }
+  return 0;
 }
 
 function toKukirin(row: ProductRow): KukirinScooter {
   const specs = row.specs;
-  const cat = specsField<string>(specs, "category");
+
+  const cat = readSpec<string>(specs, ["category"]);
   const validCat: KukirinScooter["category"] =
     cat === "offroad" || cat === "flagship" || cat === "urban" ? cat : "urban";
-  const badge = specsField<string>(specs, "badge");
+
+  const badge = readSpec<string>(specs, ["badge"]);
   const validBadge: KukirinScooter["badge"] | undefined =
     badge === "hit" || badge === "new" || badge === "top" ? badge : undefined;
+
+  const power    = parseNumeric(readSpec(specs, ["power", "power_w", "motor"]));
+  const maxSpeed = parseNumeric(readSpec(specs, ["maxSpeed", "max_speed", "top_speed", "speed"]));
+  const range    = parseNumeric(readSpec(specs, ["range", "range_km", "distance"]));
+  const battery  = String(readSpec(specs, ["battery", "battery_label"]) ?? "");
 
   return {
     slug: row.slug,
     name: row.name,
     category: validCat,
     badge: validBadge,
-    power: Number(specsField<number | string>(specs, "power") ?? 0),
-    maxSpeed: Number(specsField<number | string>(specs, "maxSpeed") ?? 0),
-    range: Number(specsField<number | string>(specs, "range") ?? 0),
-    battery: String(specsField<string>(specs, "battery") ?? ""),
+    power,
+    maxSpeed,
+    range,
+    battery,
     price: Number(row.price),
     oldPrice: row.old_price != null ? Number(row.old_price) : undefined,
-    image: pickPrimaryImage(row.images, row.cover_url ?? specsField<string>(specs, "image")),
+    image: pickPrimaryImage(
+      row.images,
+      row.cover_url ?? readSpec<string>(specs, ["image"]),
+    ),
     tagline:
-      specsField<string>(specs, "tagline") ??
+      readSpec<string>(specs, ["tagline"]) ??
       (row.description ? row.description.slice(0, 120) : ""),
   };
 }
