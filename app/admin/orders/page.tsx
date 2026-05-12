@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ChevronRight } from 'lucide-react';
 import { createAdminClient } from '@/lib/supabase/admin';
 
 export const dynamic = 'force-dynamic';
@@ -18,6 +18,14 @@ function shortRef(id: string) {
   return id.split('-')[0]?.toUpperCase() ?? id;
 }
 
+const STATUS_LABEL: Record<string, string> = {
+  new: 'нові',
+  confirmed: 'підтверджені',
+  shipped: 'відправлені',
+  completed: 'завершені',
+  canceled: 'скасовані',
+};
+
 const STATUS_COLOR: Record<string, string> = {
   new: 'bg-blue-500/15 text-blue-300 border-blue-500/30',
   confirmed: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
@@ -26,15 +34,67 @@ const STATUS_COLOR: Record<string, string> = {
   canceled: 'bg-red-500/15 text-red-300 border-red-500/30',
 };
 
-export default async function AdminOrdersPage() {
+export default async function AdminOrdersPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ status?: string; q?: string }>;
+}) {
+  const { status, q } = await searchParams;
   const supabase = createAdminClient();
-  const { data } = await supabase
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let query: any = supabase
     .from('orders')
     .select('id, customer_name, phone, total, status, created_at')
     .order('created_at', { ascending: false })
-    .limit(50);
+    .limit(100);
 
+  if (status && STATUS_LABEL[status]) {
+    query = query.eq('status', status);
+  }
+  if (q && q.trim()) {
+    const term = `%${q.trim()}%`;
+    query = query.or(
+      `customer_name.ilike.${term},phone.ilike.${term},email.ilike.${term}`,
+    );
+  }
+
+  const { data } = await query;
   const list = (data ?? []) as unknown as OrderRow[];
+
+  // Counts for tabs (independent of current filter)
+  const { data: allForCounts } = await supabase.from('orders').select('status');
+  const counts = new Map<string, number>();
+  for (const r of (allForCounts ?? []) as Array<{ status: string }>) {
+    counts.set(r.status, (counts.get(r.status) ?? 0) + 1);
+  }
+  const totalCount = (allForCounts ?? []).length;
+
+  const Tab = ({
+    href,
+    label,
+    active,
+    count,
+  }: {
+    href: string;
+    label: string;
+    active: boolean;
+    count?: number;
+  }) => (
+    <Link
+      href={href}
+      className={`inline-flex items-center gap-1 rounded-sm px-3 py-1.5 text-xs ${
+        active
+          ? 'bg-[#FF6B00] text-black'
+          : 'border border-white/15 text-white/70 hover:border-white/30'
+      }`}
+    >
+      {label}
+      {typeof count === 'number' && (
+        <span className={active ? 'text-black/60' : 'text-white/40'}>· {count}</span>
+      )}
+    </Link>
+  );
 
   return (
     <div className="space-y-6">
@@ -44,46 +104,75 @@ export default async function AdminOrdersPage() {
         </Link>
         <div className="mt-2 mb-1 text-[10px] tracking-[0.2em] text-[#FF8A33]">// ORDERS</div>
         <h1 className="text-3xl font-medium tracking-tight">Замовлення</h1>
-        <p className="mt-2 text-sm text-white/55">{list.length} останніх замовлень</p>
       </div>
 
-      <div className="rounded-sm border border-white/10 bg-[#0F0F0F] p-5">
+      <div className="flex flex-wrap gap-2">
+        <Tab href="/admin/orders" label="Усі" active={!status} count={totalCount} />
+        {Object.entries(STATUS_LABEL).map(([k, label]) => (
+          <Tab
+            key={k}
+            href={`/admin/orders?status=${k}`}
+            label={label}
+            active={status === k}
+            count={counts.get(k) ?? 0}
+          />
+        ))}
+      </div>
+
+      <form className="rounded-sm border border-white/10 bg-[#0F0F0F] p-4">
+        {status && <input type="hidden" name="status" value={status} />}
+        <input
+          type="search"
+          name="q"
+          defaultValue={q ?? ''}
+          placeholder="Пошук за імʼям, телефоном або email…"
+          className="w-full rounded-sm border border-white/10 bg-[#0A0A0A] px-3 py-2 text-sm outline-none focus:border-[#FF6B00]"
+        />
+      </form>
+
+      <div className="rounded-sm border border-white/10 bg-[#0F0F0F]">
         {list.length === 0 ? (
-          <p className="text-sm text-white/55">Замовлень немає.</p>
+          <div className="p-8 text-center text-sm text-white/55">Нічого не знайдено.</div>
         ) : (
           <ul className="divide-y divide-white/5">
             {list.map((o) => {
               const cls = STATUS_COLOR[o.status] ?? 'bg-white/5 text-white/70 border-white/10';
               return (
-                <li key={o.id} className="flex items-center justify-between gap-4 py-3">
-                  <div className="min-w-0 flex-1">
-                    <div className="truncate text-sm">
-                      <span className="text-white/40">#</span>
-                      <span className="font-medium">{shortRef(o.id)}</span>
-                      <span className="ml-2 text-white/70">{o.customer_name}</span>
-                      <span className="ml-2 text-xs text-white/40">{o.phone}</span>
+                <li key={o.id}>
+                  <Link
+                    href={`/admin/orders/${o.id}`}
+                    className="flex items-center gap-3 p-3 transition hover:bg-white/[0.02] sm:gap-4"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <div className="truncate text-sm">
+                        <span className="text-white/40">#</span>
+                        <span className="font-medium">{shortRef(o.id)}</span>
+                        <span className="ml-2 text-white/70">{o.customer_name}</span>
+                      </div>
+                      <div className="truncate text-xs text-white/40">
+                        {o.phone}
+                        {o.created_at && (
+                          <span className="ml-2">
+                            · {new Date(o.created_at).toLocaleString('uk-UA')}
+                          </span>
+                        )}
+                      </div>
                     </div>
-                    <div className="text-xs text-white/40">
-                      {o.created_at ? new Date(o.created_at).toLocaleString('uk-UA') : ''}
-                    </div>
-                  </div>
-                  <span className={`rounded-sm border px-2 py-0.5 text-[10px] uppercase tracking-wider ${cls}`}>
-                    {o.status}
-                  </span>
-                  <span className="font-medium text-[#FF6B00]">
-                    {Number(o.total).toLocaleString('uk-UA')} ₴
-                  </span>
+                    <span
+                      className={`flex-shrink-0 rounded-sm border px-2 py-0.5 text-[10px] uppercase tracking-wider ${cls}`}
+                    >
+                      {o.status}
+                    </span>
+                    <span className="flex-shrink-0 font-medium text-[#FF6B00]">
+                      {Number(o.total).toLocaleString('uk-UA')} ₴
+                    </span>
+                    <ChevronRight size={14} className="flex-shrink-0 text-white/30" />
+                  </Link>
                 </li>
               );
             })}
           </ul>
         )}
-      </div>
-
-      <div className="rounded-sm border border-dashed border-white/15 bg-[#0A0A0A] p-6 text-center">
-        <p className="text-sm text-white/55">
-          Деталь замовлення, зміна статусу і фільтри — у Block 9.
-        </p>
       </div>
     </div>
   );
