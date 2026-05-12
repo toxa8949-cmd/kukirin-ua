@@ -1,4 +1,3 @@
-
 import Link from 'next/link';
 import { Check, Phone } from 'lucide-react';
 import PageShell from '@/components/kukirin/PageShell';
@@ -7,22 +6,44 @@ import { createAdminClient } from '@/lib/supabase/admin';
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Дякуємо за замовлення' };
 
-async function getOrderByNumber(orderNumber: string) {
+type SuccessOrder = {
+  id: string;
+  order_number: string;
+  status: string;
+  customer_name: string;
+  customer_phone: string;
+  total: number;
+  currency: string;
+  created_at: string;
+};
+
+type SuccessItem = {
+  product_name: string;
+  product_slug: string | null;
+  unit_price: number;
+  quantity: number;
+  subtotal: number;
+};
+
+async function getOrderByNumber(orderNumber: string): Promise<{ order: SuccessOrder; items: SuccessItem[] } | null> {
   try {
     const supabase = createAdminClient();
-    const { data: order, error } = await supabase
+    const { data, error } = await supabase
       .from('orders')
       .select('id, order_number, status, customer_name, customer_phone, total, currency, created_at')
       .eq('order_number', orderNumber)
       .maybeSingle();
-    if (error || !order) return null;
+    if (error || !data) return null;
+    const order = data as unknown as SuccessOrder;
 
-    const { data: items } = await supabase
+    const { data: itemsData } = await supabase
       .from('order_items')
       .select('product_name, product_slug, unit_price, quantity, subtotal')
       .eq('order_id', order.id);
 
-    return { order, items: items ?? [] };
+    const items = (itemsData ?? []) as unknown as SuccessItem[];
+
+    return { order, items };
   } catch {
     return null;
   }

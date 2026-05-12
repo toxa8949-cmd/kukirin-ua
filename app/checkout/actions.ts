@@ -24,6 +24,14 @@ export type CheckoutResult =
   | { ok: true; orderNumber: string }
   | { ok: false; error: string };
 
+type ProductLookup = {
+  id: string;
+  slug: string;
+  name: string;
+  price: number;
+  is_active: boolean;
+};
+
 function isValidPhone(s: string) {
   const cleaned = s.replace(/[\s\-()]/g, '');
   return /^(\+?380\d{9}|0\d{9})$/.test(cleaned);
@@ -56,7 +64,7 @@ export async function createOrder(input: CheckoutInput): Promise<CheckoutResult>
 
     const supabase = createAdminClient();
     const slugs = Array.from(new Set(input.items.map((i) => i.slug)));
-    const { data: prodRows, error: prodErr } = await supabase
+    const { data: prodData, error: prodErr } = await supabase
       .from('products')
       .select('id, slug, name, price, is_active')
       .in('slug', slugs);
@@ -66,7 +74,9 @@ export async function createOrder(input: CheckoutInput): Promise<CheckoutResult>
       return { ok: false, error: 'Помилка перевірки товарів. Спробуйте ще раз.' };
     }
 
-    const bySlug = new Map(prodRows!.map((p) => [p.slug, p]));
+    const prodRows = (prodData ?? []) as unknown as ProductLookup[];
+    const bySlug = new Map<string, ProductLookup>(prodRows.map((p) => [p.slug, p]));
+
     for (const it of input.items) {
       const p = bySlug.get(it.slug);
       if (!p || !p.is_active) {
@@ -79,9 +89,9 @@ export async function createOrder(input: CheckoutInput): Promise<CheckoutResult>
       const qty = Math.max(1, Math.floor(Number(it.quantity) || 1));
       const unit = Number(p.price);
       return {
-        product_id: p.id as string,
-        product_slug: p.slug as string,
-        product_name: p.name as string,
+        product_id: p.id,
+        product_slug: p.slug,
+        product_name: p.name,
         unit_price: unit,
         quantity: qty,
         subtotal: unit * qty,
@@ -118,7 +128,7 @@ export async function createOrder(input: CheckoutInput): Promise<CheckoutResult>
       .from('order_items')
       .insert(
         lineItems.map((li) => ({
-          order_id: order.id,
+          order_id: order.id as string,
           product_id: li.product_id,
           product_slug: li.product_slug,
           product_name: li.product_name,
@@ -130,11 +140,11 @@ export async function createOrder(input: CheckoutInput): Promise<CheckoutResult>
 
     if (itemsErr) {
       console.error('createOrder: items insert failed', itemsErr);
-      await supabase.from('orders').delete().eq('id', order.id);
+      await supabase.from('orders').delete().eq('id', order.id as string);
       return { ok: false, error: 'Не вдалось зберегти товари замовлення.' };
     }
 
-    return { ok: true, orderNumber: order.order_number };
+    return { ok: true, orderNumber: order.order_number as string };
   } catch (e) {
     console.error('createOrder: unexpected error', e);
     return { ok: false, error: 'Внутрішня помилка. Спробуйте пізніше.' };
