@@ -1,42 +1,35 @@
 @import "tailwindcss";
 
 /* ============================================================
-   KUKIRIN.UA — Tailwind v4 + dark mode via [data-theme="dark"]
-   За замовчуванням — світла тема. Темна вмикається класами dark:*
+   KUKIRIN.UA — Tailwind v4 з підтримкою dark mode
+   За замовч. світла, dark вмикається через [data-theme="dark"]
    ============================================================ */
 
-/* Custom variant: dark = коли є data-theme="dark" десь вище в дереві */
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
-/* Auto: якщо у користувача в ОС темна тема і він НЕ обрав явно іншу —
-   додамо data-theme="dark" через скрипт у layout.tsx.
-   Це робиться в JS бо CSS-only підхід зі @media (prefers-color-scheme)
-   погано стикається з manual override через localStorage. */
-
-/* ---------- BASE THEME VARIABLES ---------- */
-/* Світла тема — за замовч. */
+/* ---------- THEME TOKENS ---------- */
 :root {
   --kukirin-bg: #fafaf7;
+  --kukirin-bg-elevated: #ffffff;
   --kukirin-fg: #1a1a1a;
-  --kukirin-card: #ffffff;
-  --kukirin-pic-from: #f0eee6;
-  --kukirin-pic-to: #e8e6de;
+  --kukirin-fg-muted: #4a4a48;
+  --kukirin-fg-dim: #6c6a65;
   --kukirin-border: #e8e6de;
 
   --kukirin-orange: #ff6b00;
   --kukirin-orange-light: #ff8a33;
+  --kukirin-orange-dark: #993c1d;
   --kukirin-cyan: #00d9ff;
 
   color-scheme: light;
 }
 
-/* Темна тема */
 [data-theme="dark"] {
   --kukirin-bg: #0a0a0a;
+  --kukirin-bg-elevated: #0f0f0f;
   --kukirin-fg: #ffffff;
-  --kukirin-card: #0f0f0f;
-  --kukirin-pic-from: #1a1a1a;
-  --kukirin-pic-to: #0a0a0a;
+  --kukirin-fg-muted: rgba(255, 255, 255, 0.55);
+  --kukirin-fg-dim: rgba(255, 255, 255, 0.4);
   --kukirin-border: rgba(255, 255, 255, 0.1);
 
   color-scheme: dark;
@@ -57,13 +50,10 @@ body {
 }
 
 /* ---------- ORANGE ACCENTS ---------- */
-/* 1. Тонка помаранчева смуга вгорі сайту */
 body::before {
   content: '';
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 0; left: 0; right: 0;
   height: 3px;
   background: linear-gradient(
     90deg,
@@ -77,48 +67,10 @@ body::before {
   pointer-events: none;
 }
 
-/* 2. Карточка товара — оранжева смужка зліва */
-a[href^="/product/"] {
-  position: relative;
-}
-
-a[href^="/product/"]::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 3px;
-  background: var(--kukirin-orange);
-  opacity: 0.85;
-  transition: opacity 0.2s ease, width 0.2s ease;
-  z-index: 1;
-  pointer-events: none;
-}
-
-a[href^="/product/"]:hover::before {
-  opacity: 1;
-  width: 4px;
-}
-
-a[href^="/product/"]:hover {
-  border-color: var(--kukirin-orange) !important;
-}
-
-/* 3. Світіння на бейджах NEW/HIT/TOP */
-.absolute.bg-\[\#FF6B00\],
-[class*="absolute"][class*="bg-[#FF6B00]"] {
-  box-shadow: 0 0 16px rgba(255, 107, 0, 0.5);
-}
-
-/* 4. Smooth скрол */
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 /* ---------- ANIMATIONS (без змін) ---------- */
 
-/* --- Треки швидкості --- */
 .kukirin-streak {
   position: absolute;
   left: 0;
@@ -130,20 +82,15 @@ html {
 
 .kukirin-streak-1 { top: 18%; width: 180px; animation-duration: 2.8s; animation-delay: 0s; }
 .kukirin-streak-2 {
-  top: 42%;
-  width: 120px;
-  height: 2px;
+  top: 42%; width: 120px; height: 2px;
   background: linear-gradient(90deg, transparent, rgba(255, 107, 0, 0.6), transparent);
-  animation-duration: 3.4s;
-  animation-delay: 0.6s;
+  animation-duration: 3.4s; animation-delay: 0.6s;
 }
 .kukirin-streak-3 { top: 68%; width: 220px; animation-duration: 2.2s; animation-delay: 1.2s; }
 .kukirin-streak-4 {
-  top: 85%;
-  width: 80px;
+  top: 85%; width: 80px;
   background: linear-gradient(90deg, transparent, rgba(255, 107, 0, 0.4), transparent);
-  animation-duration: 3.8s;
-  animation-delay: 1.8s;
+  animation-duration: 3.8s; animation-delay: 1.8s;
 }
 
 @keyframes kukirinStreak {
@@ -153,30 +100,23 @@ html {
   100% { transform: translateX(100vw); opacity: 0; }
 }
 
-/* --- Гліч --- */
 .kukirin-glitch { position: relative; display: inline-block; }
-
-.kukirin-glitch::before,
-.kukirin-glitch::after {
+.kukirin-glitch::before, .kukirin-glitch::after {
   content: attr(data-text);
-  position: absolute;
-  top: 0; left: 0;
+  position: absolute; top: 0; left: 0;
   width: 100%; height: 100%;
   pointer-events: none;
 }
-
 .kukirin-glitch::before {
   color: var(--kukirin-orange);
   mix-blend-mode: screen;
   animation: kukirinGlitchA 4s steps(1) infinite;
 }
-
 .kukirin-glitch::after {
   color: var(--kukirin-cyan);
   mix-blend-mode: screen;
   animation: kukirinGlitchB 4s steps(1) infinite;
 }
-
 @keyframes kukirinGlitchA {
   0%, 90%, 100% { transform: translate(0, 0); opacity: 0.4; }
   92% { transform: translate(-3px, 1px); opacity: 0.8; }
@@ -184,7 +124,6 @@ html {
   96% { transform: translate(-2px, 2px); opacity: 0.7; }
   98% { transform: translate(1px, -2px); opacity: 0.5; }
 }
-
 @keyframes kukirinGlitchB {
   0%, 88%, 100% { transform: translate(0, 0); opacity: 0.3; }
   90% { transform: translate(3px, -1px); opacity: 0.7; }
@@ -192,15 +131,12 @@ html {
   96% { transform: translate(2px, 1px); opacity: 0.6; }
 }
 
-/* --- Курсор --- */
 .kukirin-cursor { display: inline-block; animation: kukirinBlink 0.9s steps(1) infinite; }
-
 @keyframes kukirinBlink {
   0%, 49%, 100% { opacity: 1; }
   50%, 99% { opacity: 0.3; }
 }
 
-/* --- Пульсуюча точка --- */
 .kukirin-pulse-dot {
   display: inline-block;
   width: 7px; height: 7px;
@@ -209,38 +145,27 @@ html {
   box-shadow: 0 0 10px var(--kukirin-orange);
   animation: kukirinPulse 1.4s ease-in-out infinite;
 }
-
 @keyframes kukirinPulse {
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.5; transform: scale(0.9); }
 }
 
-/* --- Стаггер --- */
 .kukirin-fade-1 { animation: kukirinFadeUp 0.6s ease-out 0.1s both; }
 .kukirin-fade-2 { animation: kukirinFadeUp 0.6s ease-out 0.3s both; }
 .kukirin-fade-3 { animation: kukirinFadeUp 0.6s ease-out 0.5s both; }
 .kukirin-fade-4 { animation: kukirinFadeUp 0.6s ease-out 0.7s both; }
-
 @keyframes kukirinFadeUp {
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* --- prefers-reduced-motion --- */
 @media (prefers-reduced-motion: reduce) {
-  .kukirin-streak,
-  .kukirin-glitch::before,
-  .kukirin-glitch::after,
-  .kukirin-cursor,
-  .kukirin-pulse-dot,
-  .kukirin-fade-1,
-  .kukirin-fade-2,
-  .kukirin-fade-3,
-  .kukirin-fade-4 {
+  .kukirin-streak, .kukirin-glitch::before, .kukirin-glitch::after,
+  .kukirin-cursor, .kukirin-pulse-dot,
+  .kukirin-fade-1, .kukirin-fade-2, .kukirin-fade-3, .kukirin-fade-4 {
     animation: none !important;
   }
   .kukirin-streak { display: none; }
-  .kukirin-glitch::before,
-  .kukirin-glitch::after { opacity: 0; }
+  .kukirin-glitch::before, .kukirin-glitch::after { opacity: 0; }
   .kukirin-cursor { opacity: 1; }
 }

@@ -21,19 +21,19 @@ export default function AccessoriesPage() {
     >
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {ACCESSORIES.map((a) => (
-          <div key={a.title} className="rounded-sm border border-white/10 bg-[#0F0F0F] p-5 transition hover:border-[#FF6B00]">
+          <div key={a.title} className="rounded-sm border border-[#E8E6DE] dark:border-white/10 bg-white dark:bg-[#0F0F0F] p-5 transition hover:border-[#FF6B00]">
             <a.icon size={28} className="mb-4 text-[#FF6B00]" />
             <div className="mb-1 text-lg font-medium tracking-tight">{a.title}</div>
-            <div className="mb-4 text-xs leading-relaxed text-white/55">{a.desc}</div>
-            <div className="text-sm text-white/80">{a.price}</div>
+            <div className="mb-4 text-xs leading-relaxed text-[#4A4A48] dark:text-white/55">{a.desc}</div>
+            <div className="text-sm text-[#4A4A48] dark:text-white/80">{a.price}</div>
           </div>
         ))}
       </div>
       <div className="mt-10 rounded-sm border border-[#FF6B00]/30 bg-[#FF6B00]/5 p-6 text-center">
-        <div className="mb-2 text-xs tracking-[0.2em] text-[#FF8A33]">// ПОВНИЙ КАТАЛОГ</div>
+        <div className="mb-2 text-xs tracking-[0.2em] text-[#993C1D] dark:text-[#FF8A33]">// ПОВНИЙ КАТАЛОГ</div>
         <h3 className="mb-3 text-xl font-medium">Не знайшли потрібне?</h3>
-        <p className="mb-4 text-sm text-white/65">Зателефонуйте нам або напишіть у Telegram — підберемо аксесуар під вашу модель.</p>
-        <a href="tel:+380800338899" className="inline-block rounded-sm bg-[#FF6B00] px-6 py-3 text-xs font-medium tracking-[0.1em] text-black hover:bg-[#FF8A33]">
+        <p className="mb-4 text-sm text-[#4A4A48] dark:text-white/65">Зателефонуйте нам або напишіть у Telegram — підберемо аксесуар під вашу модель.</p>
+        <a href="tel:+380800338899" className="inline-block rounded-sm bg-[#FF6B00] px-6 py-3 text-xs font-medium tracking-[0.1em] text-white dark:text-black hover:bg-[#FF8A33]">
           0 800 33 88 99
         </a>
       </div>

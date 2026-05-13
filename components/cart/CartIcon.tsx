@@ -12,11 +12,11 @@ export default function CartIcon() {
     <Link
       href="/cart"
       aria-label={`Кошик (${count})`}
-      className="relative text-white/80 hover:text-white"
+      className="relative text-[#4A4A48] hover:text-[#1a1a1a] dark:text-white/80 dark:hover:text-white"
     >
       <ShoppingCart size={18} />
       {count > 0 && (
-        <span className="absolute -right-2 -top-2 inline-flex h-4 min-w-[16px] items-center justify-center rounded-full bg-[#FF6B00] px-1 text-[10px] font-medium text-black">
+        <span className="absolute -right-2 -top-2 inline-flex h-4 min-w-[16px] items-center justify-center rounded-full bg-[#FF6B00] px-1 text-[10px] font-medium text-white dark:text-black">
           {count > 99 ? '99+' : count}
         </span>
       )}

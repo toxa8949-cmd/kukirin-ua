@@ -3,10 +3,7 @@ import { Search, User, Menu, Instagram, Facebook, Youtube, Send } from 'lucide-r
 import CartIcon from '@/components/cart/CartIcon';
 
 export default function PageShell({
-  children,
-  title,
-  subtitle,
-  breadcrumb,
+  children, title, subtitle, breadcrumb,
 }: {
   children: React.ReactNode;
   title?: string;
@@ -45,6 +42,7 @@ export default function PageShell({
           </div>
         </div>
       </header>
+
       {(title || breadcrumb) && (
         <section className="border-b border-[#E8E6DE] bg-[#FAFAF7] dark:border-white/10 dark:bg-[#0A0A0A]">
           <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-10">
@@ -60,7 +58,9 @@ export default function PageShell({
           </div>
         </section>
       )}
+
       <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-10">{children}</main>
+
       <footer className="border-t border-[#E8E6DE] bg-[#F0EEE6] py-12 text-[#1a1a1a] dark:border-white/10 dark:bg-[#070707] dark:text-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
           <div className="grid grid-cols-2 gap-8 border-b border-[#E8E6DE] pb-10 dark:border-white/10 md:grid-cols-4">

@@ -32,7 +32,7 @@ export default function AddToCartButton({ slug, name, price, image, className }:
     'inline-flex items-center justify-center gap-2 rounded-sm px-6 py-3 text-xs font-medium tracking-[0.1em] transition';
   const style = added
     ? 'bg-emerald-500 text-black'
-    : 'bg-[#FF6B00] text-black hover:bg-[#FF8A33]';
+    : 'bg-[#FF6B00] text-white dark:text-black hover:bg-[#FF8A33]';
 
   return (
     <button

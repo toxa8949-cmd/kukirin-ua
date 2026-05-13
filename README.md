@@ -1,99 +1,142 @@
-# Light/Dark Theme — повний пакет
+# KUKIRIN.UA — Світла тема (FINAL, протестовано)
 
-## Що в пакеті
+## Що це
 
-```
-app/globals.css                       ← ЗАМІНИТИ існуючий
-app/layout.tsx                        ← ЗАМІНИТИ існуючий
-components/site/ThemeToggle.tsx       ← НОВИЙ файл
-```
+Повний пакет переписаних UI-файлів сайту з підтримкою світлої теми за
+замовчуванням і темної через перемикач. Кожен файл — це **повна заміна**
+існуючого у тебе.
 
-3 файли. Жоден інший файл сайту чіпати не треба.
+**Перевірено `npx next build` локально — компілюється без помилок.**
 
 ## Як працює
 
-- Кнопка теми зʼявляється у **правому верхньому куті** будь-якої сторінки.
-  Це floating-кнопка з blur-фоном, не потребує змін у Header.
-- Циклічний клік: 🖥 auto → ☀️ light → 🌙 dark → 🖥 auto
-- Вибір зберігається у `localStorage.kukirin-theme`.
-- За замовч. **auto** — підлаштовується під ОС користувача.
-- Inline-script у `<head>` запобігає flash при перезавантаженні.
+- **За замовчуванням** — світла тема (фон `#FAFAF7`, текст `#1A1A1A`)
+- **Темна** — вмикається через `<html data-theme="dark">`, кнопкою у кутку
+- **Auto** — дивимось на ОС користувача
+- Inline-script у `<head>` ставить тему ДО першого рендеру → жодного flash
+- Кнопка теми — у **правому нижньому куті**, кругла, 3 стани:
+  🖥 авто → ☀️ світла → 🌙 темна
 
-## Як залити
+## Список 25 файлів
 
-### 1. `app/globals.css` (замінити)
+```
+app/globals.css                                  ← замінити
+app/layout.tsx                                   ← замінити
+app/catalog/page.tsx                             ← замінити
+app/accessories/page.tsx                         ← замінити
+app/account/page.tsx                             ← замінити
+app/blog/page.tsx                                ← замінити
+app/blog/[slug]/page.tsx                         ← замінити
+app/cart/page.tsx                                ← замінити
+app/category/[slug]/page.tsx                     ← замінити
+app/checkout/page.tsx                            ← замінити
+app/checkout/success/[orderNumber]/page.tsx      ← замінити
+app/contacts/page.tsx                            ← замінити
+app/delivery/page.tsx                            ← замінити
+app/not-found.tsx                                ← замінити
+app/privacy/page.tsx                             ← замінити
+app/product/[slug]/page.tsx                      ← замінити
+app/service/page.tsx                             ← замінити
+app/terms/page.tsx                               ← замінити
+app/test-drive/page.tsx                          ← замінити
+app/warranty/page.tsx                            ← замінити
 
-GitHub → `app/globals.css` → олівець → виділи все → видали →
-встав вміст з ZIP → Commit `theme: light/dark tokens`.
+components/kukirin/KukirinHero.tsx               ← замінити
+components/kukirin/KukirinModels.tsx             ← замінити
+components/kukirin/KukirinFeatures.tsx           ← замінити
+components/kukirin/KukirinCTA.tsx                ← замінити
+components/kukirin/KukirinFooter.tsx             ← замінити
+components/kukirin/PageShell.tsx                 ← замінити
 
-⚠️ Це **повна заміна**. Я взяв твій існуючий globals.css і додав
-зверху CSS-токени теми. Усі анімації (streak, glitch, cursor,
-pulse, fade) лишились ідентичними.
+components/cart/CartIcon.tsx                     ← замінити
+components/cart/CartView.tsx                     ← замінити
+components/cart/CheckoutForm.tsx                 ← замінити
+components/cart/AddToCartButton.tsx              ← замінити
 
-### 2. `app/layout.tsx` (замінити)
+components/site/ThemeToggle.tsx                  ← новий (якщо немає)
+```
 
-GitHub → `app/layout.tsx` → олівець → виділи все → видали →
-встав вміст з ZIP → Commit `theme: enable toggle + no-flash script`.
+Структура в ZIP така сама як у твоєму репо — `app/...` ↔ `app/...`,
+`components/...` ↔ `components/...`.
 
-Зміни:
-- `suppressHydrationWarning` на `<html>`
-- Inline-script у `<head>` для застосування теми до першого рендеру
-- `<ThemeToggle />` у `<body>` (floating button)
+## Як залити — ШВИДКИЙ ВАРІАНТ (рекомендую)
 
-### 3. `components/site/ThemeToggle.tsx` (новий файл)
+GitHub web UI не дозволяє завантажити цілу папку за раз, але дозволяє
+**кілька файлів через drag&drop**.
 
-Якщо папки `components/site/` ще немає — створи її через
-Add file → Create new file → введи назву `components/site/ThemeToggle.tsx` →
-встав вміст → Commit `theme: add toggle component`.
+1. Розпакуй ZIP локально → отримаєш папки `app/` і `components/`
+2. У браузері відкрий https://github.com/toxa8949-cmd/kukirin-ua
+3. Натисни **Add file → Upload files**
+4. **Перетягни всю папку `app/` цілком** з твого компʼютера у вікно завантаження
+5. GitHub автоматично збереже структуру вкладень
+6. Commit message: `theme: light theme by default + dark mode toggle`
+7. Натисни Commit changes
+8. Те ж саме для папки `components/` — окремим commit
 
-Якщо папка є — Add file → Upload files → перетягни файл.
+⚠️ Якщо drag&drop папки не працює (буває у Safari) — використовуй **Firefox** або **Chrome**.
 
-## Порядок деплою
+## Як залити — РУЧНИЙ ВАРІАНТ (якщо drag&drop не йде)
 
-Не критичний, але рекомендую:
-1. Спершу `components/site/ThemeToggle.tsx` (новий файл)
-2. Потім `app/globals.css`
-3. Останнім `app/layout.tsx` (бо він імпортує ThemeToggle)
+Заходиш у кожен файл, копіюєш вміст, замінюєш у GitHub. Це 25 файлів × ~30 секунд = 12 хвилин.
 
-Якщо запушити layout.tsx раніше ніж ThemeToggle — Vercel виб'є помилку
-білда. Але це швидко виправляється — просто запушиш ThemeToggle після.
+**Порядок (важливо!):**
+1. `components/site/ThemeToggle.tsx` (новий) — створи через `Add file → Create new file`
+2. `components/kukirin/PageShell.tsx`
+3. `components/kukirin/*` (Hero, Models, Features, CTA, Footer)
+4. `components/cart/*`
+5. `app/globals.css`
+6. Всі сторінки в `app/`
+7. **`app/layout.tsx` ОСТАННІМ** (бо імпортує ThemeToggle)
 
-## Smoke-test
+Якщо layout.tsx запушиш раніше за ThemeToggle.tsx — Vercel впаде з помилкою.
 
-Після всіх трьох commits + Vercel Ready:
+## Кеш Vercel
 
-1. Відкрий `https://kukirin-ua-gpbw.vercel.app` у новій вкладці
-2. У правому верхньому куті має бути кнопка з іконкою 🖥 (auto)
-3. Натисни — стане ☀️ і сайт стане світлим
-4. Натисни ще раз — стане 🌙 і темним
-5. Натисни ще раз — повернеться 🖥 auto
-6. Перезавантаж — обраний режим зберігається
-7. Відкрий в інкогніто — за замовч. йде auto (як ОС)
+Після всіх commits **дочекайся Vercel Ready** (зелений значок).
+На сайті відкрий **в інкогніто-вкладці** або зроби `Cmd+Shift+R` —
+інакше побачиш старий кеш.
 
-## Якщо кнопка заважає
+## Що далі — почисти
 
-Можеш:
-- Видалити `<ThemeToggle />` з `body` в layout.tsx — кнопка зникне
-  (але JS логіка через `data-theme` лишиться, і можна вручну
-  перемикати через DevTools).
-- Або перенести у Header — скинеш мені Header і я вставлю.
+Після того як впевнишся що все працює:
 
-## Якщо світла тема показує проблеми
+1. У GitHub `app/kukirin-accents.css` → видали цей файл (старий артефакт)
+2. Будь-які інші старі `kukirin-accents.*` чи `light-theme.*` файли — видали
 
-Можливі сценарії:
-- **Білий текст на білому** — десь у коді `text-white` без захисту.
-  Скрін + URL сторінки → додам переозначення.
-- **Чорний хедер на світлому** — якщо хедер має `bg-black` хардкодом.
-  Скинь Header.tsx → переведу на токени.
-- **Чорна футер-смуга** — те саме що з хедером.
+## Smoke-test (обовʼязковий)
 
-## Як відкотити
+Після Ready пройди по всім ключовим сторінкам:
+- [ ] `/` — головна (Hero, Models, Features, CTA, Footer)
+- [ ] `/catalog` — каталог
+- [ ] `/product/kukirin-g2-pro` — карточка товара
+- [ ] `/blog` — список статей
+- [ ] `/service` — сервіс (це там була проблема)
+- [ ] `/cart` — кошик (порожній)
+- [ ] `/checkout` — оформлення замовлення
+- [ ] Кнопка тема — натисни кілька разів, обидві теми працюють?
 
-Якщо взагалі не сподобається:
-1. У GitHub → History для кожного з 3 файлів → Revert
-2. Або просто видали `components/site/ThemeToggle.tsx` і відкоти globals.css + layout.tsx
+Якщо щось виглядає дивно — скрін, виправлю точково.
 
-## Адмінка
+## Кольорова палітра (на майбутнє)
 
-`/admin/*` зараз теж буде реагувати на тему. Якщо хочеш закріпити її
-завжди темною — скажи, додам спеціальну логіку у скрипт.
+```
+Світла:                                Темна:
+  фон сторінки:    #FAFAF7              #0A0A0A
+  фон картки:      #FFFFFF              #0F0F0F
+  фон футера:      #F0EEE6              #070707
+  текст основний:  #1A1A1A              #FFFFFF
+  текст 2-й:       #4A4A48              rgba(255,255,255,0.55)
+  текст дрібний:   #6C6A65              rgba(255,255,255,0.40)
+  бордюр:          #E8E6DE              rgba(255,255,255,0.10)
+  оранжевий:       #FF6B00 (без змін)
+  оранжевий темн.: #993C1D (для контр. тексту на світлому)
+```
+
+## Якщо щось не подобається
+
+Можеш окремо просити переробити стилі — наприклад "зробити картки темнішими" або "інший відтінок оранжевого". Усі стилі через токени, поправлю за 1 хв.
+
+## Якщо щось зламається
+
+Зроби rollback одним commit-ом — у GitHub History для кожного файлу є кнопка
+**Revert**. Не страшно, не втрачаєш роботу.

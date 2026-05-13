@@ -72,14 +72,14 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     <PageShell breadcrumb={`PRODUCT · ${scooter.slug.toUpperCase()}`}>
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
         {/* Visual */}
-        <div className="relative aspect-square overflow-hidden rounded-sm border border-white/10 bg-gradient-to-br from-[#1a1a1a] to-[#0a0a0a]">
+        <div className="relative aspect-square overflow-hidden rounded-sm border border-[#E8E6DE] dark:border-white/10 bg-gradient-to-br from-[#1a1a1a] to-[#0a0a0a]">
           <div className="absolute left-5 top-5 z-10 flex flex-col gap-2">
             {scooter.badge && (
-              <span className="rounded-sm bg-[#FF6B00] px-2 py-1 text-[10px] font-medium tracking-[0.15em] text-black">
+              <span className="rounded-sm bg-[#FF6B00] px-2 py-1 text-[10px] font-medium tracking-[0.15em] text-white dark:text-black">
                 {scooter.badge.toUpperCase()}
               </span>
             )}
-            <span className="rounded-sm border border-white/20 px-2 py-1 text-[10px] tracking-[0.15em] text-white/70">
+            <span className="rounded-sm border border-[#E8E6DE] dark:border-white/20 px-2 py-1 text-[10px] tracking-[0.15em] text-[#4A4A48] dark:text-white/70">
               KUKIRIN · 2026
             </span>
           </div>
@@ -94,7 +94,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <div className="flex h-full w-full items-center justify-center text-[#FF6B00]/30">
               <div className="text-center">
                 <div className="text-7xl font-medium tracking-tight">{placeholderLabel}</div>
-                <div className="mt-2 text-xs tracking-[0.3em] text-white/30">
+                <div className="mt-2 text-xs tracking-[0.3em] text-[#6C6A65] dark:text-white/30">
                   // {safeTagline ? safeTagline.toUpperCase() : 'KUKIRIN'}
                 </div>
               </div>
@@ -104,11 +104,11 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
         {/* Details */}
         <div>
-          <div className="mb-2 text-[11px] tracking-[0.2em] text-[#FF8A33]">
+          <div className="mb-2 text-[11px] tracking-[0.2em] text-[#993C1D] dark:text-[#FF8A33]">
             // {safeCategory.toUpperCase()}
           </div>
           <h1 className="mb-2 text-3xl font-medium leading-tight tracking-tight sm:text-4xl">{safeName}</h1>
-          <p className="mb-6 text-sm text-white/55">
+          <p className="mb-6 text-sm text-[#4A4A48] dark:text-white/55">
             {safeTagline || 'Електросамокат KUKIRIN'}. Офіційно від KUKIRIN.UA з гарантією та сервісом.
           </p>
 
@@ -117,7 +117,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               {Number(scooter.price).toLocaleString('uk-UA')} ₴
             </div>
             {scooter.oldPrice && (
-              <div className="text-base text-white/30 line-through">
+              <div className="text-base text-[#6C6A65] dark:text-white/30 line-through">
                 {Number(scooter.oldPrice).toLocaleString('uk-UA')} ₴
               </div>
             )}
@@ -130,40 +130,40 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               price={Number(scooter.price)}
               image={primaryImage}
             />
-            <Link href="/test-drive" className="inline-flex items-center justify-center rounded-sm border border-white/25 px-6 py-3 text-xs font-medium tracking-wide text-white transition hover:border-white/50">
+            <Link href="/test-drive" className="inline-flex items-center justify-center rounded-sm border border-[#E8E6DE] dark:border-white/25 px-6 py-3 text-xs font-medium tracking-wide text-[#1a1a1a] dark:text-white transition hover:border-[#DCDAD0] dark:hover:border-white/50">
               Тест-драйв
             </Link>
           </div>
 
           <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <div className="rounded-sm border border-white/10 p-3">
+            <div className="rounded-sm border border-[#E8E6DE] dark:border-white/10 p-3">
               <div className="text-xl font-medium">
                 {safePower > 0 ? safePower : '—'}
-                {safePower > 0 && <span className="ml-1 text-xs text-white/40">W</span>}
+                {safePower > 0 && <span className="ml-1 text-xs text-[#6C6A65] dark:text-white/40">W</span>}
               </div>
               <div className="text-[9px] tracking-[0.2em] text-[#FF6B00]">МОТОР</div>
             </div>
-            <div className="rounded-sm border border-white/10 p-3">
+            <div className="rounded-sm border border-[#E8E6DE] dark:border-white/10 p-3">
               <div className="text-xl font-medium">
                 {safeSpeed > 0 ? safeSpeed : '—'}
-                {safeSpeed > 0 && <span className="ml-1 text-xs text-white/40">km/h</span>}
+                {safeSpeed > 0 && <span className="ml-1 text-xs text-[#6C6A65] dark:text-white/40">km/h</span>}
               </div>
               <div className="text-[9px] tracking-[0.2em] text-[#FF6B00]">ШВИДКІСТЬ</div>
             </div>
-            <div className="rounded-sm border border-white/10 p-3">
+            <div className="rounded-sm border border-[#E8E6DE] dark:border-white/10 p-3">
               <div className="text-xl font-medium">
                 {safeRange > 0 ? safeRange : '—'}
-                {safeRange > 0 && <span className="ml-1 text-xs text-white/40">km</span>}
+                {safeRange > 0 && <span className="ml-1 text-xs text-[#6C6A65] dark:text-white/40">km</span>}
               </div>
               <div className="text-[9px] tracking-[0.2em] text-[#FF6B00]">ЗАПАС</div>
             </div>
-            <div className="rounded-sm border border-white/10 p-3">
+            <div className="rounded-sm border border-[#E8E6DE] dark:border-white/10 p-3">
               <div className="text-xs font-medium">{safeBattery}</div>
               <div className="text-[9px] tracking-[0.2em] text-[#FF6B00]">БАТАРЕЯ</div>
             </div>
           </div>
 
-          <ul className="mb-6 space-y-2 text-sm text-white/70">
+          <ul className="mb-6 space-y-2 text-sm text-[#4A4A48] dark:text-white/70">
             <li className="flex gap-2"><Check size={16} className="mt-0.5 text-[#FF6B00]" /> Офіційна гарантія 12 місяців</li>
             <li className="flex gap-2"><Check size={16} className="mt-0.5 text-[#FF6B00]" /> Доставка Новою Поштою 1–3 дні</li>
             <li className="flex gap-2"><Check size={16} className="mt-0.5 text-[#FF6B00]" /> Розстрочка 0% до 12 місяців</li>
@@ -171,37 +171,37 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           </ul>
 
           {scooter.description && (
-            <div className="prose prose-invert mt-2 max-w-none text-sm leading-relaxed text-white/65">
+            <div className="prose prose-invert mt-2 max-w-none text-sm leading-relaxed text-[#4A4A48] dark:text-white/65">
               <p>{scooter.description}</p>
             </div>
           )}
         </div>
       </div>
 
-      <div className="mt-12 grid grid-cols-2 gap-3 border-t border-white/10 pt-8 sm:grid-cols-4">
+      <div className="mt-12 grid grid-cols-2 gap-3 border-t border-[#E8E6DE] dark:border-white/10 pt-8 sm:grid-cols-4">
         {features.map((f) => (
           <div key={f.label} className="flex flex-col gap-2">
             <f.icon size={20} className="text-[#FF6B00]" />
-            <div className="text-[10px] tracking-[0.2em] text-white/40">{f.label.toUpperCase()}</div>
+            <div className="text-[10px] tracking-[0.2em] text-[#6C6A65] dark:text-white/40">{f.label.toUpperCase()}</div>
             <div className="text-sm">{f.value}</div>
           </div>
         ))}
       </div>
 
       {related.length > 0 && (
-        <div className="mt-12 border-t border-white/10 pt-10">
+        <div className="mt-12 border-t border-[#E8E6DE] dark:border-white/10 pt-10">
           <div className="mb-6 flex items-end justify-between">
             <h2 className="text-2xl font-medium tracking-tight sm:text-3xl">Інші моделі</h2>
-            <Link href="/catalog" className="text-xs text-white/60 hover:text-white">Усі моделі →</Link>
+            <Link href="/catalog" className="text-xs text-[#4A4A48] dark:text-white/60 hover:text-[#1a1a1a] dark:hover:text-[#1a1a1a] dark:text-white">Усі моделі →</Link>
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             {related.map((s) => (
-              <Link key={s.slug} href={`/product/${s.slug}`} className="group rounded-sm border border-white/10 bg-[#0F0F0F] p-4 transition hover:border-[#FF6B00]">
+              <Link key={s.slug} href={`/product/${s.slug}`} className="group rounded-sm border border-[#E8E6DE] dark:border-white/10 bg-white dark:bg-[#0F0F0F] p-4 transition hover:border-[#FF6B00]">
                 <div className="mb-1 text-sm font-medium">{s.name}</div>
-                <div className="mb-3 text-xs text-white/45">{s.tagline}</div>
+                <div className="mb-3 text-xs text-[#6C6A65] dark:text-white/45">{s.tagline}</div>
                 <div className="flex items-end justify-between">
                   <div className="text-lg font-medium text-[#FF6B00]">{Number(s.price).toLocaleString('uk-UA')} ₴</div>
-                  <span className="text-xs text-white/60 group-hover:text-white">→</span>
+                  <span className="text-xs text-[#4A4A48] dark:text-white/60 group-hover:text-[#1a1a1a] dark:hover:text-[#1a1a1a] dark:text-white">→</span>
                 </div>
               </Link>
             ))}

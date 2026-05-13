@@ -50,7 +50,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
   return (
     <PageShell breadcrumb={badge} title={title} subtitle={subtitle}>
       {list.length === 0 ? (
-        <div className="rounded-sm border border-white/10 p-8 text-center text-white/55">
+        <div className="rounded-sm border border-[#E8E6DE] dark:border-white/10 p-8 text-center text-[#4A4A48] dark:text-white/55">
           У цій категорії поки немає товарів.{' '}
           <Link href="/catalog" className="text-[#FF6B00] hover:underline">Дивитись усі моделі →</Link>
         </div>
@@ -60,44 +60,44 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
             <Link
               key={s.slug}
               href={`/product/${s.slug}`}
-              className="group flex flex-col rounded-sm border border-white/10 bg-[#0F0F0F] p-5 transition hover:border-[#FF6B00]"
+              className="group flex flex-col rounded-sm border border-[#E8E6DE] dark:border-white/10 bg-white dark:bg-[#0F0F0F] p-5 transition hover:border-[#FF6B00]"
             >
               <div className="mb-3 flex items-center justify-between">
-                <span className="text-[10px] tracking-[0.2em] text-[#FF8A33]">{s.battery || '—'}</span>
+                <span className="text-[10px] tracking-[0.2em] text-[#993C1D] dark:text-[#FF8A33]">{s.battery || '—'}</span>
                 {s.badge && (
-                  <span className="rounded-sm bg-[#FF6B00] px-2 py-0.5 text-[9px] font-medium tracking-[0.15em] text-black">
+                  <span className="rounded-sm bg-[#FF6B00] px-2 py-0.5 text-[9px] font-medium tracking-[0.15em] text-white dark:text-black">
                     {s.badge.toUpperCase()}
                   </span>
                 )}
               </div>
               <div className="mb-1 text-lg font-medium tracking-tight">{s.name}</div>
-              <div className="mb-4 text-xs text-white/45">{s.tagline}</div>
-              <div className="mb-4 grid grid-cols-3 gap-2 border-y border-white/10 py-3 text-center">
+              <div className="mb-4 text-xs text-[#6C6A65] dark:text-white/45">{s.tagline}</div>
+              <div className="mb-4 grid grid-cols-3 gap-2 border-y border-[#E8E6DE] dark:border-white/10 py-3 text-center">
                 <div>
                   <div className="text-sm font-medium">
                     {s.power > 0 ? s.power : '—'}
-                    {s.power > 0 && <span className="text-[10px] text-white/40">W</span>}
+                    {s.power > 0 && <span className="text-[10px] text-[#6C6A65] dark:text-white/40">W</span>}
                   </div>
-                  <div className="text-[8px] tracking-[0.15em] text-white/40">МОТОР</div>
+                  <div className="text-[8px] tracking-[0.15em] text-[#6C6A65] dark:text-white/40">МОТОР</div>
                 </div>
                 <div>
                   <div className="text-sm font-medium">
                     {s.maxSpeed > 0 ? s.maxSpeed : '—'}
-                    {s.maxSpeed > 0 && <span className="text-[10px] text-white/40">km/h</span>}
+                    {s.maxSpeed > 0 && <span className="text-[10px] text-[#6C6A65] dark:text-white/40">km/h</span>}
                   </div>
-                  <div className="text-[8px] tracking-[0.15em] text-white/40">ШВИДК.</div>
+                  <div className="text-[8px] tracking-[0.15em] text-[#6C6A65] dark:text-white/40">ШВИДК.</div>
                 </div>
                 <div>
                   <div className="text-sm font-medium">
                     {s.range > 0 ? s.range : '—'}
-                    {s.range > 0 && <span className="text-[10px] text-white/40">km</span>}
+                    {s.range > 0 && <span className="text-[10px] text-[#6C6A65] dark:text-white/40">km</span>}
                   </div>
-                  <div className="text-[8px] tracking-[0.15em] text-white/40">ЗАПАС</div>
+                  <div className="text-[8px] tracking-[0.15em] text-[#6C6A65] dark:text-white/40">ЗАПАС</div>
                 </div>
               </div>
               <div className="mt-auto flex items-end justify-between">
                 <div className="text-xl font-medium text-[#FF6B00]">{Number(s.price).toLocaleString('uk-UA')} ₴</div>
-                <span className="flex items-center gap-1 text-xs text-white/60 group-hover:text-white">
+                <span className="flex items-center gap-1 text-xs text-[#4A4A48] dark:text-white/60 group-hover:text-[#1a1a1a] dark:hover:text-[#1a1a1a] dark:text-white">
                   Детальніше <ArrowRight size={14} />
                 </span>
               </div>
@@ -106,7 +106,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
         </div>
       )}
       <div className="mt-10 text-center">
-        <Link href="/catalog" className="inline-flex items-center gap-2 rounded-sm border border-white/25 px-6 py-3 text-xs tracking-wide hover:border-white/50">
+        <Link href="/catalog" className="inline-flex items-center gap-2 rounded-sm border border-[#E8E6DE] dark:border-white/25 px-6 py-3 text-xs tracking-wide hover:border-[#DCDAD0] dark:hover:border-white/50">
           Усі моделі <ArrowRight size={14} />
         </Link>
       </div>

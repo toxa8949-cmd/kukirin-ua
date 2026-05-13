@@ -38,20 +38,12 @@ export default async function CatalogPage() {
                 href={`/product/${s.slug}`}
                 className="group relative flex flex-col overflow-hidden rounded-sm border border-[#E8E6DE] bg-white transition hover:border-[#FF6B00] dark:border-white/10 dark:bg-[#0F0F0F]"
               >
-                {/* Image */}
-                <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-[#F0EEE6] to-[#E8E6DE] dark:from-[#1a1a1a] dark:to-[#0a0a0a]">
+                <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-[#F0EEE6] to-[#E5E2D5] dark:from-[#1a1a1a] dark:to-[#0a0a0a]">
                   {cover ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={cover}
-                      alt={s.name}
-                      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                      loading="lazy"
-                    />
+                    <img src={cover} alt={s.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" />
                   ) : (
-                    <div className="flex h-full w-full items-center justify-center text-[10px] tracking-[0.2em] text-[#1a1a1a]/25 dark:text-white/25">
-                      KUKIRIN
-                    </div>
+                    <div className="flex h-full w-full items-center justify-center text-[10px] tracking-[0.2em] text-[#1a1a1a]/25 dark:text-white/25">KUKIRIN</div>
                   )}
                   {s.badge && (
                     <span className="absolute right-3 top-3 rounded-sm bg-[#FF6B00] px-2 py-0.5 text-[9px] font-medium tracking-[0.15em] text-white dark:text-black">
@@ -60,7 +52,6 @@ export default async function CatalogPage() {
                   )}
                 </div>
 
-                {/* Body */}
                 <div className="flex flex-1 flex-col p-5">
                   <div className="mb-3 text-[10px] tracking-[0.2em] text-[#993C1D] dark:text-[#FF8A33]">
                     {CATEGORY_LABELS[s.category] ?? s.category}
