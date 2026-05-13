@@ -2,9 +2,23 @@ import { Search, User, ShoppingCart, ArrowRight } from 'lucide-react';
 import { HERO_STATS } from '@/lib/kukirin-data';
 
 export default function KukirinHero() {
+  // Помаранчева обводка 3px через 8 drop-shadow в усі сторони.
+  // Це створює рівномірну "ауру" по контуру alpha-каналу PNG.
+  const orangeStroke = [
+    'drop-shadow(3px 0 0 #FF6B00)',
+    'drop-shadow(-3px 0 0 #FF6B00)',
+    'drop-shadow(0 3px 0 #FF6B00)',
+    'drop-shadow(0 -3px 0 #FF6B00)',
+    'drop-shadow(2px 2px 0 #FF6B00)',
+    'drop-shadow(-2px 2px 0 #FF6B00)',
+    'drop-shadow(2px -2px 0 #FF6B00)',
+    'drop-shadow(-2px -2px 0 #FF6B00)',
+    // М'яке зовнішнє свічення поверх обводки
+    'drop-shadow(0 0 20px rgba(255,107,0,0.4))',
+  ].join(' ');
+
   return (
     <section className="relative overflow-hidden bg-[#FAFAF7] text-[#1a1a1a] dark:bg-[#0A0A0A] dark:text-white">
-      {/* Анімовані треки швидкості на фоні */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="kukirin-streak kukirin-streak-1" />
         <div className="kukirin-streak kukirin-streak-2" />
@@ -12,7 +26,6 @@ export default function KukirinHero() {
         <div className="kukirin-streak kukirin-streak-4" />
       </div>
 
-      {/* Контент */}
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-10">
         {/* Навігація */}
         <nav className="flex items-center justify-between border-b border-[#E8E6DE] py-4 dark:border-white/10">
@@ -40,28 +53,24 @@ export default function KukirinHero() {
           </div>
         </nav>
 
-        {/* Геро-блок: 2 колонки на desktop, 1 на mobile */}
+        {/* Геро-блок */}
         <div className="grid grid-cols-1 items-center gap-8 py-12 lg:grid-cols-[1.1fr_1fr] lg:gap-12 lg:py-16">
           {/* ЛІВА: текст */}
           <div className="relative">
-            {/* Індикатор наявності */}
             <div className="kukirin-fade-1 mb-5 flex items-center gap-2 text-[11px] tracking-[0.15em] text-[#4A4A48] dark:text-white/60">
               <span className="kukirin-pulse-dot" />
               В НАЯВНОСТІ · 12 МОДЕЛЕЙ
             </div>
 
-            {/* Системний тег */}
             <div className="kukirin-fade-1 mb-5 text-[11px] tracking-[0.3em] text-[#993C1D] dark:text-[#FF8A33]">
               // SYS.BOOT // KUKIRIN G2 PRO 2026
             </div>
 
-            {/* Гліч-заголовок: рядок 1 */}
             <h1 className="kukirin-fade-2 mb-1 text-5xl font-medium leading-[0.9] tracking-[-0.04em] md:text-7xl lg:text-7xl xl:text-8xl">
               <span className="kukirin-glitch relative inline-block" data-text="FEEL">FEEL</span>
               <span className="text-[#1a1a1a]/30 dark:text-white/30"> THE</span>
             </h1>
 
-            {/* Гліч-заголовок: рядок 2 */}
             <h1 className="kukirin-fade-3 mb-5 text-5xl font-medium leading-[0.9] tracking-[-0.04em] text-[#FF6B00] md:text-7xl lg:text-7xl xl:text-8xl">
               <span className="kukirin-glitch relative inline-block" data-text="RUSH.">
                 RUSH<span className="text-[#1a1a1a] dark:text-white">.</span>
@@ -69,13 +78,11 @@ export default function KukirinHero() {
               <span className="kukirin-cursor text-[#FF6B00]">_</span>
             </h1>
 
-            {/* Опис */}
             <p className="kukirin-fade-3 mb-6 max-w-md text-sm leading-relaxed text-[#4A4A48] dark:text-white/55">
               Не просто самокат — адреналін під ногами. Офіційний KUKIRIN в Україні.
               Гарантія, сервіс, доставка завтра.
             </p>
 
-            {/* CTA */}
             <div className="kukirin-fade-4 mb-9 flex flex-wrap gap-2">
               <a
                 href="/product/kukirin-g2-pro"
@@ -92,7 +99,6 @@ export default function KukirinHero() {
               </a>
             </div>
 
-            {/* Статистика */}
             <div className="kukirin-fade-4 grid grid-cols-2 gap-6 border-t border-[#E8E6DE] pt-6 dark:border-white/10 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
               {HERO_STATS.map((stat) => (
                 <div key={stat.label}>
@@ -108,7 +114,7 @@ export default function KukirinHero() {
             </div>
           </div>
 
-          {/* ПРАВА: фото G2 Pro (тепер з прозорим фоном) */}
+          {/* ПРАВА: фото G2 Pro з помаранчевою обводкою */}
           <div className="kukirin-fade-3 relative flex h-[400px] items-center justify-center sm:h-[500px] lg:h-[560px]">
             {/* Soft orange glow ззаду */}
             <div
@@ -120,29 +126,16 @@ export default function KukirinHero() {
                 filter: 'blur(40px)',
               }}
             />
-            {/* Додаткова гарячіша точка по центру */}
-            <div
-              className="pointer-events-none absolute inset-0 m-auto"
-              aria-hidden="true"
-              style={{
-                background:
-                  'radial-gradient(circle at center, rgba(255,138,51,0.22) 0%, transparent 35%)',
-                filter: 'blur(20px)',
-              }}
-            />
 
-            {/* Фото вирізане з прозорим фоном — жодних трюків з blend-mode */}
+            {/* Фото з помаранчевою обводкою через 8 drop-shadow */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/hero/g2-pro.png"
               alt="KUKIRIN G2 Pro"
               className="relative z-10 h-full w-auto max-w-none object-contain"
-              style={{
-                filter: 'drop-shadow(0 25px 50px rgba(255,107,0,0.25)) drop-shadow(0 10px 20px rgba(0,0,0,0.15))',
-              }}
+              style={{ filter: orangeStroke }}
             />
 
-            {/* Декоративний міні-тег унизу */}
             <div className="absolute bottom-0 left-1/2 z-20 -translate-x-1/2 text-[9px] tracking-[0.3em] text-[#6C6A65] dark:text-white/40">
               // FLAGSHIP · 600W · 45 KM/H
             </div>
