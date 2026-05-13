@@ -4,6 +4,7 @@ import { HERO_STATS } from '@/lib/kukirin-data';
 export default function KukirinHero() {
   return (
     <section className="relative overflow-hidden bg-[#FAFAF7] text-[#1a1a1a] dark:bg-[#0A0A0A] dark:text-white">
+      {/* Анімовані треки швидкості на фоні */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="kukirin-streak kukirin-streak-1" />
         <div className="kukirin-streak kukirin-streak-2" />
@@ -99,32 +100,69 @@ export default function KukirinHero() {
             </div>
           </div>
 
-          {/* ПРАВА: фото G2 Pro (тимчасово — як було до обводки) */}
-          <div className="kukirin-fade-3 relative flex h-[400px] items-center justify-center sm:h-[500px] lg:h-[560px]">
-            {/* Soft orange glow ззаду */}
+          {/* ПРАВА: Tech Sheet з фото */}
+          <div className="kukirin-fade-3 relative">
             <div
-              className="pointer-events-none absolute inset-0 m-auto"
-              aria-hidden="true"
+              className="relative aspect-square overflow-hidden rounded-md border border-[#E8E6DE] bg-white dark:border-white/15 dark:bg-[#0A0A0A]"
               style={{
-                background:
-                  'radial-gradient(circle at center, rgba(255,107,0,0.32) 0%, rgba(255,107,0,0.18) 25%, rgba(255,107,0,0.05) 50%, transparent 75%)',
-                filter: 'blur(40px)',
+                // Тонка сітка 24x24px на фоні
+                backgroundImage:
+                  'linear-gradient(to right, rgba(232,230,222,0.5) 1px, transparent 1px), linear-gradient(to bottom, rgba(232,230,222,0.5) 1px, transparent 1px)',
+                backgroundSize: '24px 24px',
               }}
-            />
+            >
+              {/* Тех-тег верх-лівий */}
+              <div className="absolute left-4 top-3 z-20 text-[10px] tracking-[0.2em] text-[#993C1D] dark:text-[#FF8A33]">
+                // 01 · FLAGSHIP
+              </div>
 
-            {/* Фото — оригінал з білим фоном, multiply щоб білий "розчинився" */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/hero/g2-pro.png"
-              alt="KUKIRIN G2 Pro"
-              className="relative z-10 h-full w-auto max-w-none object-contain mix-blend-multiply dark:mix-blend-normal"
-              style={{
-                filter: 'drop-shadow(0 20px 40px rgba(255,107,0,0.18))',
-              }}
-            />
+              {/* Координати верх-правий */}
+              <div className="absolute right-4 top-3 z-20 font-mono text-[10px] tracking-[0.15em] text-[#993C1D] dark:text-[#FF8A33]">
+                XY: 0.61 · 1.18
+              </div>
 
-            <div className="absolute bottom-0 left-1/2 z-20 -translate-x-1/2 text-[9px] tracking-[0.3em] text-[#6C6A65] dark:text-white/40">
-              // FLAGSHIP · 600W · 45 KM/H
+              {/* Вертикальна лінія вимірювання зліва */}
+              <div className="pointer-events-none absolute left-5 top-10 bottom-10 z-10 w-px bg-[#FF6B00]/40">
+                {/* Капелюшки на кінцях */}
+                <div className="absolute top-0 -left-1 h-px w-3 bg-[#FF6B00]/60" />
+                <div className="absolute bottom-0 -left-1 h-px w-3 bg-[#FF6B00]/60" />
+              </div>
+              <div className="absolute left-9 top-14 z-20 font-mono text-[10px] tracking-[0.1em] text-[#993C1D] dark:text-[#FF8A33]">
+                H: 1156mm
+              </div>
+
+              {/* Горизонтальна лінія вимірювання знизу */}
+              <div className="pointer-events-none absolute left-10 right-10 bottom-5 z-10 h-px bg-[#FF6B00]/40">
+                <div className="absolute left-0 -top-1 h-3 w-px bg-[#FF6B00]/60" />
+                <div className="absolute right-0 -top-1 h-3 w-px bg-[#FF6B00]/60" />
+              </div>
+              <div className="absolute left-14 bottom-7 z-20 font-mono text-[10px] tracking-[0.1em] text-[#993C1D] dark:text-[#FF8A33]">
+                L: 1206mm
+              </div>
+
+              {/* М'яке оранжеве світіння за самокатом — тонкий радіальний градієнт */}
+              <div
+                className="pointer-events-none absolute inset-0 z-10"
+                aria-hidden="true"
+                style={{
+                  background:
+                    'radial-gradient(circle at 50% 55%, rgba(255,107,0,0.10) 0%, transparent 60%)',
+                }}
+              />
+
+              {/* Фото — multiply щоб білий фон фото зник у білу картку */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/hero/g2-pro.png"
+                alt="KUKIRIN G2 Pro"
+                className="absolute inset-0 z-10 h-full w-full object-contain p-12 mix-blend-multiply dark:mix-blend-screen dark:invert"
+              />
+            </div>
+
+            {/* Підпис під карткою */}
+            <div className="mt-3 flex items-center justify-between text-[9px] tracking-[0.3em] text-[#6C6A65] dark:text-white/40">
+              <span>// FLAGSHIP · 600W · 45 KM/H</span>
+              <span>G2 PRO · 2026</span>
             </div>
           </div>
         </div>
