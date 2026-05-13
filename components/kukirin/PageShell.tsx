@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Search, User, Menu, Instagram, Facebook, Youtube, Send } from 'lucide-react';
 import CartIcon from '@/components/cart/CartIcon';
+import Logo from '@/components/kukirin/Logo';
 
 export default function PageShell({
   children, title, subtitle, breadcrumb,
@@ -15,9 +16,7 @@ export default function PageShell({
       <header className="sticky top-0 z-50 border-b border-[#E8E6DE] bg-[#FAFAF7]/90 backdrop-blur dark:border-white/10 dark:bg-[#0A0A0A]/90">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-10">
           <div className="flex items-center gap-4 md:gap-8">
-            <Link href="/" className="text-base font-medium tracking-[0.15em] sm:text-lg">
-              KUKIRIN<span className="text-[#FF6B00]">.</span>UA
-            </Link>
+            <Logo variant="inline" size={28} />
             <ul className="hidden gap-5 text-sm text-[#4A4A48] dark:text-white/70 md:flex">
               <li><Link href="/catalog" className="hover:text-[#1a1a1a] dark:hover:text-white">Самокати</Link></li>
               <li><Link href="/accessories" className="hover:text-[#1a1a1a] dark:hover:text-white">Аксесуари</Link></li>
@@ -65,7 +64,9 @@ export default function PageShell({
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
           <div className="grid grid-cols-2 gap-8 border-b border-[#E8E6DE] pb-10 dark:border-white/10 md:grid-cols-4">
             <div className="col-span-2 md:col-span-1">
-              <div className="mb-3 text-lg font-medium tracking-[0.15em]">KUKIRIN<span className="text-[#FF6B00]">.</span>UA</div>
+              <div className="mb-3">
+                <Logo variant="full" size={56} />
+              </div>
               <p className="mb-4 max-w-xs text-xs leading-relaxed text-[#6C6A65] dark:text-white/45">Офіційний дистрибʼютор електросамокатів KUKIRIN в Україні. Гарантія, сервіс, доставка.</p>
               <div className="flex gap-2">
                 <a href="#" aria-label="Instagram" className="flex h-8 w-8 items-center justify-center rounded-sm border border-[#E8E6DE] text-[#6C6A65] hover:border-[#FF6B00] hover:text-[#FF6B00] dark:border-white/10 dark:text-white/60"><Instagram size={14} /></a>

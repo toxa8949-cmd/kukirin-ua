@@ -73,6 +73,14 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
         {/* Visual */}
         <div className="relative aspect-square overflow-hidden rounded-md border border-[#E8E6DE] bg-white dark:border-white/10 dark:bg-gradient-to-br dark:from-[#1a1a1a] dark:to-[#0a0a0a]">
+          {/* Дракон-watermark ззаду — великий, дуже прозорий */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo-mark.png"
+            alt=""
+            aria-hidden="true"
+            className="pointer-events-none absolute -right-12 -bottom-8 h-72 w-auto opacity-[0.06] select-none dark:opacity-[0.10]"
+          />
           <div className="absolute left-5 top-5 z-10 flex flex-col gap-2">
             {scooter.badge && (
               <span className="rounded-sm bg-[#FF6B00] px-2 py-1 text-[10px] font-medium tracking-[0.15em] text-white dark:text-black">
