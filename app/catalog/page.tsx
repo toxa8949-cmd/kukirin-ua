@@ -23,7 +23,7 @@ export default async function CatalogPage() {
       subtitle={`${list.length} електросамокатів — від міських до off-road флагманів. Усі офіційні, з гарантією 12 місяців.`}
     >
       {list.length === 0 ? (
-        <div className="rounded-sm border border-white/10 p-8 text-center text-white/55">
+        <div className="rounded-sm border border-[#E8E6DE] p-8 text-center text-[#6C6A65] dark:border-white/10 dark:text-white/55">
           Поки що немає товарів у каталозі.
         </div>
       ) : (
@@ -36,10 +36,10 @@ export default async function CatalogPage() {
               <Link
                 key={s.slug}
                 href={`/product/${s.slug}`}
-                className="group relative flex flex-col overflow-hidden rounded-sm border border-white/10 bg-[#0F0F0F] transition hover:border-[#FF6B00]"
+                className="group relative flex flex-col overflow-hidden rounded-sm border border-[#E8E6DE] bg-white transition hover:border-[#FF6B00] dark:border-white/10 dark:bg-[#0F0F0F]"
               >
                 {/* Image */}
-                <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-[#1a1a1a] to-[#0a0a0a]">
+                <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-[#F0EEE6] to-[#E8E6DE] dark:from-[#1a1a1a] dark:to-[#0a0a0a]">
                   {cover ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
@@ -49,12 +49,12 @@ export default async function CatalogPage() {
                       loading="lazy"
                     />
                   ) : (
-                    <div className="flex h-full w-full items-center justify-center text-[10px] tracking-[0.2em] text-white/25">
+                    <div className="flex h-full w-full items-center justify-center text-[10px] tracking-[0.2em] text-[#1a1a1a]/25 dark:text-white/25">
                       KUKIRIN
                     </div>
                   )}
                   {s.badge && (
-                    <span className="absolute right-3 top-3 rounded-sm bg-[#FF6B00] px-2 py-0.5 text-[9px] font-medium tracking-[0.15em] text-black">
+                    <span className="absolute right-3 top-3 rounded-sm bg-[#FF6B00] px-2 py-0.5 text-[9px] font-medium tracking-[0.15em] text-white dark:text-black">
                       {s.badge.toUpperCase()}
                     </span>
                   )}
@@ -62,42 +62,42 @@ export default async function CatalogPage() {
 
                 {/* Body */}
                 <div className="flex flex-1 flex-col p-5">
-                  <div className="mb-3 text-[10px] tracking-[0.2em] text-[#FF8A33]">
+                  <div className="mb-3 text-[10px] tracking-[0.2em] text-[#993C1D] dark:text-[#FF8A33]">
                     {CATEGORY_LABELS[s.category] ?? s.category}
                   </div>
                   <div className="mb-1 text-lg font-medium tracking-tight">{s.name}</div>
-                  <div className="mb-4 text-xs text-white/45">{s.tagline}</div>
-                  <div className="mb-4 grid grid-cols-3 gap-2 border-y border-white/10 py-3 text-center">
+                  <div className="mb-4 text-xs text-[#6C6A65] dark:text-white/45">{s.tagline}</div>
+                  <div className="mb-4 grid grid-cols-3 gap-2 border-y border-[#E8E6DE] py-3 text-center dark:border-white/10">
                     <div>
                       <div className="text-sm font-medium">
                         {s.power > 0 ? s.power : '—'}
-                        {s.power > 0 && <span className="text-[10px] text-white/40">W</span>}
+                        {s.power > 0 && <span className="text-[10px] text-[#6C6A65] dark:text-white/40">W</span>}
                       </div>
-                      <div className="text-[8px] tracking-[0.15em] text-white/40">МОТОР</div>
+                      <div className="text-[8px] tracking-[0.15em] text-[#6C6A65] dark:text-white/40">МОТОР</div>
                     </div>
                     <div>
                       <div className="text-sm font-medium">
                         {s.maxSpeed > 0 ? s.maxSpeed : '—'}
-                        {s.maxSpeed > 0 && <span className="text-[10px] text-white/40">km/h</span>}
+                        {s.maxSpeed > 0 && <span className="text-[10px] text-[#6C6A65] dark:text-white/40">km/h</span>}
                       </div>
-                      <div className="text-[8px] tracking-[0.15em] text-white/40">ШВИДК.</div>
+                      <div className="text-[8px] tracking-[0.15em] text-[#6C6A65] dark:text-white/40">ШВИДК.</div>
                     </div>
                     <div>
                       <div className="text-sm font-medium">
                         {s.range > 0 ? s.range : '—'}
-                        {s.range > 0 && <span className="text-[10px] text-white/40">km</span>}
+                        {s.range > 0 && <span className="text-[10px] text-[#6C6A65] dark:text-white/40">km</span>}
                       </div>
-                      <div className="text-[8px] tracking-[0.15em] text-white/40">ЗАПАС</div>
+                      <div className="text-[8px] tracking-[0.15em] text-[#6C6A65] dark:text-white/40">ЗАПАС</div>
                     </div>
                   </div>
                   <div className="mt-auto flex items-end justify-between">
                     <div>
                       {s.oldPrice && (
-                        <div className="text-[11px] text-white/30 line-through">{Number(s.oldPrice).toLocaleString('uk-UA')} ₴</div>
+                        <div className="text-[11px] text-[#6C6A65] line-through dark:text-white/30">{Number(s.oldPrice).toLocaleString('uk-UA')} ₴</div>
                       )}
                       <div className="text-xl font-medium text-[#FF6B00]">{Number(s.price).toLocaleString('uk-UA')} ₴</div>
                     </div>
-                    <div className="flex items-center gap-1 text-xs text-white/60 transition group-hover:text-white">
+                    <div className="flex items-center gap-1 text-xs text-[#4A4A48] transition group-hover:text-[#1a1a1a] dark:text-white/60 dark:group-hover:text-white">
                       Детальніше <ArrowRight size={14} />
                     </div>
                   </div>

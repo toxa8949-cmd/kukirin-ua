@@ -1,70 +1,45 @@
 @import "tailwindcss";
 
 /* ============================================================
-   KUKIRIN.UA — глобальні стилі й анімації
+   KUKIRIN.UA — Tailwind v4 + dark mode via [data-theme="dark"]
+   За замовчуванням — світла тема. Темна вмикається класами dark:*
    ============================================================ */
 
-/* ---------- THEME TOKENS ---------- */
-/* Базові значення = темна тема */
+/* Custom variant: dark = коли є data-theme="dark" десь вище в дереві */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* Auto: якщо у користувача в ОС темна тема і він НЕ обрав явно іншу —
+   додамо data-theme="dark" через скрипт у layout.tsx.
+   Це робиться в JS бо CSS-only підхід зі @media (prefers-color-scheme)
+   погано стикається з manual override через localStorage. */
+
+/* ---------- BASE THEME VARIABLES ---------- */
+/* Світла тема — за замовч. */
 :root {
-  --kukirin-bg: #0a0a0a;
-  --kukirin-fg: #ffffff;
-  --kukirin-fg-muted: rgba(255, 255, 255, 0.55);
-  --kukirin-fg-dim: rgba(255, 255, 255, 0.4);
-  --kukirin-card: #0f0f0f;
-  --kukirin-pic-from: #1a1a1a;
-  --kukirin-pic-to: #0a0a0a;
-  --kukirin-border: rgba(255, 255, 255, 0.1);
-
-  --kukirin-orange: #ff6b00;
-  --kukirin-orange-light: #ff8a33;
-  --kukirin-cyan: #00d9ff;
-
-  color-scheme: dark;
-}
-
-/* Світла тема (forced) */
-html[data-theme='light'] {
   --kukirin-bg: #fafaf7;
   --kukirin-fg: #1a1a1a;
-  --kukirin-fg-muted: rgba(26, 26, 26, 0.65);
-  --kukirin-fg-dim: rgba(26, 26, 26, 0.45);
   --kukirin-card: #ffffff;
   --kukirin-pic-from: #f0eee6;
   --kukirin-pic-to: #e8e6de;
   --kukirin-border: #e8e6de;
 
+  --kukirin-orange: #ff6b00;
+  --kukirin-orange-light: #ff8a33;
+  --kukirin-cyan: #00d9ff;
+
   color-scheme: light;
 }
 
-/* Темна тема (forced — навіть якщо ОС світла) */
-html[data-theme='dark'] {
+/* Темна тема */
+[data-theme="dark"] {
   --kukirin-bg: #0a0a0a;
   --kukirin-fg: #ffffff;
-  --kukirin-fg-muted: rgba(255, 255, 255, 0.55);
-  --kukirin-fg-dim: rgba(255, 255, 255, 0.4);
   --kukirin-card: #0f0f0f;
   --kukirin-pic-from: #1a1a1a;
   --kukirin-pic-to: #0a0a0a;
   --kukirin-border: rgba(255, 255, 255, 0.1);
 
   color-scheme: dark;
-}
-
-/* Auto: якщо немає data-theme — дивимось на ОС */
-@media (prefers-color-scheme: light) {
-  html:not([data-theme]) {
-    --kukirin-bg: #fafaf7;
-    --kukirin-fg: #1a1a1a;
-    --kukirin-fg-muted: rgba(26, 26, 26, 0.65);
-    --kukirin-fg-dim: rgba(26, 26, 26, 0.45);
-    --kukirin-card: #ffffff;
-    --kukirin-pic-from: #f0eee6;
-    --kukirin-pic-to: #e8e6de;
-    --kukirin-border: #e8e6de;
-
-    color-scheme: light;
-  }
 }
 
 /* ---------- BASE ---------- */
@@ -79,52 +54,6 @@ body {
     "Helvetica Neue", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-/* ---------- TAILWIND OVERRIDES для теми ---------- */
-/* Картки і фон з #0F0F0F */
-.bg-\[\#0F0F0F\],
-.bg-\[\#0f0f0f\] {
-  background-color: var(--kukirin-card) !important;
-}
-
-/* Градієнти на фото товара */
-.from-\[\#1a1a1a\],
-.from-\[\#1A1A1A\] {
-  --tw-gradient-from: var(--kukirin-pic-from) !important;
-}
-.to-\[\#0a0a0a\],
-.to-\[\#0A0A0A\] {
-  --tw-gradient-to: var(--kukirin-pic-to) !important;
-}
-
-/* Текст */
-html[data-theme='light'] .text-white,
-html:not([data-theme]) .text-white {
-  color: var(--kukirin-fg);
-}
-
-@media (prefers-color-scheme: light) {
-  html:not([data-theme]) .text-white { color: var(--kukirin-fg) !important; }
-  html:not([data-theme]) .text-white\/45 { color: var(--kukirin-fg-dim) !important; }
-  html:not([data-theme]) .text-white\/55 { color: var(--kukirin-fg-muted) !important; }
-  html:not([data-theme]) .text-white\/60 { color: var(--kukirin-fg-muted) !important; }
-  html:not([data-theme]) .text-white\/40 { color: var(--kukirin-fg-dim) !important; }
-  html:not([data-theme]) .text-white\/30 { color: var(--kukirin-fg-dim) !important; }
-  html:not([data-theme]) .text-white\/25 { color: var(--kukirin-fg-dim) !important; }
-}
-
-html[data-theme='light'] .text-white { color: var(--kukirin-fg) !important; }
-html[data-theme='light'] .text-white\/45 { color: var(--kukirin-fg-dim) !important; }
-html[data-theme='light'] .text-white\/55 { color: var(--kukirin-fg-muted) !important; }
-html[data-theme='light'] .text-white\/60 { color: var(--kukirin-fg-muted) !important; }
-html[data-theme='light'] .text-white\/40 { color: var(--kukirin-fg-dim) !important; }
-html[data-theme='light'] .text-white\/30 { color: var(--kukirin-fg-dim) !important; }
-html[data-theme='light'] .text-white\/25 { color: var(--kukirin-fg-dim) !important; }
-
-/* Рамки */
-.border-white\/10 {
-  border-color: var(--kukirin-border) !important;
 }
 
 /* ---------- ORANGE ACCENTS ---------- */
@@ -148,7 +77,7 @@ body::before {
   pointer-events: none;
 }
 
-/* 2. Карточки товара — оранжева смужка зліва */
+/* 2. Карточка товара — оранжева смужка зліва */
 a[href^="/product/"] {
   position: relative;
 }
@@ -176,55 +105,18 @@ a[href^="/product/"]:hover {
   border-color: var(--kukirin-orange) !important;
 }
 
-/* 3. Бейджі-категорії на оранжевих пілюлях */
-.text-\[\#FF8A33\] {
-  display: inline-block;
-  padding: 3px 8px;
-  background: rgba(255, 107, 0, 0.12);
-  border-radius: 2px;
-}
-
-/* У світлій темі бейджі категорій — темно-помаранчевий текст */
-html[data-theme='light'] .text-\[\#FF8A33\] {
-  color: #993c1d !important;
-}
-
-@media (prefers-color-scheme: light) {
-  html:not([data-theme]) .text-\[\#FF8A33\] {
-    color: #993c1d !important;
-  }
-}
-
-/* 4. Світіння на бейджах NEW/HIT/TOP */
+/* 3. Світіння на бейджах NEW/HIT/TOP */
 .absolute.bg-\[\#FF6B00\],
 [class*="absolute"][class*="bg-[#FF6B00]"] {
   box-shadow: 0 0 16px rgba(255, 107, 0, 0.5);
 }
 
-/* 5. Іконки в хедері */
-header button:hover,
-header a[aria-label]:hover {
-  color: var(--kukirin-orange);
-}
-
-/* 6. Цінник */
-.text-\[\#FF6B00\] {
-  letter-spacing: -0.01em;
-}
-
-/* 7. Кнопки cart/checkout */
-button[type="submit"],
-a[href="/cart"]:not([aria-label]),
-a[href="/checkout"]:not([aria-label]) {
-  box-shadow: 0 4px 16px rgba(255, 107, 0, 0.15);
-}
-
-/* 8. Smooth скрол */
+/* 4. Smooth скрол */
 html {
   scroll-behavior: smooth;
 }
 
-/* ---------- ANIMATIONS (без змін, лиш з тематичними змінними) ---------- */
+/* ---------- ANIMATIONS (без змін) ---------- */
 
 /* --- Треки швидкості --- */
 .kukirin-streak {
@@ -236,12 +128,7 @@ html {
   animation: kukirinStreak 3s linear infinite;
 }
 
-.kukirin-streak-1 {
-  top: 18%;
-  width: 180px;
-  animation-duration: 2.8s;
-  animation-delay: 0s;
-}
+.kukirin-streak-1 { top: 18%; width: 180px; animation-duration: 2.8s; animation-delay: 0s; }
 .kukirin-streak-2 {
   top: 42%;
   width: 120px;
@@ -250,12 +137,7 @@ html {
   animation-duration: 3.4s;
   animation-delay: 0.6s;
 }
-.kukirin-streak-3 {
-  top: 68%;
-  width: 220px;
-  animation-duration: 2.2s;
-  animation-delay: 1.2s;
-}
+.kukirin-streak-3 { top: 68%; width: 220px; animation-duration: 2.2s; animation-delay: 1.2s; }
 .kukirin-streak-4 {
   top: 85%;
   width: 80px;
@@ -272,19 +154,14 @@ html {
 }
 
 /* --- Гліч --- */
-.kukirin-glitch {
-  position: relative;
-  display: inline-block;
-}
+.kukirin-glitch { position: relative; display: inline-block; }
 
 .kukirin-glitch::before,
 .kukirin-glitch::after {
   content: attr(data-text);
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   pointer-events: none;
 }
 
@@ -316,10 +193,7 @@ html {
 }
 
 /* --- Курсор --- */
-.kukirin-cursor {
-  display: inline-block;
-  animation: kukirinBlink 0.9s steps(1) infinite;
-}
+.kukirin-cursor { display: inline-block; animation: kukirinBlink 0.9s steps(1) infinite; }
 
 @keyframes kukirinBlink {
   0%, 49%, 100% { opacity: 1; }
@@ -329,8 +203,7 @@ html {
 /* --- Пульсуюча точка --- */
 .kukirin-pulse-dot {
   display: inline-block;
-  width: 7px;
-  height: 7px;
+  width: 7px; height: 7px;
   background: var(--kukirin-orange);
   border-radius: 50%;
   box-shadow: 0 0 10px var(--kukirin-orange);

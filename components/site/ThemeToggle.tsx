@@ -5,11 +5,6 @@ import { Sun, Moon, Monitor } from 'lucide-react';
 
 type Theme = 'light' | 'dark' | 'auto';
 
-/**
- * Плаваюча кнопка перемикання теми.
- * Фіксується в правому верхньому куті сайту.
- * Не потребує змін у Header.
- */
 export default function ThemeToggle() {
   const [theme, setTheme] = useState<Theme>('auto');
   const [mounted, setMounted] = useState(false);
@@ -28,8 +23,14 @@ export default function ThemeToggle() {
     if (!mounted) return;
     const html = document.documentElement;
     if (theme === 'auto') {
-      html.removeAttribute('data-theme');
+      // Видаляємо ручний override, далі дивимось на ОС
       localStorage.removeItem('kukirin-theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (prefersDark) {
+        html.setAttribute('data-theme', 'dark');
+      } else {
+        html.removeAttribute('data-theme');
+      }
     } else {
       html.setAttribute('data-theme', theme);
       localStorage.setItem('kukirin-theme', theme);
@@ -62,33 +63,7 @@ export default function ThemeToggle() {
       onClick={handleClick}
       aria-label={label}
       title={label}
-      style={{
-        position: 'fixed',
-        top: '14px',
-        right: '14px',
-        zIndex: 200,
-        width: '36px',
-        height: '36px',
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: 'rgba(0, 0, 0, 0.4)',
-        backdropFilter: 'blur(8px)',
-        WebkitBackdropFilter: 'blur(8px)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-        borderRadius: '4px',
-        color: 'rgba(255, 255, 255, 0.7)',
-        cursor: 'pointer',
-        transition: 'all 0.2s ease',
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.color = '#FF6B00';
-        e.currentTarget.style.borderColor = 'rgba(255, 107, 0, 0.5)';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.color = 'rgba(255, 255, 255, 0.7)';
-        e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-      }}
+      className="fixed top-3 right-3 z-[200] inline-flex h-9 w-9 items-center justify-center rounded-sm border border-[#E8E6DE] bg-white/70 text-[#4A4A48] backdrop-blur transition hover:border-[#FF6B00] hover:text-[#FF6B00] dark:border-white/10 dark:bg-black/40 dark:text-white/70"
     >
       <Icon size={16} />
     </button>
