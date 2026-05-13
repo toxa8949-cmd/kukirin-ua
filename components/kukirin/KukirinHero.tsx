@@ -131,19 +131,17 @@ export default function KukirinHero() {
               }}
             />
 
-            {/* Фото — з маскою щоб краї танули */}
+            {/* Фото — білий фон знімається через mix-blend-mode: multiply.
+                Це робить білі пікселі прозорими, чорні/темні лишаються.
+                У темній темі лишаємо як є — multiply на темному фоні не дасть
+                проблем (білі пікселі помножені на темний = темний). */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/hero/g2-pro.png"
               alt="KUKIRIN G2 Pro"
-              className="relative z-10 h-full w-auto max-w-none object-contain"
+              className="relative z-10 h-full w-auto max-w-none object-contain mix-blend-multiply dark:mix-blend-normal"
               style={{
-                // Маска по краях — фото плавно зливається з фоном
-                WebkitMaskImage:
-                  'radial-gradient(ellipse 85% 90% at center, black 60%, transparent 95%)',
-                maskImage:
-                  'radial-gradient(ellipse 85% 90% at center, black 60%, transparent 95%)',
-                filter: 'drop-shadow(0 20px 40px rgba(255,107,0,0.15))',
+                filter: 'drop-shadow(0 20px 40px rgba(255,107,0,0.18))',
               }}
             />
 
