@@ -1,176 +1,99 @@
-# Block 12 — Site Settings + Dynamic Header/Footer
+# Light/Dark Theme — повний пакет
 
-## Що в цьому пакеті
-
-Це фінальний блок. Все що ти хотів змінювати руками — телефон, email, адреса,
-соцмережі, копірайт — тепер живе в БД у таблиці `site_settings` і
-редагується в адмінці. Хедер і футер на сайті беруть значення з БД.
-
-### Файли (заливаються в репо)
+## Що в пакеті
 
 ```
-sql/site-settings.sql              — нова таблиця + RLS + seed дефолтних ключів
-lib/site-settings.ts               — server util getSiteSettings()
-app/admin/settings/page.tsx        — нова сторінка адмінки
-app/admin/settings/actions.ts      — server action оновлення
-components/admin/SettingsForm.tsx  — клієнтська форма
-components/admin/AdminNav.tsx      — оновлений (нова вкладка "Налаштування")
+app/globals.css                       ← ЗАМІНИТИ існуючий
+app/layout.tsx                        ← ЗАМІНИТИ існуючий
+components/site/ThemeToggle.tsx       ← НОВИЙ файл
 ```
 
-### Файли-приклади (НЕ заливаються, дивись і копіюй що потрібно)
+3 файли. Жоден інший файл сайту чіпати не треба.
 
-```
-examples/Header.example.tsx        — приклад async Header з БД
-examples/Footer.example.tsx        — приклад async Footer з БД
-```
+## Як працює
 
----
+- Кнопка теми зʼявляється у **правому верхньому куті** будь-якої сторінки.
+  Це floating-кнопка з blur-фоном, не потребує змін у Header.
+- Циклічний клік: 🖥 auto → ☀️ light → 🌙 dark → 🖥 auto
+- Вибір зберігається у `localStorage.kukirin-theme`.
+- За замовч. **auto** — підлаштовується під ОС користувача.
+- Inline-script у `<head>` запобігає flash при перезавантаженні.
 
-## Послідовність дій
+## Як залити
 
-### 1. SQL у Supabase (першим!)
+### 1. `app/globals.css` (замінити)
 
-Supabase → SQL Editor → New query → встав `sql/site-settings.sql` → Run.
+GitHub → `app/globals.css` → олівець → виділи все → видали →
+встав вміст з ZIP → Commit `theme: light/dark tokens`.
 
-Внизу побачиш таблицю з усіма ключами (phone, email, address, telegram_url
-і т.д.) зі значеннями `(пусто)` для більшості і двома заповненими
-(`site_title`, `footer_about`, `copyright`, `work_hours`).
+⚠️ Це **повна заміна**. Я взяв твій існуючий globals.css і додав
+зверху CSS-токени теми. Усі анімації (streak, glitch, cursor,
+pulse, fade) лишились ідентичними.
 
-### 2. Залий код адмінки
+### 2. `app/layout.tsx` (замінити)
 
-GitHub → Add file → Upload files → перетягни:
-- `lib/site-settings.ts` (новий файл)
-- `app/admin/settings/` (нова папка з 2 файлами)
-- `components/admin/SettingsForm.tsx` (новий)
-- `components/admin/AdminNav.tsx` (⚠️ замінює існуючий — додано іконку "Налаштування")
+GitHub → `app/layout.tsx` → олівець → виділи все → видали →
+встав вміст з ZIP → Commit `theme: enable toggle + no-flash script`.
 
-Commit: `Block 12: site settings admin`.
+Зміни:
+- `suppressHydrationWarning` на `<html>`
+- Inline-script у `<head>` для застосування теми до першого рендеру
+- `<ThemeToggle />` у `<body>` (floating button)
 
-⚠️ Якщо твій поточний `AdminNav.tsx` має додаткові кастомні елементи —
-дивись на наш файл і додай тільки рядок з `Settings` icon в масив `NAV`,
-не заміняй цілий файл.
+### 3. `components/site/ThemeToggle.tsx` (новий файл)
 
-### 3. Перевір адмінку
+Якщо папки `components/site/` ще немає — створи її через
+Add file → Create new file → введи назву `components/site/ThemeToggle.tsx` →
+встав вміст → Commit `theme: add toggle component`.
 
-1. `/admin` — у сайдбарі зʼявилась нова вкладка **Налаштування** (іконка шестерні)
-2. Клік → відкривається сторінка з 3 групами: Контакти / Соцмережі / Інше
-3. Заповни поля: телефон, email, адресу, telegram_url (якщо є) і т.д.
-4. Внизу — велика помаранчева кнопка **ЗБЕРЕГТИ ВСІ** (sticky)
-5. Натисни → побачиш «Оновлено N параметрів»
-6. Перезавантаж сторінку — значення збереглись
+Якщо папка є — Add file → Upload files → перетягни файл.
 
-### 4. Оновлення Header/Footer на сайті
+## Порядок деплою
 
-⚠️ **Це найделікатніша частина.** Я не бачив твоїх поточних `Header.tsx` і
-`Footer.tsx`, тому даю **приклади** в папці `examples/`. Дивись на них і
-вирішуй сам, що робити:
+Не критичний, але рекомендую:
+1. Спершу `components/site/ThemeToggle.tsx` (новий файл)
+2. Потім `app/globals.css`
+3. Останнім `app/layout.tsx` (бо він імпортує ThemeToggle)
 
-#### Варіант A — повна заміна (якщо твоя розмітка близька до моєї)
+Якщо запушити layout.tsx раніше ніж ThemeToggle — Vercel виб'є помилку
+білда. Але це швидко виправляється — просто запушиш ThemeToggle після.
 
-Скопіюй вміст `examples/Header.example.tsx` → встав у твій
-`components/site/Header.tsx` → перевір що імпорт `Phone`, `Search`, `User`
-тощо приходить з `lucide-react` (вже є в проєкті).
+## Smoke-test
 
-Те саме для `Footer.example.tsx` → `components/site/Footer.tsx`.
+Після всіх трьох commits + Vercel Ready:
 
-#### Варіант B — частковий патч (рекомендую)
+1. Відкрий `https://kukirin-ua-gpbw.vercel.app` у новій вкладці
+2. У правому верхньому куті має бути кнопка з іконкою 🖥 (auto)
+3. Натисни — стане ☀️ і сайт стане світлим
+4. Натисни ще раз — стане 🌙 і темним
+5. Натисни ще раз — повернеться 🖥 auto
+6. Перезавантаж — обраний режим зберігається
+7. Відкрий в інкогніто — за замовч. йде auto (як ОС)
 
-У твоєму поточному `Header.tsx`:
+## Якщо кнопка заважає
 
-**1. Зроби компонент `async`** (якщо ще не є):
-```tsx
-export default async function Header() {
-```
+Можеш:
+- Видалити `<ThemeToggle />` з `body` в layout.tsx — кнопка зникне
+  (але JS логіка через `data-theme` лишиться, і можна вручну
+  перемикати через DevTools).
+- Або перенести у Header — скинеш мені Header і я вставлю.
 
-**2. Додай нагорі імпорти:**
-```tsx
-import { createClient } from '@/lib/supabase/server';
-import { getSiteSettings } from '@/lib/site-settings';
-```
+## Якщо світла тема показує проблеми
 
-**3. Перед `return` додай завантаження даних:**
-```tsx
-const supabase = await createClient();
-const [{ data: cats }, settings] = await Promise.all([
-  supabase.from('categories').select('slug, name').order('sort_order'),
-  getSiteSettings(),
-]);
-const categories = (cats ?? []) as Array<{ slug: string; name: string }>;
-```
+Можливі сценарії:
+- **Білий текст на білому** — десь у коді `text-white` без захисту.
+  Скрін + URL сторінки → додам переозначення.
+- **Чорний хедер на світлому** — якщо хедер має `bg-black` хардкодом.
+  Скинь Header.tsx → переведу на токени.
+- **Чорна футер-смуга** — те саме що з хедером.
 
-**4. Знайди місце, де у тебе хардкорний масив навігації** (щось типу
-`const NAV = [{ name: 'Самокати', href: '/category/urban' }, ...]`) і
-**заміни** його використання в JSX на:
+## Як відкотити
 
-```tsx
-{categories.map((c) => (
-  <Link key={c.slug} href={`/category/${c.slug}`}>
-    {c.name}
-  </Link>
-))}
-```
+Якщо взагалі не сподобається:
+1. У GitHub → History для кожного з 3 файлів → Revert
+2. Або просто видали `components/site/ThemeToggle.tsx` і відкоти globals.css + layout.tsx
 
-**5. Де хардкорний телефон** (`+380...`) — заміни на `{settings.phone}`.
-Аналогічно для всіх інших захардкорджених контактів.
+## Адмінка
 
-Для Footer — те саме плюс соцмережі і копірайт.
-
-#### Якщо твій Header — `'use client'`
-
-Server component не можна позначати `'use client'`. Якщо твій Header
-використовує `useState` (наприклад для мобільного меню), розділи:
-
-```tsx
-// Header.tsx — server, тягне дані з БД
-import HeaderClient from './HeaderClient';
-
-export default async function Header() {
-  const categories = ...;
-  const settings = await getSiteSettings();
-  return <HeaderClient categories={categories} settings={settings} />;
-}
-```
-
-```tsx
-// HeaderClient.tsx — 'use client', твоя поточна логіка
-'use client';
-export default function HeaderClient({ categories, settings }) {
-  const [open, setOpen] = useState(false);
-  // ... твій код ...
-}
-```
-
-Якщо застрягнеш — скинь мені поточний `Header.tsx` і я зроблю патч руками.
-
-### 5. Smoke-test усього
-
-1. `/admin/settings` → встав свій реальний телефон і email → ЗБЕРЕГТИ
-2. Відкрий головну сторінку сайту → у хедері/футері має зʼявитись твій
-   телефон (з кліком `tel:`)
-3. У футері — соцмережі (якщо заповнив URL-и)
-4. Категорії в хедері — це твої реальні з БД (Електросамокати, Електровелосипеди,
-   Аксесуари), а не legacy urban/offroad/flagship
-
----
-
-## Що це закриває
-
-✅ Контакти редагуються через адмінку без коммітів
-✅ Соцмережі редагуються без коммітів
-✅ Текст футера, копірайт — редагуються без коммітів
-✅ Хедер і футер показують реальні категорії з БД
-✅ Додаєш категорію в адмінці → вона зразу зʼявляється у навігації
-
----
-
-## Опціональні фінальні чищення (не блок, просто чек-лист)
-
-- [ ] Видалити дублікатний Vercel проєкт `kukirin-ua` (failed deploys)
-- [ ] Зняти `ignoreBuildErrors: true` у `next.config.ts` і пофіксити TS errors
-  чесно (для цього треба згенерувати свіжі типи: `npx supabase gen types
-  typescript --project-id ssxygllbnkjoklfhdfkb > lib/types/database.ts`)
-- [ ] Перенести решту 2 самокатів у Products → буде 6 моделей замість 4
-- [ ] Додати favicon, opengraph image у `app/icon.tsx` і `app/opengraph-image.tsx`
-- [ ] Підключити аналітику — Google Analytics або Vercel Analytics
-
-Усе це — окремі маленькі задачі, можна робити по одній коли буде час.
+`/admin/*` зараз теж буде реагувати на тему. Якщо хочеш закріпити її
+завжди темною — скажи, додам спеціальну логіку у скрипт.

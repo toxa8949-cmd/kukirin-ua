@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import './kukirin-accents.css';
+import ThemeToggle from '@/components/site/ThemeToggle';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://kukirin.ua'),
@@ -58,8 +58,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="uk">
-      <body>{children}</body>
+    <html lang="uk" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('kukirin-theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();`,
+          }}
+        />
+      </head>
+      <body>
+        {children}
+        <ThemeToggle />
+      </body>
     </html>
   );
 }
