@@ -2,21 +2,6 @@ import { Search, User, ShoppingCart, ArrowRight } from 'lucide-react';
 import { HERO_STATS } from '@/lib/kukirin-data';
 
 export default function KukirinHero() {
-  // Помаранчева обводка 3px через 8 drop-shadow в усі сторони.
-  // Це створює рівномірну "ауру" по контуру alpha-каналу PNG.
-  const orangeStroke = [
-    'drop-shadow(3px 0 0 #FF6B00)',
-    'drop-shadow(-3px 0 0 #FF6B00)',
-    'drop-shadow(0 3px 0 #FF6B00)',
-    'drop-shadow(0 -3px 0 #FF6B00)',
-    'drop-shadow(2px 2px 0 #FF6B00)',
-    'drop-shadow(-2px 2px 0 #FF6B00)',
-    'drop-shadow(2px -2px 0 #FF6B00)',
-    'drop-shadow(-2px -2px 0 #FF6B00)',
-    // М'яке зовнішнє свічення поверх обводки
-    'drop-shadow(0 0 20px rgba(255,107,0,0.4))',
-  ].join(' ');
-
   return (
     <section className="relative overflow-hidden bg-[#FAFAF7] text-[#1a1a1a] dark:bg-[#0A0A0A] dark:text-white">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -114,7 +99,7 @@ export default function KukirinHero() {
             </div>
           </div>
 
-          {/* ПРАВА: фото G2 Pro з помаранчевою обводкою */}
+          {/* ПРАВА: фото G2 Pro (тимчасово — як було до обводки) */}
           <div className="kukirin-fade-3 relative flex h-[400px] items-center justify-center sm:h-[500px] lg:h-[560px]">
             {/* Soft orange glow ззаду */}
             <div
@@ -122,18 +107,20 @@ export default function KukirinHero() {
               aria-hidden="true"
               style={{
                 background:
-                  'radial-gradient(circle at center, rgba(255,107,0,0.35) 0%, rgba(255,107,0,0.18) 30%, rgba(255,107,0,0.05) 55%, transparent 80%)',
+                  'radial-gradient(circle at center, rgba(255,107,0,0.32) 0%, rgba(255,107,0,0.18) 25%, rgba(255,107,0,0.05) 50%, transparent 75%)',
                 filter: 'blur(40px)',
               }}
             />
 
-            {/* Фото з помаранчевою обводкою через 8 drop-shadow */}
+            {/* Фото — оригінал з білим фоном, multiply щоб білий "розчинився" */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/hero/g2-pro.png"
               alt="KUKIRIN G2 Pro"
-              className="relative z-10 h-full w-auto max-w-none object-contain"
-              style={{ filter: orangeStroke }}
+              className="relative z-10 h-full w-auto max-w-none object-contain mix-blend-multiply dark:mix-blend-normal"
+              style={{
+                filter: 'drop-shadow(0 20px 40px rgba(255,107,0,0.18))',
+              }}
             />
 
             <div className="absolute bottom-0 left-1/2 z-20 -translate-x-1/2 text-[9px] tracking-[0.3em] text-[#6C6A65] dark:text-white/40">
