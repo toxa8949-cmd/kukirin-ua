@@ -27,7 +27,7 @@ export default async function CatalogPage() {
           Поки що немає товарів у каталозі.
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {list.map((s) => {
             const cover = (s as { image?: string | null; cover_url?: string | null }).image
               ?? (s as { cover_url?: string | null }).cover_url
@@ -36,24 +36,31 @@ export default async function CatalogPage() {
               <Link
                 key={s.slug}
                 href={`/product/${s.slug}`}
-                className="group relative flex flex-col overflow-hidden rounded-sm border border-[#E8E6DE] bg-white transition hover:border-[#FF6B00] dark:border-white/10 dark:bg-[#0F0F0F]"
+                className="group relative flex flex-col overflow-hidden rounded-md border border-[#E8E6DE] bg-white transition hover:border-[#FF6B00] hover:shadow-md dark:border-white/10 dark:bg-[#0F0F0F] dark:hover:shadow-none"
               >
-                <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-[#F0EEE6] to-[#E5E2D5] dark:from-[#1a1a1a] dark:to-[#0a0a0a]">
+                {/* Image — квадратний, чистий білий фон */}
+                <div className="relative aspect-square overflow-hidden bg-white dark:bg-[#0F0F0F]">
                   {cover ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={cover} alt={s.name} className="h-full w-full object-contain p-4 transition duration-500 group-hover:scale-105" loading="lazy" />
+                    <img
+                      src={cover}
+                      alt={s.name}
+                      className="h-full w-full object-contain p-8 transition duration-500 group-hover:scale-105"
+                      loading="lazy"
+                    />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center text-[10px] tracking-[0.2em] text-[#1a1a1a]/25 dark:text-white/25">KUKIRIN</div>
                   )}
                   {s.badge && (
-                    <span className="absolute right-3 top-3 rounded-sm bg-[#FF6B00] px-2 py-0.5 text-[9px] font-medium tracking-[0.15em] text-white dark:text-black">
+                    <span className="absolute left-4 top-4 rounded-sm bg-[#FF6B00] px-2 py-0.5 text-[9px] font-medium tracking-[0.15em] text-white dark:text-black">
                       {s.badge.toUpperCase()}
                     </span>
                   )}
                 </div>
 
-                <div className="flex flex-1 flex-col p-5">
-                  <div className="mb-3 text-[10px] tracking-[0.2em] text-[#993C1D] dark:text-[#FF8A33]">
+                {/* Body */}
+                <div className="flex flex-1 flex-col border-t border-[#E8E6DE] p-5 dark:border-white/10">
+                  <div className="mb-2 text-[10px] tracking-[0.2em] text-[#993C1D] dark:text-[#FF8A33]">
                     {CATEGORY_LABELS[s.category] ?? s.category}
                   </div>
                   <div className="mb-1 text-lg font-medium tracking-tight">{s.name}</div>

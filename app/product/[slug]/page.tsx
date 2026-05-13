@@ -72,14 +72,14 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     <PageShell breadcrumb={`PRODUCT · ${scooter.slug.toUpperCase()}`}>
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
         {/* Visual */}
-        <div className="relative aspect-square overflow-hidden rounded-sm border border-[#E8E6DE] dark:border-white/10 bg-gradient-to-br from-[#1a1a1a] to-[#0a0a0a]">
+        <div className="relative aspect-square overflow-hidden rounded-md border border-[#E8E6DE] bg-white dark:border-white/10 dark:bg-gradient-to-br dark:from-[#1a1a1a] dark:to-[#0a0a0a]">
           <div className="absolute left-5 top-5 z-10 flex flex-col gap-2">
             {scooter.badge && (
               <span className="rounded-sm bg-[#FF6B00] px-2 py-1 text-[10px] font-medium tracking-[0.15em] text-white dark:text-black">
                 {scooter.badge.toUpperCase()}
               </span>
             )}
-            <span className="rounded-sm border border-[#E8E6DE] dark:border-white/20 px-2 py-1 text-[10px] tracking-[0.15em] text-[#4A4A48] dark:text-white/70">
+            <span className="rounded-sm border border-[#E8E6DE] bg-white/80 px-2 py-1 text-[10px] tracking-[0.15em] text-[#4A4A48] backdrop-blur dark:border-white/20 dark:bg-transparent dark:text-white/70">
               KUKIRIN · 2026
             </span>
           </div>
@@ -88,7 +88,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <img
               src={primaryImage}
               alt={safeName}
-              className="h-full w-full object-contain p-6"
+              className="h-full w-full object-contain p-10"
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center text-[#FF6B00]/30">
