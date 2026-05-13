@@ -1,142 +1,91 @@
-# KUKIRIN.UA — Світла тема (FINAL, протестовано)
+# Аудит сайту — Виправлення (порція 1)
 
-## Що це
+Я переглянув ввесь код сайту і знайшов **7 проблем**. Тут 6 виправлених, 1 потребує
+твого рішення.
 
-Повний пакет переписаних UI-файлів сайту з підтримкою світлої теми за
-замовчуванням і темної через перемикач. Кожен файл — це **повна заміна**
-існуючого у тебе.
+## Знайдені проблеми
 
-**Перевірено `npx next build` локально — компілюється без помилок.**
+### 🔴 1. Чорні інпути на світлому фоні
+**Сторінки:** `/test-drive`, `/account`
+**Проблема:** 6 інпутів мали `bg-black` без `dark:` варіанту. На світлій
+темі це чорні поля з невидимим текстом.
+**Виправлено:** `app/account/page.tsx`, `app/test-drive/page.tsx`
 
-## Як працює
+### 🔴 2. Невидимі placeholder-и
+**Сторінки:** `/test-drive`, `/account`
+**Проблема:** Мій автоматичний перетворювач зробив `placeholder:text-[#6C6A65] dark:text-white/30`
+замість правильного `placeholder:text-[#6C6A65] dark:placeholder:text-white/30`.
+**Виправлено:** Ті самі 2 файли.
 
-- **За замовчуванням** — світла тема (фон `#FAFAF7`, текст `#1A1A1A`)
-- **Темна** — вмикається через `<html data-theme="dark">`, кнопкою у кутку
-- **Auto** — дивимось на ОС користувача
-- Inline-script у `<head>` ставить тему ДО першого рендеру → жодного flash
-- Кнопка теми — у **правому нижньому куті**, кругла, 3 стани:
-  🖥 авто → ☀️ світла → 🌙 темна
+### 🔴 3. Білий текст на білому фоні (`prose-invert`)
+**Сторінки:** `/privacy`, `/terms`, `/product/[slug]` (опис товара)
+**Проблема:** Клас Tailwind `prose-invert` форсує білий текст незалежно від теми.
+**Виправлено:** Прибрав `prose-invert`, лишив `prose` + явні `text-` класи.
 
-## Список 25 файлів
+### 🔴 4. `text-white/35` без dark-варіанту
+**Сторінки:** `/account`, `/test-drive` (підпис під формою)
+**Проблема:** Те ж саме — біле на білому.
+**Виправлено.**
 
-```
-app/globals.css                                  ← замінити
-app/layout.tsx                                   ← замінити
-app/catalog/page.tsx                             ← замінити
-app/accessories/page.tsx                         ← замінити
-app/account/page.tsx                             ← замінити
-app/blog/page.tsx                                ← замінити
-app/blog/[slug]/page.tsx                         ← замінити
-app/cart/page.tsx                                ← замінити
-app/category/[slug]/page.tsx                     ← замінити
-app/checkout/page.tsx                            ← замінити
-app/checkout/success/[orderNumber]/page.tsx      ← замінити
-app/contacts/page.tsx                            ← замінити
-app/delivery/page.tsx                            ← замінити
-app/not-found.tsx                                ← замінити
-app/privacy/page.tsx                             ← замінити
-app/product/[slug]/page.tsx                      ← замінити
-app/service/page.tsx                             ← замінити
-app/terms/page.tsx                               ← замінити
-app/test-drive/page.tsx                          ← замінити
-app/warranty/page.tsx                            ← замінити
+### 🔴 5. Test-drive показує застарілі моделі
+**Сторінка:** `/test-drive`
+**Проблема:** Селект моделей читав з `lib/kukirin-data.ts` — застарілий масив
+з 3 моделями (`g2-pro`, `g2-master`, `g4-max`) **без префікса `kukirin-`**.
+**Виправлено:** Тепер читає з БД через `getAllProducts()`. Всі реальні моделі
+підтягнуться автоматично.
 
-components/kukirin/KukirinHero.tsx               ← замінити
-components/kukirin/KukirinModels.tsx             ← замінити
-components/kukirin/KukirinFeatures.tsx           ← замінити
-components/kukirin/KukirinCTA.tsx                ← замінити
-components/kukirin/KukirinFooter.tsx             ← замінити
-components/kukirin/PageShell.tsx                 ← замінити
+### 🔴 6. Sitemap з застарілими URL
+**Файл:** `public/sitemap.xml`
+**Проблема:** Статичний XML з 5 URL без `kukirin-` префікса. Google не знайде
+нові 10 моделей з seed.
+**Виправлено:** Замінив на динамічний `app/sitemap.ts`, генерується на льоту
+з БД при кожному запиті `/sitemap.xml`.
 
-components/cart/CartIcon.tsx                     ← замінити
-components/cart/CartView.tsx                     ← замінити
-components/cart/CheckoutForm.tsx                 ← замінити
-components/cart/AddToCartButton.tsx              ← замінити
+**⚠️ Потрібна твоя дія:** видали в GitHub файл `public/sitemap.xml`. Інакше старий
+буде віддаватись замість нового.
 
-components/site/ThemeToggle.tsx                  ← новий (якщо немає)
-```
+### 🟡 7. Адмінка тепер світла (не виправлено)
+**Сторінка:** `/admin/*`
+**Що сталось:** Адмін-layout (`app/admin/layout.tsx`) використовує `<PageShell>`,
+а PageShell тепер світлий за замовч. → адмінка стала світлою.
 
-Структура в ZIP така сама як у твоєму репо — `app/...` ↔ `app/...`,
-`components/...` ↔ `components/...`.
+**Варіанти:**
+- **A)** Лишити світлою. Виглядає чисто, можна привикнути.
+- **B)** Зробити адмінку завжди темною. Треба:
+  1. Створити окремий компонент `<AdminShell>` (копія PageShell з `data-theme="dark"`)
+  2. Замінити PageShell на AdminShell у admin layout
 
-## Як залити — ШВИДКИЙ ВАРІАНТ (рекомендую)
+Скажи що обираєш — пакую B якщо треба.
 
-GitHub web UI не дозволяє завантажити цілу папку за раз, але дозволяє
-**кілька файлів через drag&drop**.
-
-1. Розпакуй ZIP локально → отримаєш папки `app/` і `components/`
-2. У браузері відкрий https://github.com/toxa8949-cmd/kukirin-ua
-3. Натисни **Add file → Upload files**
-4. **Перетягни всю папку `app/` цілком** з твого компʼютера у вікно завантаження
-5. GitHub автоматично збереже структуру вкладень
-6. Commit message: `theme: light theme by default + dark mode toggle`
-7. Натисни Commit changes
-8. Те ж саме для папки `components/` — окремим commit
-
-⚠️ Якщо drag&drop папки не працює (буває у Safari) — використовуй **Firefox** або **Chrome**.
-
-## Як залити — РУЧНИЙ ВАРІАНТ (якщо drag&drop не йде)
-
-Заходиш у кожен файл, копіюєш вміст, замінюєш у GitHub. Це 25 файлів × ~30 секунд = 12 хвилин.
-
-**Порядок (важливо!):**
-1. `components/site/ThemeToggle.tsx` (новий) — створи через `Add file → Create new file`
-2. `components/kukirin/PageShell.tsx`
-3. `components/kukirin/*` (Hero, Models, Features, CTA, Footer)
-4. `components/cart/*`
-5. `app/globals.css`
-6. Всі сторінки в `app/`
-7. **`app/layout.tsx` ОСТАННІМ** (бо імпортує ThemeToggle)
-
-Якщо layout.tsx запушиш раніше за ThemeToggle.tsx — Vercel впаде з помилкою.
-
-## Кеш Vercel
-
-Після всіх commits **дочекайся Vercel Ready** (зелений значок).
-На сайті відкрий **в інкогніто-вкладці** або зроби `Cmd+Shift+R` —
-інакше побачиш старий кеш.
-
-## Що далі — почисти
-
-Після того як впевнишся що все працює:
-
-1. У GitHub `app/kukirin-accents.css` → видали цей файл (старий артефакт)
-2. Будь-які інші старі `kukirin-accents.*` чи `light-theme.*` файли — видали
-
-## Smoke-test (обовʼязковий)
-
-Після Ready пройди по всім ключовим сторінкам:
-- [ ] `/` — головна (Hero, Models, Features, CTA, Footer)
-- [ ] `/catalog` — каталог
-- [ ] `/product/kukirin-g2-pro` — карточка товара
-- [ ] `/blog` — список статей
-- [ ] `/service` — сервіс (це там була проблема)
-- [ ] `/cart` — кошик (порожній)
-- [ ] `/checkout` — оформлення замовлення
-- [ ] Кнопка тема — натисни кілька разів, обидві теми працюють?
-
-Якщо щось виглядає дивно — скрін, виправлю точково.
-
-## Кольорова палітра (на майбутнє)
+## Що в пакеті
 
 ```
-Світла:                                Темна:
-  фон сторінки:    #FAFAF7              #0A0A0A
-  фон картки:      #FFFFFF              #0F0F0F
-  фон футера:      #F0EEE6              #070707
-  текст основний:  #1A1A1A              #FFFFFF
-  текст 2-й:       #4A4A48              rgba(255,255,255,0.55)
-  текст дрібний:   #6C6A65              rgba(255,255,255,0.40)
-  бордюр:          #E8E6DE              rgba(255,255,255,0.10)
-  оранжевий:       #FF6B00 (без змін)
-  оранжевий темн.: #993C1D (для контр. тексту на світлому)
+app/account/page.tsx              ← замінити
+app/test-drive/page.tsx           ← замінити
+app/privacy/page.tsx              ← замінити
+app/terms/page.tsx                ← замінити
+app/product/[slug]/page.tsx       ← замінити
+app/sitemap.ts                    ← НОВИЙ (динамічний sitemap)
 ```
 
-## Якщо щось не подобається
+## Як залити
 
-Можеш окремо просити переробити стилі — наприклад "зробити картки темнішими" або "інший відтінок оранжевого". Усі стилі через токени, поправлю за 1 хв.
+1. Розпакуй ZIP
+2. У GitHub `app/` → перетягни всі 5 папок з фіксами
+3. Окремо створи `app/sitemap.ts` (його ще немає)
+4. **🚨 Видали `public/sitemap.xml`** (інакше старий перебиватиме новий)
+5. Commit: `fix: light theme bugs + dynamic sitemap`
+6. Чекай Vercel Ready
 
-## Якщо щось зламається
+## Перевірено
 
-Зроби rollback одним commit-ом — у GitHub History для кожного файлу є кнопка
-**Revert**. Не страшно, не втрачаєш роботу.
+```
+npx next build → OK, 35 сторінок збираються (додалось sitemap.xml).
+```
+
+## Що НЕ перевірено
+
+- Адмінка візуально — треба зайти і подивитись чи світла версія прийнятна
+- Картка товара з `prose` — як виглядає опис у списку
+
+Скинь скрін `/test-drive`, `/privacy`, і будь-якої адмін-сторінки після Ready — побачимо що залишилось.

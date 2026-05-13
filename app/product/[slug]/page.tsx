@@ -171,7 +171,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           </ul>
 
           {scooter.description && (
-            <div className="prose prose-invert mt-2 max-w-none text-sm leading-relaxed text-[#4A4A48] dark:text-white/65">
+            <div className="prose mt-2 max-w-none text-sm leading-relaxed text-[#4A4A48] dark:text-white/65">
               <p>{scooter.description}</p>
             </div>
           )}

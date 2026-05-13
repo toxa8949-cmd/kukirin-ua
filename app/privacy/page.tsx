@@ -5,7 +5,7 @@ export const metadata = { title: 'Політика конфіденційнос�
 export default function PrivacyPage() {
   return (
     <PageShell breadcrumb="LEGAL · PRIVACY" title="Політика конфіденційності" subtitle="Як ми обробляємо ваші персональні дані відповідно до Закону України 'Про захист персональних даних'.">
-      <article className="prose prose-invert max-w-3xl space-y-5 text-sm leading-relaxed text-white/75">
+      <article className="max-w-3xl space-y-5 text-sm leading-relaxed text-[#4A4A48] dark:text-white/75">
         <p>Останнє оновлення: 11.05.2026</p>
 
         <h2 className="text-xl font-medium text-[#1a1a1a] dark:text-white">1. Хто ми</h2>

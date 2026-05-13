@@ -5,7 +5,7 @@ export const metadata = { title: 'Угода користувача' };
 export default function TermsPage() {
   return (
     <PageShell breadcrumb="LEGAL · TERMS" title="Угода користувача" subtitle="Правила користування сайтом KUKIRIN.UA і умови продажу електросамокатів.">
-      <article className="prose prose-invert max-w-3xl space-y-5 text-sm leading-relaxed text-white/75">
+      <article className="max-w-3xl space-y-5 text-sm leading-relaxed text-[#4A4A48] dark:text-white/75">
         <p>Останнє оновлення: 11.05.2026</p>
 
         <h2 className="text-xl font-medium text-[#1a1a1a] dark:text-white">1. Загальні положення</h2>
