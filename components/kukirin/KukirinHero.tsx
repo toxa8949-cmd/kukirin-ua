@@ -108,40 +108,37 @@ export default function KukirinHero() {
             </div>
           </div>
 
-          {/* ПРАВА: фото G2 Pro з soft glow */}
+          {/* ПРАВА: фото G2 Pro (тепер з прозорим фоном) */}
           <div className="kukirin-fade-3 relative flex h-[400px] items-center justify-center sm:h-[500px] lg:h-[560px]">
-            {/* Soft orange glow ззаду — танучий радіальний градієнт */}
+            {/* Soft orange glow ззаду */}
             <div
               className="pointer-events-none absolute inset-0 m-auto"
               aria-hidden="true"
               style={{
                 background:
-                  'radial-gradient(circle at center, rgba(255,107,0,0.32) 0%, rgba(255,107,0,0.18) 25%, rgba(255,107,0,0.05) 50%, transparent 75%)',
+                  'radial-gradient(circle at center, rgba(255,107,0,0.35) 0%, rgba(255,107,0,0.18) 30%, rgba(255,107,0,0.05) 55%, transparent 80%)',
                 filter: 'blur(40px)',
               }}
             />
-            {/* Додаткове менше світіння — гарячіша точка по центру */}
+            {/* Додаткова гарячіша точка по центру */}
             <div
               className="pointer-events-none absolute inset-0 m-auto"
               aria-hidden="true"
               style={{
                 background:
-                  'radial-gradient(circle at center, rgba(255,138,51,0.20) 0%, transparent 35%)',
+                  'radial-gradient(circle at center, rgba(255,138,51,0.22) 0%, transparent 35%)',
                 filter: 'blur(20px)',
               }}
             />
 
-            {/* Фото — білий фон знімається через mix-blend-mode: multiply.
-                Це робить білі пікселі прозорими, чорні/темні лишаються.
-                У темній темі лишаємо як є — multiply на темному фоні не дасть
-                проблем (білі пікселі помножені на темний = темний). */}
+            {/* Фото вирізане з прозорим фоном — жодних трюків з blend-mode */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/hero/g2-pro.png"
               alt="KUKIRIN G2 Pro"
-              className="relative z-10 h-full w-auto max-w-none object-contain mix-blend-multiply dark:mix-blend-normal"
+              className="relative z-10 h-full w-auto max-w-none object-contain"
               style={{
-                filter: 'drop-shadow(0 20px 40px rgba(255,107,0,0.18))',
+                filter: 'drop-shadow(0 25px 50px rgba(255,107,0,0.25)) drop-shadow(0 10px 20px rgba(0,0,0,0.15))',
               }}
             />
 
