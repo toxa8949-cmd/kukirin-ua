@@ -41,7 +41,7 @@ export default async function CatalogPage() {
                 <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-[#F0EEE6] to-[#E5E2D5] dark:from-[#1a1a1a] dark:to-[#0a0a0a]">
                   {cover ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={cover} alt={s.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" />
+                    <img src={cover} alt={s.name} className="h-full w-full object-contain p-4 transition duration-500 group-hover:scale-105" loading="lazy" />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center text-[10px] tracking-[0.2em] text-[#1a1a1a]/25 dark:text-white/25">KUKIRIN</div>
                   )}

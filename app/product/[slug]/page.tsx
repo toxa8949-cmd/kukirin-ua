@@ -88,7 +88,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <img
               src={primaryImage}
               alt={safeName}
-              className="h-full w-full object-cover"
+              className="h-full w-full object-contain p-6"
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center text-[#FF6B00]/30">
