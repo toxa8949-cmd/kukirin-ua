@@ -52,6 +52,25 @@ export const metadata: Metadata = {
   },
 };
 
+// Скрипт виконується ДО першого рендеру щоб уникнути flash:
+// - якщо в localStorage є ручний вибір — застосовуємо його
+// - якщо немає — дивимось на ОС
+const themeInitScript = `(function(){
+  try {
+    var t = localStorage.getItem('kukirin-theme');
+    if (t === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    } else if (t === 'light') {
+      // нічого не робимо — світла за замовч.
+    } else {
+      // auto: дивимось на ОС
+      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    }
+  } catch (e) {}
+})();`;
+
 export default function RootLayout({
   children,
 }: {
@@ -60,11 +79,7 @@ export default function RootLayout({
   return (
     <html lang="uk" suppressHydrationWarning>
       <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('kukirin-theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();`,
-          }}
-        />
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body>
         {children}
