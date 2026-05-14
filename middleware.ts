@@ -1,13 +1,24 @@
-import type { NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { updateSession } from "@/lib/supabase/middleware";
 
 /**
- * Next.js middleware: refreshes the Supabase auth session cookie
- * on every request and gates /admin/* routes.
+ * Next.js middleware: gates /admin/* routes.
  *
- * Anything matched by `config.matcher` runs through this handler.
+ * Performance: для не-admin шляхів пропускаємо весь Supabase auth flow.
+ * Anonimnі користувачі на головній/каталозі взагалі не торкаються Supabase
+ * middleware → економимо ~5-10ms на кожен запит.
+ *
+ * Для admin/* — повний flow з sessions cookie refresh.
  */
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // Швидкий шлях: будь-який не-admin запит просто проходить далі без перевірок
+  if (!pathname.startsWith("/admin")) {
+    return NextResponse.next();
+  }
+
+  // Admin paths — повна перевірка auth
   return updateSession(request);
 }
 

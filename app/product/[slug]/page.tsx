@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { Check, Phone, Truck, Shield, Wrench } from 'lucide-react';
 import PageShell from '@/components/kukirin/PageShell';
@@ -11,7 +12,7 @@ import {
 // Force per-request rendering. Prevents Vercel from serving a stale 500
 // generated before RLS / schema-sync were applied. Also stops generateStaticParams
 // from baking the slug set at build time (we now resolve everything at request time).
-export const dynamic = 'force-dynamic';
+export const revalidate = 120; // кеш 2 хв
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   try {
@@ -74,10 +75,11 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         {/* Visual */}
         <div className="relative aspect-square overflow-hidden rounded-md border border-[#E8E6DE] bg-white dark:border-white/10 dark:bg-gradient-to-br dark:from-[#1a1a1a] dark:to-[#0a0a0a]">
           {/* Дракон-watermark ззаду — великий, дуже прозорий */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src="/logo-mark.png"
             alt=""
+            width={384}
+            height={242}
             aria-hidden="true"
             className="pointer-events-none absolute -right-12 -bottom-8 h-72 w-auto opacity-[0.06] select-none dark:opacity-[0.10]"
           />
@@ -92,11 +94,13 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             </span>
           </div>
           {primaryImage ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <Image
               src={primaryImage}
               alt={safeName}
-              className="h-full w-full object-contain p-10"
+              fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              priority
+              className="object-contain p-10"
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center text-[#FF6B00]/30">

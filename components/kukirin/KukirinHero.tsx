@@ -1,5 +1,7 @@
 import { Search, User, ShoppingCart, ArrowRight } from 'lucide-react';
+import Image from 'next/image';
 import { HERO_STATS } from '@/lib/kukirin-data';
+import Logo from '@/components/kukirin/Logo';
 
 export default function KukirinHero() {
   return (
@@ -16,8 +18,8 @@ export default function KukirinHero() {
         {/* Навігація */}
         <nav className="flex items-center justify-between border-b border-[#E8E6DE] py-4 dark:border-white/10">
           <div className="flex items-center gap-8">
-            <a href="/" className="text-lg font-medium tracking-[0.15em]">
-              KUKIRIN<span className="text-[#FF6B00]">.</span>UA
+            <a href="/" className="inline-flex items-center" aria-label="KUKIRIN.UA — головна">
+              <Logo variant="inline" size={32} href={null} />
             </a>
             <ul className="hidden gap-5 text-sm text-[#4A4A48] dark:text-white/70 md:flex">
               <li><a href="#models" className="hover:text-[#1a1a1a] dark:hover:text-white">Самокати</a></li>
@@ -150,12 +152,14 @@ export default function KukirinHero() {
                 }}
               />
 
-              {/* Фото — multiply щоб білий фон фото зник у білу картку */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              {/* Фото — Next Image для автоматичної оптимізації (WebP, lazy, srcset) */}
+              <Image
                 src="/hero/g2-pro.png"
                 alt="KUKIRIN G2 Pro"
-                className="absolute inset-0 z-10 h-full w-full object-contain p-12 mix-blend-multiply dark:mix-blend-screen dark:invert"
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                priority
+                className="z-10 object-contain p-12 mix-blend-multiply dark:mix-blend-screen dark:invert"
               />
             </div>
 

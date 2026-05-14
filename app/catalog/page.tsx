@@ -1,10 +1,11 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import PageShell from '@/components/kukirin/PageShell';
 import { getAllProducts } from '@/lib/data/products';
 
 export const metadata = { title: 'Каталог самокатів' };
-export const dynamic = 'force-dynamic';
+export const revalidate = 60; // кеш 1 хв
 
 const CATEGORY_LABELS: Record<string, string> = {
   urban: 'Місто',
@@ -41,12 +42,12 @@ export default async function CatalogPage() {
                 {/* Image — квадратний, чистий білий фон */}
                 <div className="relative aspect-square overflow-hidden bg-white dark:bg-[#0F0F0F]">
                   {cover ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
+                    <Image
                       src={cover}
                       alt={s.name}
-                      className="h-full w-full object-contain p-8 transition duration-500 group-hover:scale-105"
-                      loading="lazy"
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="object-contain p-8 transition duration-500 group-hover:scale-105"
                     />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center text-[10px] tracking-[0.2em] text-[#1a1a1a]/25 dark:text-white/25">KUKIRIN</div>

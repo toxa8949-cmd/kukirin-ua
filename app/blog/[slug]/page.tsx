@@ -4,7 +4,7 @@ import { ArrowLeft } from 'lucide-react';
 import { createClient } from '@/lib/supabase/server';
 import { renderMarkdown } from '@/lib/markdown';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 600; // кеш 10 хв
 
 type Article = {
   id: string;

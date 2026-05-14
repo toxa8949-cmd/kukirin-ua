@@ -8,6 +8,7 @@ interface LogoProps {
   size?: number; // висота в px
   className?: string;
   href?: string | null; // null = без обгортки <a>
+  priority?: boolean; // тільки для above-the-fold (header, hero)
 }
 
 /**
@@ -18,39 +19,43 @@ interface LogoProps {
  * - full — кірін + текст "KuKirin" вертикально (для футера, big display)
  * - inline — кірін + текст "KUKIRIN.UA" горизонтально (для десктоп хедера)
  *
- * За замовчуванням загорнуто в <Link href="/"> щоб клік вів на головну.
- * Передай href={null} щоб вимкнути обгортку.
+ * За замовчуванням загорнуто в <Link href="/">. Передай href={null} щоб вимкнути.
+ *
+ * Performance: розміри статичні (width × height) → Next.js не шукає natural size,
+ * автоматично генерує WebP, ленива загрузка крім priority=true.
  */
 export default function Logo({
   variant = 'inline',
   size = 32,
   className = '',
   href = '/',
+  priority = false,
 }: LogoProps) {
+  // Pixel ratio адаптується автоматично через sizes
   const content = (() => {
     if (variant === 'mark') {
+      // Натуральне співвідношення logo-mark: 384 × 242 → 1.59
       return (
         <Image
           src="/logo-mark.png"
           alt="KUKIRIN"
-          width={size * 1.6}
+          width={Math.round(size * 1.59)}
           height={size}
-          priority
-          className="h-auto"
+          priority={priority}
           style={{ height: size, width: 'auto' }}
         />
       );
     }
 
     if (variant === 'full') {
+      // Натуральне співвідношення logo-full: 500 × 360 → 1.39
       return (
         <Image
           src="/logo-full.png"
           alt="KUKIRIN"
-          width={size * 1.4}
+          width={Math.round(size * 1.39)}
           height={size}
-          priority
-          className="h-auto"
+          priority={priority}
           style={{ height: size, width: 'auto' }}
         />
       );
@@ -62,9 +67,9 @@ export default function Logo({
         <Image
           src="/logo-mark.png"
           alt=""
-          width={size * 1.5}
+          width={Math.round(size * 1.59)}
           height={size}
-          priority
+          priority={priority}
           style={{ height: size, width: 'auto' }}
         />
         <span className="text-base font-medium tracking-[0.15em] sm:text-lg">

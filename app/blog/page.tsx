@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 300; // кеш 5 хв
 export const metadata = {
   title: 'Блог · KUKIRIN.UA',
   description: 'Новини, огляди та поради про електросамокати Kukirin.',

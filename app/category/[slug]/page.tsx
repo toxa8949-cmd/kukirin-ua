@@ -5,7 +5,7 @@ import PageShell from '@/components/kukirin/PageShell';
 import { getCategoryBySlug } from '@/lib/data/categories';
 import { getProductsByCategorySlug } from '@/lib/data/products';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 120; // кеш 2 хв
 
 const LEGACY_INFO: Record<string, { title: string; subtitle: string; badge: string }> = {
   urban: {
