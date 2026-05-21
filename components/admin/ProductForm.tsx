@@ -2,13 +2,13 @@
 
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { AlertCircle, CheckCircle2, Trash2, Upload } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Trash2 } from 'lucide-react';
 import {
   createProduct,
   updateProduct,
   deleteProduct,
-  uploadProductImage,
 } from '@/app/admin/products/actions';
+import ImageGallery from '@/components/admin/ImageGallery';
 
 type Category = { id: string; name: string; slug: string };
 
@@ -71,10 +71,28 @@ export default function ProductForm({
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(initialMessage ?? null);
-  const [uploading, setUploading] = useState(false);
 
   function field<K extends keyof Initial>(k: K, v: Initial[K]) {
     setForm((f) => ({ ...f, [k]: v }));
+  }
+
+  // Об'єднуємо cover + gallery в один масив для ImageGallery
+  // Перший елемент завжди = cover, решта = gallery
+  const allImages: string[] = [
+    ...(form.cover_url ? [form.cover_url] : []),
+    ...form.image_urls.split('\n').map((u) => u.trim()).filter(Boolean),
+  ];
+
+  function handleImagesChange(next: string[]) {
+    if (next.length === 0) {
+      setForm((f) => ({ ...f, cover_url: '', image_urls: '' }));
+    } else {
+      setForm((f) => ({
+        ...f,
+        cover_url: next[0],
+        image_urls: next.slice(1).join('\n'),
+      }));
+    }
   }
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -103,33 +121,6 @@ export default function ProductForm({
       if (res.ok) router.push('/admin/products');
       else setError(res.error);
     });
-  }
-
-  async function handleUpload(target: 'cover' | 'gallery') {
-    const inputEl = document.createElement('input');
-    inputEl.type = 'file';
-    inputEl.accept = 'image/*';
-    inputEl.onchange = async () => {
-      const file = inputEl.files?.[0];
-      if (!file) return;
-      setUploading(true);
-      setError(null);
-      try {
-        const fd = new FormData();
-        fd.append('file', file);
-        const res = await uploadProductImage(fd);
-        if (!res.ok) {
-          setError(res.error);
-        } else if (target === 'cover') {
-          field('cover_url', res.url);
-        } else {
-          field('image_urls', (form.image_urls ? form.image_urls + '\n' : '') + res.url);
-        }
-      } finally {
-        setUploading(false);
-      }
-    };
-    inputEl.click();
   }
 
   const inputCls =
@@ -362,55 +353,11 @@ export default function ProductForm({
       <div className={sectionCls}>
         <div className="text-[10px] tracking-[0.2em] text-[#993C1D] dark:text-[#FF8A33]">// ФОТО</div>
 
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-[1fr_auto]">
-          <label className="block">
-            <span className={labelCls}>Cover URL (головне фото)</span>
-            <input
-              name="cover_url"
-              value={form.cover_url}
-              onChange={(e) => field('cover_url', e.target.value)}
-              className={inputCls}
-              placeholder="https://kukirin.com.ua/content/.../img.jpg"
-            />
-          </label>
-          <button
-            type="button"
-            onClick={() => handleUpload('cover')}
-            disabled={uploading}
-            className="self-end inline-flex items-center gap-2 rounded-sm border border-[#E8E6DE] dark:border-white/15 px-4 py-2 text-xs hover:border-[#DCDAD0] dark:hover:border-white/40 disabled:opacity-60"
-          >
-            <Upload size={14} /> {uploading ? '...' : 'Завантажити'}
-          </button>
-        </div>
+        {/* Приховані поля для FormData submit — підставляються з allImages автоматично */}
+        <input type="hidden" name="cover_url" value={form.cover_url} />
+        <input type="hidden" name="image_urls" value={form.image_urls} />
 
-        {form.cover_url && (
-          <div className="mt-2 inline-block overflow-hidden rounded-sm border border-[#E8E6DE] dark:border-white/10">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={form.cover_url} alt="cover preview" className="h-32 w-32 object-cover" />
-          </div>
-        )}
-
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-[1fr_auto]">
-          <label className="block">
-            <span className={labelCls}>Додаткові фото (URL з нового рядка)</span>
-            <textarea
-              name="image_urls"
-              rows={4}
-              value={form.image_urls}
-              onChange={(e) => field('image_urls', e.target.value)}
-              className={`${inputCls} resize-y`}
-              placeholder="https://kukirin.com.ua/content/.../img1.jpg&#10;https://kukirin.com.ua/content/.../img2.jpg"
-            />
-          </label>
-          <button
-            type="button"
-            onClick={() => handleUpload('gallery')}
-            disabled={uploading}
-            className="self-end inline-flex items-center gap-2 rounded-sm border border-[#E8E6DE] dark:border-white/15 px-4 py-2 text-xs hover:border-[#DCDAD0] dark:hover:border-white/40 disabled:opacity-60"
-          >
-            <Upload size={14} /> {uploading ? '...' : 'Додати з компʼютера'}
-          </button>
-        </div>
+        <ImageGallery images={allImages} onChange={handleImagesChange} />
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
