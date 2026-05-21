@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { ArrowUpRight } from 'lucide-react';
 import { getFeaturedProducts, getAllProducts } from '@/lib/data/products';
 
@@ -70,14 +71,24 @@ export default async function KukirinModels() {
                 / 0{i + 1}
               </span>
 
-              <div className="mb-5 flex h-44 items-center justify-center overflow-hidden rounded-sm bg-gradient-to-b from-[#F0EEE6] to-[#E5E2D5] dark:from-[#1A1A1A] dark:to-[#0E0E0E]">
-                <svg viewBox="0 0 120 80" className="h-24 w-24 text-[#1a1a1a]/15 dark:text-white/15">
-                  <circle cx="25" cy="60" r="12" fill="none" stroke="currentColor" strokeWidth="2" />
-                  <circle cx="95" cy="60" r="12" fill="none" stroke="currentColor" strokeWidth="2" />
-                  <line x1="25" y1="60" x2="95" y2="60" stroke="currentColor" strokeWidth="2" />
-                  <line x1="60" y1="60" x2="60" y2="20" stroke="currentColor" strokeWidth="2" />
-                  <line x1="55" y1="15" x2="80" y2="15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                </svg>
+              <div className="relative mb-5 flex h-44 items-center justify-center overflow-hidden rounded-sm bg-white dark:bg-[#0F0F0F]">
+                {scooter.image ? (
+                  <Image
+                    src={scooter.image}
+                    alt={scooter.name}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-contain p-3 transition duration-500 group-hover:scale-105"
+                  />
+                ) : (
+                  <svg viewBox="0 0 120 80" className="h-24 w-24 text-[#1a1a1a]/15 dark:text-white/15">
+                    <circle cx="25" cy="60" r="12" fill="none" stroke="currentColor" strokeWidth="2" />
+                    <circle cx="95" cy="60" r="12" fill="none" stroke="currentColor" strokeWidth="2" />
+                    <line x1="25" y1="60" x2="95" y2="60" stroke="currentColor" strokeWidth="2" />
+                    <line x1="60" y1="60" x2="60" y2="20" stroke="currentColor" strokeWidth="2" />
+                    <line x1="55" y1="15" x2="80" y2="15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                  </svg>
+                )}
               </div>
 
               <div className="mb-1 text-[10px] tracking-[0.2em] text-[#FF6B00]">
