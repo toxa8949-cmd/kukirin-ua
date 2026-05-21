@@ -160,6 +160,7 @@ export async function createProduct(formData: FormData): Promise<ActionResult> {
 
   revalidatePath('/admin/products');
   revalidatePath('/catalog');
+  revalidatePath('/');
   revalidatePath(`/product/${input.slug}`);
   redirect(`/admin/products/${productId}/edit?created=1`);
 }
@@ -226,6 +227,7 @@ export async function updateProduct(formData: FormData): Promise<ActionResult> {
   revalidatePath('/admin/products');
   revalidatePath(`/admin/products/${input.id}/edit`);
   revalidatePath('/catalog');
+  revalidatePath('/');
   revalidatePath(`/product/${input.slug}`);
   return { ok: true, id: input.id };
 }
@@ -261,6 +263,7 @@ export async function deleteProduct(id: string): Promise<ActionResult> {
 
   revalidatePath('/admin/products');
   revalidatePath('/catalog');
+  revalidatePath('/');
   if (slug) revalidatePath(`/product/${slug}`);
   return { ok: true, id };
 }
