@@ -24,14 +24,14 @@ export default function LoginForm({ initialError, nextPath }: Props) {
   }
 
   const inputCls =
-    'w-full rounded-sm border border-white/15 bg-[#0F0F0F] px-4 py-3 text-sm text-white placeholder:text-white/30 outline-none transition focus:border-[#FF6B00]';
+    'w-full rounded-sm border border-[#E8E6DE] dark:border-white/15 bg-white dark:bg-[#0F0F0F] px-4 py-3 text-sm text-[#1a1a1a] dark:text-white placeholder:text-[#6C6A65] dark:text-white/30 outline-none transition focus:border-[#FF6B00]';
 
   return (
-    <div className="mx-auto max-w-md rounded-sm border border-white/10 bg-[#0F0F0F] p-6 sm:p-8">
+    <div className="mx-auto max-w-md rounded-sm border border-[#E8E6DE] dark:border-white/10 bg-white dark:bg-[#0F0F0F] p-6 sm:p-8">
       <form onSubmit={handleSubmit} className="space-y-3">
         <input type="hidden" name="next" value={nextPath ?? '/admin'} />
         <label className="block">
-          <span className="mb-1 block text-xs text-white/55">Email</span>
+          <span className="mb-1 block text-xs text-[#4A4A48] dark:text-white/55">Email</span>
           <input
             type="email"
             name="email"
@@ -42,7 +42,7 @@ export default function LoginForm({ initialError, nextPath }: Props) {
           />
         </label>
         <label className="block">
-          <span className="mb-1 block text-xs text-white/55">Пароль</span>
+          <span className="mb-1 block text-xs text-[#4A4A48] dark:text-white/55">Пароль</span>
           <input
             type="password"
             name="password"
@@ -63,7 +63,7 @@ export default function LoginForm({ initialError, nextPath }: Props) {
         <button
           type="submit"
           disabled={isPending}
-          className="inline-flex w-full items-center justify-center gap-2 rounded-sm bg-[#FF6B00] px-6 py-3 text-xs font-medium tracking-[0.1em] text-black transition hover:bg-[#FF8A33] disabled:opacity-60"
+          className="inline-flex w-full items-center justify-center gap-2 rounded-sm bg-[#FF6B00] px-6 py-3 text-xs font-medium tracking-[0.1em] text-white dark:text-black transition hover:bg-[#FF8A33] disabled:opacity-60"
         >
           {isPending ? 'ВХІД…' : (
             <>
@@ -72,9 +72,9 @@ export default function LoginForm({ initialError, nextPath }: Props) {
           )}
         </button>
       </form>
-      <p className="mt-4 text-[10px] leading-relaxed text-white/35">
+      <p className="mt-4 text-[10px] leading-relaxed text-[#6C6A65] dark:text-white/35">
         Доступ тільки для адміністраторів. Доступ контролюється через{' '}
-        <code className="text-white/60">public.admins</code> у Supabase.
+        <code className="text-[#4A4A48] dark:text-white/60">public.admins</code> у Supabase.
       </p>
     </div>
   );

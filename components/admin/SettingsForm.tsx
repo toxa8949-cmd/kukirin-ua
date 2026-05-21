@@ -32,7 +32,7 @@ export default function SettingsForm({ groups }: { groups: Group[] }) {
   }
 
   const inputCls =
-    'w-full rounded-sm border border-white/15 bg-[#0A0A0A] px-3 py-2 text-sm outline-none transition focus:border-[#FF6B00]';
+    'w-full rounded-sm border border-[#E8E6DE] dark:border-white/15 bg-[#FAFAF7] dark:bg-[#0A0A0A] px-3 py-2 text-sm outline-none transition focus:border-[#FF6B00]';
 
   // Choose input type: address/about/copyright = textarea, the rest = single line.
   const isTextarea = (key: string) =>
@@ -56,17 +56,17 @@ export default function SettingsForm({ groups }: { groups: Group[] }) {
       {groups.map((g) => (
         <section
           key={g.name}
-          className="space-y-4 rounded-sm border border-white/10 bg-[#0F0F0F] p-5"
+          className="space-y-4 rounded-sm border border-[#E8E6DE] dark:border-white/10 bg-white dark:bg-[#0F0F0F] p-5"
         >
-          <div className="text-[10px] tracking-[0.2em] text-[#FF8A33]">
+          <div className="text-[10px] tracking-[0.2em] text-[#993C1D] dark:text-[#FF8A33]">
             // {g.title.toUpperCase()}
           </div>
           <div className="grid grid-cols-1 gap-4">
             {g.rows.map((r) => (
               <label key={r.key} className="block">
-                <span className="mb-1 block text-xs text-white/55">
+                <span className="mb-1 block text-xs text-[#4A4A48] dark:text-white/55">
                   {r.label || r.key}
-                  <span className="ml-2 font-mono text-[10px] text-white/30">
+                  <span className="ml-2 font-mono text-[10px] text-[#6C6A65] dark:text-white/30">
                     {r.key}
                   </span>
                 </span>
@@ -87,7 +87,7 @@ export default function SettingsForm({ groups }: { groups: Group[] }) {
                   />
                 )}
                 {r.description && (
-                  <span className="mt-1 block text-[10px] text-white/35">
+                  <span className="mt-1 block text-[10px] text-[#6C6A65] dark:text-white/35">
                     {r.description}
                   </span>
                 )}
@@ -101,7 +101,7 @@ export default function SettingsForm({ groups }: { groups: Group[] }) {
         <button
           type="submit"
           disabled={isPending}
-          className="inline-flex items-center gap-2 rounded-sm bg-[#FF6B00] px-6 py-3 text-xs font-medium tracking-[0.1em] text-black shadow-lg shadow-[#FF6B00]/20 hover:bg-[#FF8A33] disabled:opacity-60"
+          className="inline-flex items-center gap-2 rounded-sm bg-[#FF6B00] px-6 py-3 text-xs font-medium tracking-[0.1em] text-white dark:text-black shadow-lg shadow-[#FF6B00]/20 hover:bg-[#FF8A33] disabled:opacity-60"
         >
           <Save size={14} /> {isPending ? 'ЗБЕРЕЖЕННЯ…' : 'ЗБЕРЕГТИ ВСІ'}
         </button>

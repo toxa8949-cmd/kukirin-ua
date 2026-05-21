@@ -54,12 +54,12 @@ export default async function AdminSettingsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <Link href="/admin" className="inline-flex items-center gap-1 text-xs text-white/60 hover:text-white">
+        <Link href="/admin" className="inline-flex items-center gap-1 text-xs text-[#4A4A48] dark:text-white/60 hover:text-[#1a1a1a] dark:hover:text-[#1a1a1a] dark:text-white">
           <ArrowLeft size={12} /> На дашборд
         </Link>
-        <div className="mt-2 mb-1 text-[10px] tracking-[0.2em] text-[#FF8A33]">// SETTINGS</div>
+        <div className="mt-2 mb-1 text-[10px] tracking-[0.2em] text-[#993C1D] dark:text-[#FF8A33]">// SETTINGS</div>
         <h1 className="text-3xl font-medium tracking-tight">Налаштування сайту</h1>
-        <p className="mt-2 text-sm text-white/55">
+        <p className="mt-2 text-sm text-[#4A4A48] dark:text-white/55">
           Контакти, соцмережі та інші параметри, що показуються в хедері та футері.
         </p>
       </div>

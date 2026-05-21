@@ -85,13 +85,13 @@ export default async function AdminOrdersPage({
       href={href}
       className={`inline-flex items-center gap-1 rounded-sm px-3 py-1.5 text-xs ${
         active
-          ? 'bg-[#FF6B00] text-black'
-          : 'border border-white/15 text-white/70 hover:border-white/30'
+          ? 'bg-[#FF6B00] text-white dark:text-black'
+          : 'border border-[#E8E6DE] dark:border-white/15 text-[#4A4A48] dark:text-white/70 hover:border-[#DCDAD0] dark:hover:border-white/30'
       }`}
     >
       {label}
       {typeof count === 'number' && (
-        <span className={active ? 'text-black/60' : 'text-white/40'}>· {count}</span>
+        <span className={active ? 'text-black/60' : 'text-[#6C6A65] dark:text-white/40'}>· {count}</span>
       )}
     </Link>
   );
@@ -99,10 +99,10 @@ export default async function AdminOrdersPage({
   return (
     <div className="space-y-6">
       <div>
-        <Link href="/admin" className="inline-flex items-center gap-1 text-xs text-white/60 hover:text-white">
+        <Link href="/admin" className="inline-flex items-center gap-1 text-xs text-[#4A4A48] dark:text-white/60 hover:text-[#1a1a1a] dark:hover:text-[#1a1a1a] dark:text-white">
           <ArrowLeft size={12} /> На дашборд
         </Link>
-        <div className="mt-2 mb-1 text-[10px] tracking-[0.2em] text-[#FF8A33]">// ORDERS</div>
+        <div className="mt-2 mb-1 text-[10px] tracking-[0.2em] text-[#993C1D] dark:text-[#FF8A33]">// ORDERS</div>
         <h1 className="text-3xl font-medium tracking-tight">Замовлення</h1>
       </div>
 
@@ -119,37 +119,37 @@ export default async function AdminOrdersPage({
         ))}
       </div>
 
-      <form className="rounded-sm border border-white/10 bg-[#0F0F0F] p-4">
+      <form className="rounded-sm border border-[#E8E6DE] dark:border-white/10 bg-white dark:bg-[#0F0F0F] p-4">
         {status && <input type="hidden" name="status" value={status} />}
         <input
           type="search"
           name="q"
           defaultValue={q ?? ''}
           placeholder="Пошук за імʼям, телефоном або email…"
-          className="w-full rounded-sm border border-white/10 bg-[#0A0A0A] px-3 py-2 text-sm outline-none focus:border-[#FF6B00]"
+          className="w-full rounded-sm border border-[#E8E6DE] dark:border-white/10 bg-[#FAFAF7] dark:bg-[#0A0A0A] px-3 py-2 text-sm outline-none focus:border-[#FF6B00]"
         />
       </form>
 
-      <div className="rounded-sm border border-white/10 bg-[#0F0F0F]">
+      <div className="rounded-sm border border-[#E8E6DE] dark:border-white/10 bg-white dark:bg-[#0F0F0F]">
         {list.length === 0 ? (
-          <div className="p-8 text-center text-sm text-white/55">Нічого не знайдено.</div>
+          <div className="p-8 text-center text-sm text-[#4A4A48] dark:text-white/55">Нічого не знайдено.</div>
         ) : (
           <ul className="divide-y divide-white/5">
             {list.map((o) => {
-              const cls = STATUS_COLOR[o.status] ?? 'bg-white/5 text-white/70 border-white/10';
+              const cls = STATUS_COLOR[o.status] ?? 'bg-white/5 text-[#4A4A48] dark:text-white/70 border-[#E8E6DE] dark:border-white/10';
               return (
                 <li key={o.id}>
                   <Link
                     href={`/admin/orders/${o.id}`}
-                    className="flex items-center gap-3 p-3 transition hover:bg-white/[0.02] sm:gap-4"
+                    className="flex items-center gap-3 p-3 transition hover:bg-white dark:bg-white/[0.02] sm:gap-4"
                   >
                     <div className="min-w-0 flex-1">
                       <div className="truncate text-sm">
-                        <span className="text-white/40">#</span>
+                        <span className="text-[#6C6A65] dark:text-white/40">#</span>
                         <span className="font-medium">{shortRef(o.id)}</span>
-                        <span className="ml-2 text-white/70">{o.customer_name}</span>
+                        <span className="ml-2 text-[#4A4A48] dark:text-white/70">{o.customer_name}</span>
                       </div>
-                      <div className="truncate text-xs text-white/40">
+                      <div className="truncate text-xs text-[#6C6A65] dark:text-white/40">
                         {o.phone}
                         {o.created_at && (
                           <span className="ml-2">
@@ -166,7 +166,7 @@ export default async function AdminOrdersPage({
                     <span className="flex-shrink-0 font-medium text-[#FF6B00]">
                       {Number(o.total).toLocaleString('uk-UA')} ₴
                     </span>
-                    <ChevronRight size={14} className="flex-shrink-0 text-white/30" />
+                    <ChevronRight size={14} className="flex-shrink-0 text-[#6C6A65] dark:text-white/30" />
                   </Link>
                 </li>
               );

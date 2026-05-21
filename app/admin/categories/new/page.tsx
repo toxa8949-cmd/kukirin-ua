@@ -9,10 +9,10 @@ export default function NewCategoryPage() {
   return (
     <div className="space-y-6">
       <div>
-        <Link href="/admin/categories" className="inline-flex items-center gap-1 text-xs text-white/60 hover:text-white">
+        <Link href="/admin/categories" className="inline-flex items-center gap-1 text-xs text-[#4A4A48] dark:text-white/60 hover:text-[#1a1a1a] dark:hover:text-[#1a1a1a] dark:text-white">
           <ArrowLeft size={12} /> До списку категорій
         </Link>
-        <div className="mt-2 mb-1 text-[10px] tracking-[0.2em] text-[#FF8A33]">// CATEGORIES · NEW</div>
+        <div className="mt-2 mb-1 text-[10px] tracking-[0.2em] text-[#993C1D] dark:text-[#FF8A33]">// CATEGORIES · NEW</div>
         <h1 className="text-3xl font-medium tracking-tight">Нова категорія</h1>
       </div>
 

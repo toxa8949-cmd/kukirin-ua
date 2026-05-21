@@ -75,9 +75,9 @@ export default function NewsForm({
   }
 
   const inputCls =
-    'w-full rounded-sm border border-white/15 bg-[#0A0A0A] px-3 py-2 text-sm outline-none transition focus:border-[#FF6B00]';
-  const labelCls = 'block text-xs text-white/55 mb-1';
-  const sectionCls = 'space-y-3 rounded-sm border border-white/10 bg-[#0F0F0F] p-5';
+    'w-full rounded-sm border border-[#E8E6DE] dark:border-white/15 bg-[#FAFAF7] dark:bg-[#0A0A0A] px-3 py-2 text-sm outline-none transition focus:border-[#FF6B00]';
+  const labelCls = 'block text-xs text-[#4A4A48] dark:text-white/55 mb-1';
+  const sectionCls = 'space-y-3 rounded-sm border border-[#E8E6DE] dark:border-white/10 bg-white dark:bg-[#0F0F0F] p-5';
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -97,7 +97,7 @@ export default function NewsForm({
       )}
 
       <div className={sectionCls}>
-        <div className="text-[10px] tracking-[0.2em] text-[#FF8A33]">// ОСНОВНЕ</div>
+        <div className="text-[10px] tracking-[0.2em] text-[#993C1D] dark:text-[#FF8A33]">// ОСНОВНЕ</div>
         <label className="block">
           <span className={labelCls}>Заголовок*</span>
           <input
@@ -135,7 +135,7 @@ export default function NewsForm({
       </div>
 
       <div className={sectionCls}>
-        <div className="text-[10px] tracking-[0.2em] text-[#FF8A33]">// КОНТЕНТ (Markdown)</div>
+        <div className="text-[10px] tracking-[0.2em] text-[#993C1D] dark:text-[#FF8A33]">// КОНТЕНТ (Markdown)</div>
         <textarea
           name="content"
           rows={16}
@@ -144,13 +144,13 @@ export default function NewsForm({
           className={`${inputCls} resize-y font-mono text-xs`}
           placeholder={'# Заголовок\n\nПерший абзац статті…\n\n## Підрозділ\n\n- список\n- елементів'}
         />
-        <p className="text-[11px] text-white/40">
+        <p className="text-[11px] text-[#6C6A65] dark:text-white/40">
           Markdown: `# заголовок`, `**жирний**`, `*курсив*`, `- список`, `[посилання](url)`, `![alt](image_url)`.
         </p>
       </div>
 
       <div className={sectionCls}>
-        <div className="text-[10px] tracking-[0.2em] text-[#FF8A33]">// ОФОРМЛЕННЯ</div>
+        <div className="text-[10px] tracking-[0.2em] text-[#993C1D] dark:text-[#FF8A33]">// ОФОРМЛЕННЯ</div>
         <label className="block">
           <span className={labelCls}>Cover URL (обкладинка статті)</span>
           <input
@@ -162,7 +162,7 @@ export default function NewsForm({
           />
         </label>
         {form.cover_url && (
-          <div className="inline-block overflow-hidden rounded-sm border border-white/10">
+          <div className="inline-block overflow-hidden rounded-sm border border-[#E8E6DE] dark:border-white/10">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={form.cover_url} alt="cover preview" className="h-32 w-56 object-cover" />
           </div>
@@ -178,7 +178,7 @@ export default function NewsForm({
             />
             Опублікувати (видно на сайті)
           </label>
-          <p className="mt-1 ml-6 text-[11px] text-white/40">
+          <p className="mt-1 ml-6 text-[11px] text-[#6C6A65] dark:text-white/40">
             Збереження як чернетка не показує статтю на /blog.
             Дата публікації проставляється автоматично при першій публікації.
           </p>
@@ -189,7 +189,7 @@ export default function NewsForm({
         <button
           type="submit"
           disabled={isPending}
-          className="inline-flex items-center gap-2 rounded-sm bg-[#FF6B00] px-6 py-3 text-xs font-medium tracking-[0.1em] text-black hover:bg-[#FF8A33] disabled:opacity-60"
+          className="inline-flex items-center gap-2 rounded-sm bg-[#FF6B00] px-6 py-3 text-xs font-medium tracking-[0.1em] text-white dark:text-black hover:bg-[#FF8A33] disabled:opacity-60"
         >
           {isPending ? 'ЗБЕРЕЖЕННЯ…' : mode === 'create' ? 'СТВОРИТИ' : 'ЗБЕРЕГТИ'}
         </button>

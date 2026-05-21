@@ -54,17 +54,17 @@ export default async function EditNewsPage({
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <Link href="/admin/news" className="inline-flex items-center gap-1 text-xs text-white/60 hover:text-white">
+          <Link href="/admin/news" className="inline-flex items-center gap-1 text-xs text-[#4A4A48] dark:text-white/60 hover:text-[#1a1a1a] dark:hover:text-[#1a1a1a] dark:text-white">
             <ArrowLeft size={12} /> До списку
           </Link>
-          <div className="mt-2 mb-1 text-[10px] tracking-[0.2em] text-[#FF8A33]">// NEWS · EDIT</div>
+          <div className="mt-2 mb-1 text-[10px] tracking-[0.2em] text-[#993C1D] dark:text-[#FF8A33]">// NEWS · EDIT</div>
           <h1 className="text-3xl font-medium tracking-tight">{n.title}</h1>
         </div>
         {n.published && (
           <Link
             href={`/blog/${n.slug}`}
             target="_blank"
-            className="inline-flex items-center gap-1 text-xs text-white/70 hover:text-[#FF6B00]"
+            className="inline-flex items-center gap-1 text-xs text-[#4A4A48] dark:text-white/70 hover:text-[#FF6B00]"
           >
             Подивитись на сайті <ExternalLink size={12} />
           </Link>

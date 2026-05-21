@@ -129,7 +129,7 @@ export function StatusPie({
 
   if (rows.length === 0) {
     return (
-      <div className="flex h-72 items-center justify-center text-sm text-white/45">
+      <div className="flex h-72 items-center justify-center text-sm text-[#6C6A65] dark:text-white/45">
         Поки немає замовлень
       </div>
     );
@@ -172,7 +172,7 @@ export function TopProductsBar({
 }) {
   if (data.length === 0) {
     return (
-      <div className="flex h-72 items-center justify-center text-sm text-white/45">
+      <div className="flex h-72 items-center justify-center text-sm text-[#6C6A65] dark:text-white/45">
         Топ-продукти зʼявляться після перших замовлень.
       </div>
     );

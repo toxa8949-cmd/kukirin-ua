@@ -73,9 +73,9 @@ export default function CategoryForm({
   }
 
   const inputCls =
-    'w-full rounded-sm border border-white/15 bg-[#0A0A0A] px-3 py-2 text-sm outline-none transition focus:border-[#FF6B00]';
-  const labelCls = 'block text-xs text-white/55 mb-1';
-  const sectionCls = 'space-y-3 rounded-sm border border-white/10 bg-[#0F0F0F] p-5';
+    'w-full rounded-sm border border-[#E8E6DE] dark:border-white/15 bg-[#FAFAF7] dark:bg-[#0A0A0A] px-3 py-2 text-sm outline-none transition focus:border-[#FF6B00]';
+  const labelCls = 'block text-xs text-[#4A4A48] dark:text-white/55 mb-1';
+  const sectionCls = 'space-y-3 rounded-sm border border-[#E8E6DE] dark:border-white/10 bg-white dark:bg-[#0F0F0F] p-5';
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -95,7 +95,7 @@ export default function CategoryForm({
       )}
 
       <div className={sectionCls}>
-        <div className="text-[10px] tracking-[0.2em] text-[#FF8A33]">// ОСНОВНЕ</div>
+        <div className="text-[10px] tracking-[0.2em] text-[#993C1D] dark:text-[#FF8A33]">// ОСНОВНЕ</div>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <label>
             <span className={labelCls}>Назва*</span>
@@ -156,7 +156,7 @@ export default function CategoryForm({
           </label>
         </div>
         {form.image_url && (
-          <div className="inline-block overflow-hidden rounded-sm border border-white/10">
+          <div className="inline-block overflow-hidden rounded-sm border border-[#E8E6DE] dark:border-white/10">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={form.image_url} alt="preview" className="h-24 w-32 object-cover" />
           </div>
@@ -167,7 +167,7 @@ export default function CategoryForm({
         <button
           type="submit"
           disabled={isPending}
-          className="inline-flex items-center gap-2 rounded-sm bg-[#FF6B00] px-6 py-3 text-xs font-medium tracking-[0.1em] text-black hover:bg-[#FF8A33] disabled:opacity-60"
+          className="inline-flex items-center gap-2 rounded-sm bg-[#FF6B00] px-6 py-3 text-xs font-medium tracking-[0.1em] text-white dark:text-black hover:bg-[#FF8A33] disabled:opacity-60"
         >
           {isPending ? 'ЗБЕРЕЖЕННЯ…' : mode === 'create' ? 'СТВОРИТИ' : 'ЗБЕРЕГТИ'}
         </button>

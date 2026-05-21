@@ -99,17 +99,17 @@ export default async function EditProductPage({
         <div>
           <Link
             href="/admin/products"
-            className="inline-flex items-center gap-1 text-xs text-white/60 hover:text-white"
+            className="inline-flex items-center gap-1 text-xs text-[#4A4A48] dark:text-white/60 hover:text-[#1a1a1a] dark:hover:text-[#1a1a1a] dark:text-white"
           >
             <ArrowLeft size={12} /> До списку
           </Link>
-          <div className="mt-2 mb-1 text-[10px] tracking-[0.2em] text-[#FF8A33]">// PRODUCTS · EDIT</div>
+          <div className="mt-2 mb-1 text-[10px] tracking-[0.2em] text-[#993C1D] dark:text-[#FF8A33]">// PRODUCTS · EDIT</div>
           <h1 className="text-3xl font-medium tracking-tight">{p.name}</h1>
         </div>
         <Link
           href={`/product/${p.slug}`}
           target="_blank"
-          className="inline-flex items-center gap-1 text-xs text-white/70 hover:text-[#FF6B00]"
+          className="inline-flex items-center gap-1 text-xs text-[#4A4A48] dark:text-white/70 hover:text-[#FF6B00]"
         >
           Подивитись на сайті <ExternalLink size={12} />
         </Link>

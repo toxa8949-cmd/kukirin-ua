@@ -74,15 +74,15 @@ export default async function AdminOrderDetailPage({
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <Link href="/admin/orders" className="inline-flex items-center gap-1 text-xs text-white/60 hover:text-white">
+          <Link href="/admin/orders" className="inline-flex items-center gap-1 text-xs text-[#4A4A48] dark:text-white/60 hover:text-[#1a1a1a] dark:hover:text-[#1a1a1a] dark:text-white">
             <ArrowLeft size={12} /> До списку
           </Link>
-          <div className="mt-2 mb-1 text-[10px] tracking-[0.2em] text-[#FF8A33]">// ORDER</div>
+          <div className="mt-2 mb-1 text-[10px] tracking-[0.2em] text-[#993C1D] dark:text-[#FF8A33]">// ORDER</div>
           <h1 className="text-3xl font-medium tracking-tight">
             #<span>{shortRef(order.id)}</span>
           </h1>
           {order.created_at && (
-            <p className="mt-1 inline-flex items-center gap-1 text-xs text-white/45">
+            <p className="mt-1 inline-flex items-center gap-1 text-xs text-[#6C6A65] dark:text-white/45">
               <Calendar size={12} /> {new Date(order.created_at).toLocaleString('uk-UA')}
             </p>
           )}
@@ -92,15 +92,15 @@ export default async function AdminOrderDetailPage({
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1fr_320px]">
         <div className="space-y-5">
           {/* Customer */}
-          <section className="rounded-sm border border-white/10 bg-[#0F0F0F] p-5">
-            <div className="mb-3 text-[10px] tracking-[0.2em] text-[#FF8A33]">// КЛІЄНТ</div>
+          <section className="rounded-sm border border-[#E8E6DE] dark:border-white/10 bg-white dark:bg-[#0F0F0F] p-5">
+            <div className="mb-3 text-[10px] tracking-[0.2em] text-[#993C1D] dark:text-[#FF8A33]">// КЛІЄНТ</div>
             <dl className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
               <div>
-                <dt className="text-xs text-white/45">Імʼя</dt>
+                <dt className="text-xs text-[#6C6A65] dark:text-white/45">Імʼя</dt>
                 <dd>{order.customer_name}</dd>
               </div>
               <div>
-                <dt className="text-xs text-white/45">Телефон</dt>
+                <dt className="text-xs text-[#6C6A65] dark:text-white/45">Телефон</dt>
                 <dd>
                   <a
                     href={`tel:${order.phone}`}
@@ -112,7 +112,7 @@ export default async function AdminOrderDetailPage({
               </div>
               {order.email && (
                 <div>
-                  <dt className="text-xs text-white/45">Email</dt>
+                  <dt className="text-xs text-[#6C6A65] dark:text-white/45">Email</dt>
                   <dd>
                     <a
                       href={`mailto:${order.email}`}
@@ -125,9 +125,9 @@ export default async function AdminOrderDetailPage({
               )}
               {order.address && (
                 <div className="sm:col-span-2">
-                  <dt className="text-xs text-white/45">Адреса</dt>
+                  <dt className="text-xs text-[#6C6A65] dark:text-white/45">Адреса</dt>
                   <dd className="inline-flex items-start gap-1">
-                    <MapPin size={12} className="mt-1 flex-shrink-0 text-white/40" />
+                    <MapPin size={12} className="mt-1 flex-shrink-0 text-[#6C6A65] dark:text-white/40" />
                     <span>{order.address}</span>
                   </dd>
                 </div>
@@ -136,10 +136,10 @@ export default async function AdminOrderDetailPage({
           </section>
 
           {/* Items */}
-          <section className="rounded-sm border border-white/10 bg-[#0F0F0F] p-5">
-            <div className="mb-3 text-[10px] tracking-[0.2em] text-[#FF8A33]">// ТОВАРИ</div>
+          <section className="rounded-sm border border-[#E8E6DE] dark:border-white/10 bg-white dark:bg-[#0F0F0F] p-5">
+            <div className="mb-3 text-[10px] tracking-[0.2em] text-[#993C1D] dark:text-[#FF8A33]">// ТОВАРИ</div>
             {items.length === 0 ? (
-              <p className="text-sm text-white/55">Без товарів.</p>
+              <p className="text-sm text-[#4A4A48] dark:text-white/55">Без товарів.</p>
             ) : (
               <ul className="divide-y divide-white/5 text-sm">
                 {items.map((it) => {
@@ -162,11 +162,11 @@ export default async function AdminOrderDetailPage({
                         ) : (
                           <span>{it.name_snapshot}</span>
                         )}
-                        <div className="text-xs text-white/45">
+                        <div className="text-xs text-[#6C6A65] dark:text-white/45">
                           {it.quantity} × {Number(it.price_snapshot).toLocaleString('uk-UA')} ₴
                         </div>
                       </div>
-                      <div className="text-sm font-medium text-white">
+                      <div className="text-sm font-medium text-[#1a1a1a] dark:text-white">
                         {sub.toLocaleString('uk-UA')} ₴
                       </div>
                     </li>
@@ -174,7 +174,7 @@ export default async function AdminOrderDetailPage({
                 })}
               </ul>
             )}
-            <div className="mt-3 flex items-center justify-between border-t border-white/10 pt-3 text-base font-medium">
+            <div className="mt-3 flex items-center justify-between border-t border-[#E8E6DE] dark:border-white/10 pt-3 text-base font-medium">
               <span>Сума</span>
               <span className="text-[#FF6B00]">
                 {Number(order.total).toLocaleString('uk-UA')} ₴
@@ -183,16 +183,16 @@ export default async function AdminOrderDetailPage({
           </section>
 
           {/* Notes / history */}
-          <section className="rounded-sm border border-white/10 bg-[#0F0F0F] p-5">
-            <div className="mb-3 text-[10px] tracking-[0.2em] text-[#FF8A33]">
+          <section className="rounded-sm border border-[#E8E6DE] dark:border-white/10 bg-white dark:bg-[#0F0F0F] p-5">
+            <div className="mb-3 text-[10px] tracking-[0.2em] text-[#993C1D] dark:text-[#FF8A33]">
               // ДЕТАЛІ ТА ІСТОРІЯ
             </div>
             {order.notes ? (
-              <pre className="whitespace-pre-wrap font-mono text-xs leading-relaxed text-white/65">
+              <pre className="whitespace-pre-wrap font-mono text-xs leading-relaxed text-[#4A4A48] dark:text-white/65">
                 {order.notes}
               </pre>
             ) : (
-              <p className="text-sm text-white/55">Нотаток ще немає.</p>
+              <p className="text-sm text-[#4A4A48] dark:text-white/55">Нотаток ще немає.</p>
             )}
           </section>
         </div>

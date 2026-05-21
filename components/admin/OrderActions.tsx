@@ -56,11 +56,11 @@ export default function OrderActions({
   }
 
   const inputCls =
-    'w-full rounded-sm border border-white/15 bg-[#0A0A0A] px-3 py-2 text-sm outline-none transition focus:border-[#FF6B00]';
+    'w-full rounded-sm border border-[#E8E6DE] dark:border-white/15 bg-[#FAFAF7] dark:bg-[#0A0A0A] px-3 py-2 text-sm outline-none transition focus:border-[#FF6B00]';
 
   return (
-    <div className="space-y-4 rounded-sm border border-white/10 bg-[#0F0F0F] p-5">
-      <div className="text-[10px] tracking-[0.2em] text-[#FF8A33]">// ДІЇ</div>
+    <div className="space-y-4 rounded-sm border border-[#E8E6DE] dark:border-white/10 bg-white dark:bg-[#0F0F0F] p-5">
+      <div className="text-[10px] tracking-[0.2em] text-[#993C1D] dark:text-[#FF8A33]">// ДІЇ</div>
 
       {error && (
         <div className="flex items-start gap-2 rounded-sm border border-red-500/30 bg-red-500/10 p-2 text-xs text-red-300">
@@ -76,7 +76,7 @@ export default function OrderActions({
       )}
 
       <div className="space-y-2">
-        <label className="block text-xs text-white/55">Статус</label>
+        <label className="block text-xs text-[#4A4A48] dark:text-white/55">Статус</label>
         <select
           value={status}
           onChange={(e) => setStatus(e.target.value)}
@@ -92,14 +92,14 @@ export default function OrderActions({
           type="button"
           onClick={handleStatusSave}
           disabled={isPending || status === currentStatus}
-          className="inline-flex w-full items-center justify-center gap-2 rounded-sm bg-[#FF6B00] px-4 py-2.5 text-xs font-medium tracking-[0.1em] text-black hover:bg-[#FF8A33] disabled:opacity-40"
+          className="inline-flex w-full items-center justify-center gap-2 rounded-sm bg-[#FF6B00] px-4 py-2.5 text-xs font-medium tracking-[0.1em] text-white dark:text-black hover:bg-[#FF8A33] disabled:opacity-40"
         >
           <Save size={12} /> {isPending ? 'ЗБЕРЕЖЕННЯ…' : 'ЗБЕРЕГТИ СТАТУС'}
         </button>
       </div>
 
-      <div className="space-y-2 border-t border-white/10 pt-4">
-        <label className="block text-xs text-white/55">Додати нотатку (в історію)</label>
+      <div className="space-y-2 border-t border-[#E8E6DE] dark:border-white/10 pt-4">
+        <label className="block text-xs text-[#4A4A48] dark:text-white/55">Додати нотатку (в історію)</label>
         <textarea
           rows={3}
           value={note}
@@ -111,7 +111,7 @@ export default function OrderActions({
           type="button"
           onClick={handleAddNote}
           disabled={isPending || !note.trim()}
-          className="inline-flex w-full items-center justify-center gap-2 rounded-sm border border-white/15 px-4 py-2 text-xs hover:border-white/40 disabled:opacity-40"
+          className="inline-flex w-full items-center justify-center gap-2 rounded-sm border border-[#E8E6DE] dark:border-white/15 px-4 py-2 text-xs hover:border-[#DCDAD0] dark:hover:border-white/40 disabled:opacity-40"
         >
           <MessageSquarePlus size={12} /> Додати нотатку
         </button>
