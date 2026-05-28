@@ -33,13 +33,12 @@ export const metadata: Metadata = {
 
 const themeInitScript = `(function(){
   try {
+    // Темна тема вмикається ТІЛЬКИ якщо користувач сам її обрав кнопкою.
+    // За замовчуванням (і коли вибору ще немає) — завжди світла,
+    // системну тему НЕ враховуємо.
     var t = localStorage.getItem('kukirin-theme');
     if (t === 'dark') {
       document.documentElement.setAttribute('data-theme', 'dark');
-    } else if (t !== 'light') {
-      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.documentElement.setAttribute('data-theme', 'dark');
-      }
     }
   } catch (e) {}
 })();`;
