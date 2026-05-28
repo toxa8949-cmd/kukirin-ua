@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { Instagram, Facebook, Youtube, Send } from 'lucide-react';
 import { getSettings, telHref } from '@/lib/data/settings';
 
@@ -10,8 +11,14 @@ export default async function KukirinFooter() {
         <div className="grid grid-cols-2 gap-8 border-b border-[#E8E6DE] pb-10 dark:border-white/10 md:grid-cols-4">
           {/* Бренд */}
           <div className="col-span-2 md:col-span-1">
-            <div className="mb-3 text-lg font-medium tracking-[0.15em]">
-              KUKIRIN<span className="text-[#FF6B00]">.</span>UA
+            <div className="mb-3">
+              <Image
+                src="/logo-wordmark.png"
+                alt="Kukirin"
+                width={157}
+                height={28}
+                style={{ height: 28, width: 'auto' }}
+              />
             </div>
             <p className="mb-4 max-w-xs text-xs leading-relaxed text-[#6C6A65] dark:text-white/45">
               {settings.footer_about}

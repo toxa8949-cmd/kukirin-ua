@@ -12,12 +12,12 @@ interface LogoProps {
 }
 
 /**
- * Logo KUKIRIN
+ * Logo Kukirin
  *
  * Варіанти:
  * - mark — тільки кірін (символ), для компактних місць (хедер мобільний, favicon)
- * - full — кірін + текст "KuKirin" вертикально (для футера, big display)
- * - inline — кірін + текст "KUKIRIN.UA" горизонтально (для десктоп хедера)
+ * - full — кірін + текст "Kukirin" вертикально (для футера, big display)
+ * - inline — кірін + текст "Kukirin" горизонтально (для десктоп хедера)
  *
  * За замовчуванням загорнуто в <Link href="/">. Передай href={null} щоб вимкнути.
  *
@@ -38,7 +38,7 @@ export default function Logo({
       return (
         <Image
           src="/logo-mark.png"
-          alt="KUKIRIN"
+          alt="Kukirin"
           width={Math.round(size * 1.59)}
           height={size}
           priority={priority}
@@ -52,7 +52,7 @@ export default function Logo({
       return (
         <Image
           src="/logo-full.png"
-          alt="KUKIRIN"
+          alt="Kukirin"
           width={Math.round(size * 1.39)}
           height={size}
           priority={priority}
@@ -61,7 +61,7 @@ export default function Logo({
       );
     }
 
-    // inline: іконка + текст
+    // inline: іконка дракона + напис-wordmark (PNG, вирізаний з оригіналу)
     return (
       <span className="inline-flex items-center gap-2">
         <Image
@@ -72,9 +72,14 @@ export default function Logo({
           priority={priority}
           style={{ height: size, width: 'auto' }}
         />
-        <span className="text-base font-medium tracking-[0.15em] sm:text-lg">
-          KUKIRIN<span className="text-[#FF6B00]">.</span>UA
-        </span>
+        <Image
+          src="/logo-wordmark.png"
+          alt="Kukirin"
+          width={Math.round(size * 0.62 * 5.62)}
+          height={Math.round(size * 0.62)}
+          priority={priority}
+          style={{ height: Math.round(size * 0.62), width: 'auto' }}
+        />
       </span>
     );
   })();
@@ -84,7 +89,7 @@ export default function Logo({
   }
 
   return (
-    <Link href={href} className={className} aria-label="KUKIRIN.UA — головна">
+    <Link href={href} className={className} aria-label="Kukirin — головна">
       {content}
     </Link>
   );
