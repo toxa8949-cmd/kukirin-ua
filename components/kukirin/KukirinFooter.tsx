@@ -1,6 +1,9 @@
 import { Instagram, Facebook, Youtube, Send } from 'lucide-react';
+import { getSettings, telHref } from '@/lib/data/settings';
 
-export default function KukirinFooter() {
+export default async function KukirinFooter() {
+  const settings = await getSettings();
+
   return (
     <footer className="bg-[#F0EEE6] py-14 text-[#1a1a1a] dark:bg-[#070707] dark:text-white">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
@@ -11,22 +14,29 @@ export default function KukirinFooter() {
               KUKIRIN<span className="text-[#FF6B00]">.</span>UA
             </div>
             <p className="mb-4 max-w-xs text-xs leading-relaxed text-[#6C6A65] dark:text-white/45">
-              Офіційний дистриб’ютор електросамокатів KUKIRIN в Україні.
-              Гарантія, сервіс, доставка.
+              {settings.footer_about}
             </p>
             <div className="flex gap-2">
-              <a href="#" aria-label="Instagram" className="flex h-8 w-8 items-center justify-center rounded-sm border border-[#E8E6DE] text-[#6C6A65] transition hover:border-[#FF6B00] hover:text-[#FF6B00] dark:border-white/10 dark:text-white/60">
-                <Instagram size={14} />
-              </a>
-              <a href="#" aria-label="Facebook" className="flex h-8 w-8 items-center justify-center rounded-sm border border-[#E8E6DE] text-[#6C6A65] transition hover:border-[#FF6B00] hover:text-[#FF6B00] dark:border-white/10 dark:text-white/60">
-                <Facebook size={14} />
-              </a>
-              <a href="#" aria-label="YouTube" className="flex h-8 w-8 items-center justify-center rounded-sm border border-[#E8E6DE] text-[#6C6A65] transition hover:border-[#FF6B00] hover:text-[#FF6B00] dark:border-white/10 dark:text-white/60">
-                <Youtube size={14} />
-              </a>
-              <a href="#" aria-label="Telegram" className="flex h-8 w-8 items-center justify-center rounded-sm border border-[#E8E6DE] text-[#6C6A65] transition hover:border-[#FF6B00] hover:text-[#FF6B00] dark:border-white/10 dark:text-white/60">
-                <Send size={14} />
-              </a>
+              {settings.instagram && (
+                <a href={settings.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="flex h-8 w-8 items-center justify-center rounded-sm border border-[#E8E6DE] text-[#6C6A65] transition hover:border-[#FF6B00] hover:text-[#FF6B00] dark:border-white/10 dark:text-white/60">
+                  <Instagram size={14} />
+                </a>
+              )}
+              {settings.facebook && (
+                <a href={settings.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="flex h-8 w-8 items-center justify-center rounded-sm border border-[#E8E6DE] text-[#6C6A65] transition hover:border-[#FF6B00] hover:text-[#FF6B00] dark:border-white/10 dark:text-white/60">
+                  <Facebook size={14} />
+                </a>
+              )}
+              {settings.youtube && (
+                <a href={settings.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="flex h-8 w-8 items-center justify-center rounded-sm border border-[#E8E6DE] text-[#6C6A65] transition hover:border-[#FF6B00] hover:text-[#FF6B00] dark:border-white/10 dark:text-white/60">
+                  <Youtube size={14} />
+                </a>
+              )}
+              {settings.telegram && (
+                <a href={settings.telegram} target="_blank" rel="noopener noreferrer" aria-label="Telegram" className="flex h-8 w-8 items-center justify-center rounded-sm border border-[#E8E6DE] text-[#6C6A65] transition hover:border-[#FF6B00] hover:text-[#FF6B00] dark:border-white/10 dark:text-white/60">
+                  <Send size={14} />
+                </a>
+              )}
             </div>
           </div>
 
@@ -53,15 +63,15 @@ export default function KukirinFooter() {
           <div>
             <div className="mb-3 text-[10px] tracking-[0.2em] text-[#6C6A65] dark:text-white/40">КОНТАКТИ</div>
             <ul className="space-y-2 text-sm text-[#4A4A48] dark:text-white/70">
-              <li><a href="tel:+380800338899" className="hover:text-[#FF6B00]">0 800 33 88 99</a></li>
-              <li><a href="mailto:info@kukirin.ua" className="hover:text-[#FF6B00]">info@kukirin.ua</a></li>
-              <li className="text-xs text-[#6C6A65] dark:text-white/40">Пн–Нд: 9:00 – 21:00</li>
+              <li><a href={`tel:${telHref(settings.phone_raw || settings.phone)}`} className="hover:text-[#FF6B00]">{settings.phone}</a></li>
+              <li><a href={`mailto:${settings.email}`} className="hover:text-[#FF6B00]">{settings.email}</a></li>
+              <li className="text-xs text-[#6C6A65] dark:text-white/40">{settings.work_hours}</li>
             </ul>
           </div>
         </div>
 
         <div className="flex flex-col items-start justify-between gap-2 pt-6 text-[11px] text-[#6C6A65] dark:text-white/40 md:flex-row md:items-center">
-          <div>© {new Date().getFullYear()} KUKIRIN.UA · Усі права захищені</div>
+          <div>{settings.copyright}</div>
           <div className="flex gap-4">
             <a href="/privacy" className="hover:text-[#1a1a1a] dark:hover:text-white">Конфіденційність</a>
             <a href="/terms" className="hover:text-[#1a1a1a] dark:hover:text-white">Угода</a>

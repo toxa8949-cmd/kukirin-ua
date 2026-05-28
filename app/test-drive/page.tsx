@@ -34,8 +34,6 @@ export default async function TestDrivePage() {
             <select className={inputCls}>
               <option value="">Місто</option>
               <option value="kyiv">Київ</option>
-              <option value="lviv">Львів</option>
-              <option value="odesa">Одеса</option>
             </select>
             <textarea rows={3} placeholder="Коментар (необовʼязково)" className={inputCls} />
             <button type="button" className="w-full rounded-sm bg-[#FF6B00] px-6 py-3 text-xs font-medium tracking-[0.1em] text-white hover:bg-[#FF8A33] dark:text-black">
@@ -60,12 +58,12 @@ export default async function TestDrivePage() {
           <div className="rounded-sm border border-[#E8E6DE] bg-white p-5 dark:border-white/10 dark:bg-[#0F0F0F]">
             <MapPin size={20} className="mb-2 text-[#FF6B00]" />
             <div className="text-[10px] tracking-[0.2em] text-[#6C6A65] dark:text-white/40">ДЕ</div>
-            <div className="text-sm">Київ, Львів, Одеса — адреси сервісних центрів.</div>
+            <div className="text-sm">Київ, магазин-партнер «Велокрай», вул. Ревуцького, 40В.</div>
           </div>
           <div className="rounded-sm border border-[#FF6B00]/30 bg-[#FF6B00]/5 p-5">
             <Phone size={20} className="mb-2 text-[#FF6B00]" />
             <div className="text-[10px] tracking-[0.2em] text-[#6C6A65] dark:text-white/40">ПЕРЕДЗВОНИТИ</div>
-            <a href="tel:+380800338899" className="text-sm font-medium hover:text-[#FF6B00]">0 800 33 88 99</a>
+            <a href="tel:+380958981007" className="text-sm font-medium hover:text-[#FF6B00]">0 (95) 898-10-07</a>
           </div>
         </div>
       </div>
