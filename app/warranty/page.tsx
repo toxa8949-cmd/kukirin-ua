@@ -5,16 +5,16 @@ export const metadata = { title: 'Гарантія KUKIRIN' };
 
 export default function WarrantyPage() {
   return (
-    <PageShell breadcrumb="WARRANTY · 12 МІСЯЦІВ" title="Гарантія" subtitle="Кожен самокат KUKIRIN — з офіційною гарантією виробника й українською сервісною підтримкою.">
+    <PageShell breadcrumb="WARRANTY" title="Гарантія" subtitle="Кожен самокат KUKIRIN — з офіційною гарантією виробника й українською сервісною підтримкою.">
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
         <section className="rounded-sm border border-[#E8E6DE] dark:border-white/10 bg-white dark:bg-[#0F0F0F] p-6">
           <Shield size={26} className="mb-3 text-[#FF6B00]" />
           <h2 className="mb-3 text-xl font-medium">Що покриває</h2>
           <ul className="space-y-2 text-sm text-[#4A4A48] dark:text-white/70">
-            <li className="flex gap-2"><CheckCircle2 size={16} className="mt-0.5 shrink-0 text-[#FF6B00]" /> Рама і складальний механізм — 24 місяці</li>
-            <li className="flex gap-2"><CheckCircle2 size={16} className="mt-0.5 shrink-0 text-[#FF6B00]" /> Електродвигун і контролер — 12 місяців</li>
-            <li className="flex gap-2"><CheckCircle2 size={16} className="mt-0.5 shrink-0 text-[#FF6B00]" /> Батарея — 12 місяців або 500 циклів</li>
-            <li className="flex gap-2"><CheckCircle2 size={16} className="mt-0.5 shrink-0 text-[#FF6B00]" /> Дисплей і електронні компоненти — 12 місяців</li>
+            <li className="flex gap-2"><CheckCircle2 size={16} className="mt-0.5 shrink-0 text-[#FF6B00]" /> Рама і складальний механізм</li>
+            <li className="flex gap-2"><CheckCircle2 size={16} className="mt-0.5 shrink-0 text-[#FF6B00]" /> Електродвигун і контролер</li>
+            <li className="flex gap-2"><CheckCircle2 size={16} className="mt-0.5 shrink-0 text-[#FF6B00]" /> Батарея</li>
+            <li className="flex gap-2"><CheckCircle2 size={16} className="mt-0.5 shrink-0 text-[#FF6B00]" /> Дисплей і електронні компоненти</li>
             <li className="flex gap-2"><CheckCircle2 size={16} className="mt-0.5 shrink-0 text-[#FF6B00]" /> Безкоштовна заміна несправних деталей</li>
           </ul>
         </section>

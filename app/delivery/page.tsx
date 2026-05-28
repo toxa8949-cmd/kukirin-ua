@@ -5,16 +5,15 @@ export const metadata = { title: 'Доставка й оплата' };
 
 export default function DeliveryPage() {
   return (
-    <PageShell breadcrumb="DELIVERY · УКРАЇНА" title="Доставка й оплата" subtitle="Швидко, прозоро, без передплати. Самокат їде до вас 1–3 дні, оплата при отриманні.">
+    <PageShell breadcrumb="DELIVERY · УКРАЇНА" title="Доставка й оплата" subtitle="Швидко й прозоро. Самокат їде до вас Новою Поштою, або забирайте самовивозом у Києві.">
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
         <section className="rounded-sm border border-[#E8E6DE] dark:border-white/10 bg-white dark:bg-[#0F0F0F] p-6">
           <Truck size={26} className="mb-3 text-[#FF6B00]" />
           <h2 className="mb-3 text-xl font-medium">Доставка</h2>
           <ul className="space-y-3 text-sm text-[#4A4A48] dark:text-white/70">
-            <li><span className="text-[#1a1a1a] dark:text-white">Нова Пошта</span> — відділення/поштомат: 1–2 дні, від 90 ₴ (для габаритних — за тарифом перевізника).</li>
-            <li><span className="text-[#1a1a1a] dark:text-white">Курʼєр НП</span> — за адресою: 1–3 дні, від 120 ₴ + габаритне.</li>
-            <li><span className="text-[#1a1a1a] dark:text-white">Самовивіз</span> — Київ / Львів / Одеса з сервісного центру, безкоштовно у будь-який день.</li>
-            <li><span className="text-[#1a1a1a] dark:text-white">Безкоштовна доставка</span> при замовленні від 20 000 ₴ — Новою Поштою у відділення.</li>
+            <li><span className="text-[#1a1a1a] dark:text-white">Нова Пошта</span> — відділення/поштомат: 1–2 дні, за тарифом перевізника (для габаритних товарів — згідно з тарифом НП).</li>
+            <li><span className="text-[#1a1a1a] dark:text-white">Курʼєр Нової Пошти</span> — за адресою: 1–3 дні, за тарифом перевізника.</li>
+            <li><span className="text-[#1a1a1a] dark:text-white">Самовивіз</span> — магазин-партнер «Велокрай», м. Київ, вул. Ревуцького, 40В.</li>
           </ul>
         </section>
 
@@ -24,7 +23,7 @@ export default function DeliveryPage() {
           <ul className="space-y-3 text-sm text-[#4A4A48] dark:text-white/70">
             <li><span className="text-[#1a1a1a] dark:text-white">При отриманні</span> — готівкою або карткою у відділенні НП.</li>
             <li><span className="text-[#1a1a1a] dark:text-white">Картою онлайн</span> — Visa / Mastercard, Apple Pay, Google Pay через LiqPay або WayForPay.</li>
-            <li><span className="text-[#1a1a1a] dark:text-white">Розстрочка 0%</span> — ПриватБанк, Monobank: 3 / 6 / 12 платежів без переплати.</li>
+            <li><span className="text-[#1a1a1a] dark:text-white">Розтермінування</span> — ПриватБанк, Monobank: оплата частинами.</li>
             <li><span className="text-[#1a1a1a] dark:text-white">Безготівковий розрахунок</span> — для юридичних осіб з ПДВ.</li>
           </ul>
         </section>

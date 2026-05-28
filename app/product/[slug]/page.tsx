@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const tag = s.tagline ? `${s.tagline}.` : '';
     return {
       title: `${s.name} — купити в Україні`,
-      description: `${s.name}.${tag ? ` ${tag}` : ''}${specs} Гарантія 12 міс, доставка 1–3 дні.`,
+      description: `${s.name}.${tag ? ` ${tag}` : ''}${specs} Офіційна гарантія, доставка Новою Поштою.`,
     };
   } catch {
     return { title: 'Модель' };
@@ -63,8 +63,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   })();
 
   const features = [
-    { icon: Truck,  label: 'Доставка',   value: '1–3 дні по Україні' },
-    { icon: Shield, label: 'Гарантія',   value: '12 місяців офіційно' },
+    { icon: Truck,  label: 'Доставка',   value: 'Новою Поштою по Україні' },
+    { icon: Shield, label: 'Гарантія',   value: 'Офіційна' },
     { icon: Wrench, label: 'Сервіс',     value: 'Власні майстерні' },
     { icon: Phone,  label: 'Підтримка',  value: '0 800 33 88 99' },
   ];
@@ -176,9 +176,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           </div>
 
           <ul className="mb-6 space-y-2 text-sm text-[#4A4A48] dark:text-white/70">
-            <li className="flex gap-2"><Check size={16} className="mt-0.5 text-[#FF6B00]" /> Офіційна гарантія 12 місяців</li>
-            <li className="flex gap-2"><Check size={16} className="mt-0.5 text-[#FF6B00]" /> Доставка Новою Поштою 1–3 дні</li>
-            <li className="flex gap-2"><Check size={16} className="mt-0.5 text-[#FF6B00]" /> Розстрочка 0% до 12 місяців</li>
+            <li className="flex gap-2"><Check size={16} className="mt-0.5 text-[#FF6B00]" /> Офіційна гарантія</li>
+            <li className="flex gap-2"><Check size={16} className="mt-0.5 text-[#FF6B00]" /> Доставка Новою Поштою</li>
+            <li className="flex gap-2"><Check size={16} className="mt-0.5 text-[#FF6B00]" /> Доступне розтермінування</li>
             <li className="flex gap-2"><Check size={16} className="mt-0.5 text-[#FF6B00]" /> Передпродажна підготовка</li>
           </ul>
 

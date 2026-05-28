@@ -1,9 +1,9 @@
 import { Truck, ShieldCheck, CreditCard, Headphones, Award, Wrench } from 'lucide-react';
 
 const FEATURES = [
-  { icon: Truck, title: 'Доставка 1–3 дні', desc: 'Нова Пошта по всій Україні. Безкоштовно від 25 000 ₴.' },
-  { icon: ShieldCheck, title: 'Гарантія 12 місяців', desc: 'Офіційна гарантія KUKIRIN на всі моделі.' },
-  { icon: CreditCard, title: 'Розстрочка 0%', desc: 'До 12 платежів без переплат від Monobank і ПриватБанку.' },
+  { icon: Truck, title: 'Доставка Новою Поштою', desc: 'По всій Україні за тарифом перевізника. Самовивіз у Києві.' },
+  { icon: ShieldCheck, title: 'Офіційна гарантія', desc: 'Гарантія KUKIRIN на всі моделі та сервісна підтримка.' },
+  { icon: CreditCard, title: 'Розтермінування', desc: 'Оплата частинами від Monobank і ПриватБанку.' },
   { icon: Wrench, title: 'Сервісний центр', desc: 'Власний сервіс у Києві. Виїзд майстра по місту.' },
   { icon: Award, title: 'Офіційний дистриб’ютор', desc: 'Прямий імпорт від виробника. Без сірих схем.' },
   { icon: Headphones, title: 'Підтримка 24/7', desc: 'Допомога з вибором, налаштуванням і ремонтом.' },
