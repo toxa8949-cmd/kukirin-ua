@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import PageShell from '@/components/kukirin/PageShell';
 import { createClient } from '@/lib/supabase/server';
 
 export const revalidate = 300; // кеш 5 хв
@@ -31,15 +32,11 @@ export default async function BlogIndexPage() {
   const items = (data ?? []) as unknown as NewsCard[];
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 sm:py-14">
-      <header className="mb-10 sm:mb-14">
-        <div className="mb-2 text-[10px] tracking-[0.2em] text-[#993C1D] dark:text-[#FF8A33]">// BLOG</div>
-        <h1 className="text-4xl font-medium tracking-tight sm:text-5xl">Блог</h1>
-        <p className="mt-3 max-w-xl text-sm text-[#4A4A48] dark:text-white/55">
-          Новини, огляди, технічні поради й порівняння моделей KUKIRIN.
-        </p>
-      </header>
-
+    <PageShell
+      breadcrumb="BLOG"
+      title="Блог"
+      subtitle="Новини, огляди, технічні поради й порівняння моделей KUKIRIN."
+    >
       {items.length === 0 ? (
         <div className="rounded-sm border border-dashed border-[#E8E6DE] dark:border-white/15 bg-[#FAFAF7] dark:bg-[#0A0A0A] p-12 text-center">
           <p className="text-sm text-[#4A4A48] dark:text-white/55">
@@ -79,7 +76,7 @@ export default async function BlogIndexPage() {
                       })}
                     </div>
                   )}
-                  <h2 className="line-clamp-2 text-lg font-medium leading-snug tracking-tight transition group-hover:text-[#993C1D] dark:text-[#FF8A33]">
+                  <h2 className="line-clamp-2 text-lg font-medium leading-snug tracking-tight transition group-hover:text-[#993C1D] dark:group-hover:text-[#FF8A33]">
                     {n.title}
                   </h2>
                   {n.excerpt && (
@@ -91,6 +88,6 @@ export default async function BlogIndexPage() {
           ))}
         </ul>
       )}
-    </div>
+    </PageShell>
   );
 }
