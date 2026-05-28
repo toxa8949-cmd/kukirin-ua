@@ -67,7 +67,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     { icon: Truck,  label: 'Доставка',   value: 'Новою Поштою по Україні' },
     { icon: Shield, label: 'Гарантія',   value: 'Офіційна' },
     { icon: Wrench, label: 'Сервіс',     value: 'Власні майстерні' },
-    { icon: Phone,  label: 'Підтримка',  value: '0 800 33 88 99' },
+    { icon: Phone,  label: 'Підтримка',  value: '0 (95) 898-10-07' },
   ];
 
   return (

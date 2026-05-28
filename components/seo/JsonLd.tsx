@@ -30,7 +30,7 @@ export function organizationSchema() {
     description: 'Офіційний дистрибʼютор електросамокатів KUKIRIN в Україні.',
     contactPoint: {
       '@type': 'ContactPoint',
-      telephone: '+380800338899',
+      telephone: '+380958981007',
       contactType: 'customer service',
       areaServed: 'UA',
       availableLanguage: ['Ukrainian'],

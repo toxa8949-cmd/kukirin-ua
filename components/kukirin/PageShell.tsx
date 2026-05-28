@@ -96,7 +96,7 @@ export default function PageShell({
             <div>
               <div className="mb-3 text-[10px] tracking-[0.2em] text-[#6C6A65] dark:text-white/40">КОНТАКТИ</div>
               <ul className="space-y-2 text-sm text-[#4A4A48] dark:text-white/70">
-                <li><a href="tel:+380800338899" className="hover:text-[#FF6B00]">0 800 33 88 99</a></li>
+                <li><a href="tel:+380958981007" className="hover:text-[#FF6B00]">0 (95) 898-10-07</a></li>
                 <li><a href="mailto:info@kukirin.ua" className="hover:text-[#FF6B00]">info@kukirin.ua</a></li>
                 <li className="text-xs text-[#6C6A65] dark:text-white/40">Пн–Нд: 9:00 – 21:00</li>
               </ul>

@@ -7,10 +7,10 @@ export default function ContactsPage() {
   return (
     <PageShell breadcrumb="CONTACTS" title="Контакти" subtitle="Зателефонуйте, напишіть або заїжджайте — ми завжди раді допомогти з вибором та сервісом.">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <a href="tel:+380800338899" className="rounded-sm border border-[#E8E6DE] dark:border-white/10 bg-white dark:bg-[#0F0F0F] p-5 transition hover:border-[#FF6B00]">
+        <a href="tel:+380958981007" className="rounded-sm border border-[#E8E6DE] dark:border-white/10 bg-white dark:bg-[#0F0F0F] p-5 transition hover:border-[#FF6B00]">
           <Phone size={22} className="mb-3 text-[#FF6B00]" />
           <div className="text-[10px] tracking-[0.2em] text-[#6C6A65] dark:text-white/40">ТЕЛЕФОН</div>
-          <div className="text-base font-medium">0 800 33 88 99</div>
+          <div className="text-base font-medium">0 (95) 898-10-07</div>
           <div className="text-xs text-[#6C6A65] dark:text-white/45">Безкоштовно по Україні</div>
         </a>
         <a href="mailto:info@kukirin.ua" className="rounded-sm border border-[#E8E6DE] dark:border-white/10 bg-white dark:bg-[#0F0F0F] p-5 transition hover:border-[#FF6B00]">

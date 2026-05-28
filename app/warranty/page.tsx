@@ -35,7 +35,7 @@ export default function WarrantyPage() {
           <FileText size={26} className="mb-3 text-[#FF6B00]" />
           <h2 className="mb-3 text-xl font-medium">Як скористатись</h2>
           <ol className="list-decimal space-y-2 pl-5 text-sm text-[#4A4A48] dark:text-white/70">
-            <li>Зателефонуйте на гарячу лінію <a href="tel:+380800338899" className="text-[#FF6B00] hover:underline">0 800 33 88 99</a> або напишіть у Telegram.</li>
+            <li>Зателефонуйте на гарячу лінію <a href="tel:+380958981007" className="text-[#FF6B00] hover:underline">0 (95) 898-10-07</a> або напишіть у Telegram.</li>
             <li>Опишіть проблему, ми попередньо діагностуємо по фото/відео — у багатьох випадках обходимось без візиту.</li>
             <li>Якщо потрібен ремонт — привозите самокат у сервіс або відправляєте НП за наш рахунок.</li>
             <li>Діагностика — 1–2 дні. Заміна вузла — у середньому 3–7 днів за наявності запчастин.</li>

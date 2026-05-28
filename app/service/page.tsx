@@ -41,8 +41,8 @@ export default function ServicePage() {
         <Phone size={24} className="mx-auto mb-3 text-[#FF6B00]" />
         <h3 className="mb-2 text-xl font-medium">Записатись на сервіс</h3>
         <p className="mb-4 text-sm text-[#4A4A48] dark:text-white/65">Дзвоніть або пишіть у Telegram — підкажемо вільний слот і вартість робіт.</p>
-        <a href="tel:+380800338899" className="inline-block rounded-sm bg-[#FF6B00] px-6 py-3 text-xs font-medium tracking-[0.1em] text-white hover:bg-[#FF8A33] dark:text-black">
-          0 800 33 88 99
+        <a href="tel:+380958981007" className="inline-block rounded-sm bg-[#FF6B00] px-6 py-3 text-xs font-medium tracking-[0.1em] text-white hover:bg-[#FF8A33] dark:text-black">
+          0 (95) 898-10-07
         </a>
       </div>
     </PageShell>
