@@ -1,9 +1,11 @@
 import type { MetadataRoute } from 'next';
 import { getAllProducts } from '@/lib/data/products';
+import { createClient } from '@/lib/supabase/server';
 
-const BASE = 'https://kukirin.ua';
+const BASE = 'https://kukirinstore.com.ua';
 
-export const dynamic = 'force-dynamic';
+// Регенерувати карту сайту раз на годину (замість force-dynamic — швидше)
+export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Статичні сторінки
@@ -32,5 +34,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: p.badge === 'hit' || p.badge === 'top' ? 0.9 : 0.8,
   }));
 
-  return [...staticPages, ...productPages];
+  // Динамічні статті блогу з БД
+  let blogPages: MetadataRoute.Sitemap = [];
+  try {
+    const supabase = await createClient();
+    const { data } = await supabase
+      .from('news')
+      .select('slug, published_at')
+      .eq('published', true);
+    if (data) {
+      blogPages = (data as Array<{ slug: string; published_at: string | null }>).map((n) => ({
+        url: `${BASE}/blog/${n.slug}`,
+        lastModified: n.published_at ? new Date(n.published_at) : undefined,
+        changeFrequency: 'monthly' as const,
+        priority: 0.6,
+      }));
+    }
+  } catch {
+    // якщо БД недоступна — sitemap все одно віддасть статичні + товари
+  }
+
+  return [...staticPages, ...productPages, ...blogPages];
 }
