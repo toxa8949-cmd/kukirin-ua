@@ -34,20 +34,15 @@ export default function ContactsPage() {
       </div>
 
       <div className="mt-10">
-        <h2 className="mb-5 text-2xl font-medium tracking-tight">Шоуруми і сервіс</h2>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          {[
-            { city: 'КИЇВ', addr: 'вул. Електриків, 26', work: 'Пн–Сб: 10:00 – 19:00, Нд: 11:00 – 17:00' },
-            { city: 'ЛЬВІВ', addr: 'вул. Городоцька, 359', work: 'Пн–Сб: 10:00 – 19:00, Нд: вихідний' },
-            { city: 'ОДЕСА', addr: 'вул. Велика Арнаутська, 56', work: 'Пн–Сб: 10:00 – 19:00, Нд: 11:00 – 16:00' },
-          ].map((p) => (
-            <div key={p.city} className="rounded-sm border border-[#E8E6DE] dark:border-white/10 bg-white dark:bg-[#0F0F0F] p-5">
-              <MapPin size={20} className="mb-2 text-[#FF6B00]" />
-              <div className="text-[10px] tracking-[0.2em] text-[#6C6A65] dark:text-white/40">{p.city}</div>
-              <div className="mb-2 text-sm">{p.addr}</div>
-              <div className="flex items-start gap-1 text-xs text-[#6C6A65] dark:text-white/45"><Clock size={12} className="mt-0.5" /> {p.work}</div>
-            </div>
-          ))}
+        <h2 className="mb-5 text-2xl font-medium tracking-tight">Самовивіз і сервіс</h2>
+        <div className="grid grid-cols-1 gap-4">
+          <div className="rounded-sm border border-[#E8E6DE] dark:border-white/10 bg-white dark:bg-[#0F0F0F] p-5">
+            <MapPin size={20} className="mb-2 text-[#FF6B00]" />
+            <div className="text-[10px] tracking-[0.2em] text-[#6C6A65] dark:text-white/40">КИЇВ · МАГАЗИН-ПАРТНЕР</div>
+            <div className="mb-1 text-sm font-medium">«Велокрай»</div>
+            <div className="mb-2 text-sm">вул. Ревуцького, 40В</div>
+            <div className="flex items-start gap-1 text-xs text-[#6C6A65] dark:text-white/45"><Clock size={12} className="mt-0.5" /> Пн–Сб: 10:00 – 19:00</div>
+          </div>
         </div>
       </div>
 

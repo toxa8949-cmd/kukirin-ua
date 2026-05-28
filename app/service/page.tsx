@@ -15,7 +15,7 @@ export default function ServicePage() {
     <PageShell
       breadcrumb="SERVICE · ОФІЦІЙНО"
       title="Сервісний центр"
-      subtitle="Власні майстерні в Києві, Львові й Одесі. Виконуємо гарантійний та позагарантійний ремонт усіх моделей KUKIRIN."
+      subtitle="Сервіс і самовивіз у магазині-партнері «Велокрай» у Києві. Виконуємо гарантійний та позагарантійний ремонт усіх моделей KUKIRIN."
     >
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {SERVICES.map((s) => (
@@ -30,31 +30,18 @@ export default function ServicePage() {
         ))}
       </div>
 
-      <div className="mt-10 grid grid-cols-1 gap-6 rounded-sm border border-[#E8E6DE] bg-white p-6 dark:border-white/10 dark:bg-[#0F0F0F] sm:grid-cols-3">
-        <div>
-          <MapPin size={20} className="mb-2 text-[#FF6B00]" />
-          <div className="text-[10px] tracking-[0.2em] text-[#6C6A65] dark:text-white/40">КИЇВ</div>
-          <div className="text-sm">вул. Електриків, 26</div>
-          <div className="text-xs text-[#6C6A65] dark:text-white/45">Пн–Сб: 10:00 – 19:00</div>
-        </div>
-        <div>
-          <MapPin size={20} className="mb-2 text-[#FF6B00]" />
-          <div className="text-[10px] tracking-[0.2em] text-[#6C6A65] dark:text-white/40">ЛЬВІВ</div>
-          <div className="text-sm">вул. Городоцька, 359</div>
-          <div className="text-xs text-[#6C6A65] dark:text-white/45">Пн–Сб: 10:00 – 19:00</div>
-        </div>
-        <div>
-          <MapPin size={20} className="mb-2 text-[#FF6B00]" />
-          <div className="text-[10px] tracking-[0.2em] text-[#6C6A65] dark:text-white/40">ОДЕСА</div>
-          <div className="text-sm">вул. Велика Арнаутська, 56</div>
-          <div className="text-xs text-[#6C6A65] dark:text-white/45">Пн–Сб: 10:00 – 19:00</div>
-        </div>
+      <div className="mt-10 rounded-sm border border-[#E8E6DE] bg-white p-6 dark:border-white/10 dark:bg-[#0F0F0F]">
+        <MapPin size={20} className="mb-2 text-[#FF6B00]" />
+        <div className="text-[10px] tracking-[0.2em] text-[#6C6A65] dark:text-white/40">КИЇВ · МАГАЗИН-ПАРТНЕР</div>
+        <div className="text-sm font-medium">«Велокрай»</div>
+        <div className="text-sm">вул. Ревуцького, 40В</div>
+        <div className="text-xs text-[#6C6A65] dark:text-white/45">Пн–Сб: 10:00 – 19:00</div>
       </div>
 
       <div className="mt-8 rounded-sm border border-[#FF6B00]/30 bg-[#FF6B00]/5 p-6 text-center">
         <Phone size={24} className="mx-auto mb-3 text-[#FF6B00]" />
         <h3 className="mb-2 text-xl font-medium">Записатись на сервіс</h3>
-        <p className="mb-4 text-sm text-[#4A4A48] dark:text-white/65">Дзвоніть або пишіть у Telegram — підкажемо найближчий сервіс і вільний слот.</p>
+        <p className="mb-4 text-sm text-[#4A4A48] dark:text-white/65">Дзвоніть або пишіть у Telegram — підкажемо вільний слот.</p>
         <a href="tel:+380800338899" className="inline-block rounded-sm bg-[#FF6B00] px-6 py-3 text-xs font-medium tracking-[0.1em] text-white hover:bg-[#FF8A33] dark:text-black">
           0 800 33 88 99
         </a>
