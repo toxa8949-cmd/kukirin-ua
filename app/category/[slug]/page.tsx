@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowRight } from 'lucide-react';
 import PageShell from '@/components/kukirin/PageShell';
+import JsonLd, { breadcrumbSchema } from '@/components/seo/JsonLd';
 import { getCategoryBySlug } from '@/lib/data/categories';
 import { getProductsByCategorySlug } from '@/lib/data/products';
 
@@ -49,6 +50,13 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
 
   return (
     <PageShell breadcrumb={badge} title={title} subtitle={subtitle}>
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: 'Головна', url: '/' },
+          { name: 'Каталог', url: '/catalog' },
+          { name: title, url: `/category/${slug}` },
+        ])}
+      />
       {list.length === 0 ? (
         <div className="rounded-sm border border-[#E8E6DE] dark:border-white/10 p-8 text-center text-[#4A4A48] dark:text-white/55">
           У цій категорії поки немає товарів.{' '}

@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { Check, Phone, Truck, Shield, Wrench } from 'lucide-react';
 import PageShell from '@/components/kukirin/PageShell';
 import AddToCartButton from '@/components/cart/AddToCartButton';
+import JsonLd, { productSchema, breadcrumbSchema } from '@/components/seo/JsonLd';
 import {
   getAllProducts,
   getProductBySlug,
@@ -71,6 +72,23 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
   return (
     <PageShell breadcrumb={`PRODUCT · ${scooter.slug.toUpperCase()}`}>
+      <JsonLd
+        data={[
+          productSchema({
+            name: safeName,
+            slug: scooter.slug,
+            description: scooter.description,
+            price: Number(scooter.price),
+            image: primaryImage,
+            inStock: (scooter.stock ?? 0) > 0,
+          }),
+          breadcrumbSchema([
+            { name: 'Головна', url: '/' },
+            { name: 'Каталог', url: '/catalog' },
+            { name: safeName, url: `/product/${scooter.slug}` },
+          ]),
+        ]}
+      />
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
         {/* Visual */}
         <div className="relative aspect-square overflow-hidden rounded-md border border-[#E8E6DE] bg-white dark:border-white/10 dark:bg-gradient-to-br dark:from-[#1a1a1a] dark:to-[#0a0a0a]">

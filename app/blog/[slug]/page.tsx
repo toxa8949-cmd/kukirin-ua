@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import PageShell from '@/components/kukirin/PageShell';
+import JsonLd, { articleSchema, breadcrumbSchema } from '@/components/seo/JsonLd';
 import { createClient } from '@/lib/supabase/server';
 import { renderMarkdown } from '@/lib/markdown';
 
@@ -76,6 +77,22 @@ export default async function BlogArticlePage({
 
   return (
     <PageShell breadcrumb="BLOG">
+      <JsonLd
+        data={[
+          articleSchema({
+            title: article.title,
+            slug: article.slug,
+            excerpt: article.excerpt,
+            image: article.cover_url,
+            publishedAt: article.published_at,
+          }),
+          breadcrumbSchema([
+            { name: 'Головна', url: '/' },
+            { name: 'Блог', url: '/blog' },
+            { name: article.title, url: `/blog/${article.slug}` },
+          ]),
+        ]}
+      />
       <article className="mx-auto max-w-3xl">
         <Link
           href="/blog"
