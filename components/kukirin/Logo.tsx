@@ -18,8 +18,6 @@ interface LogoProps {
  * - mark — тільки кірін (символ), для компактних місць (хедер мобільний, favicon)
  * - full — кірін + текст "Kukirin" вертикально (для футера, big display)
  * - inline — кірін + текст "Kukirin" горизонтально (для десктоп хедера)
- *
- * За замовчуванням загорнуто в <Link href="/">. Передай href={null} щоб вимкнути.
  */
 export default function Logo({
   variant = 'inline',
@@ -30,7 +28,6 @@ export default function Logo({
 }: LogoProps) {
   const content = (() => {
     if (variant === 'mark') {
-      // Натуральне співвідношення logo-mark: 384 × 242 → 1.59
       return (
         <Image
           src="/logo-mark.png"
@@ -44,7 +41,6 @@ export default function Logo({
     }
 
     if (variant === 'full') {
-      // Натуральне співвідношення logo-full: 500 × 360 → 1.39
       return (
         <Image
           src="/logo-full.png"
@@ -57,14 +53,11 @@ export default function Logo({
       );
     }
 
-    // inline: іконка дракона + напис-wordmark.
-    // Напис трохи більший і опущений униз через marginTop, щоб його базова
-    // лінія збіглася з оптичним центром дракона. Контейнер вирівнюється
-    // по верху (items-start), а точне положення задає marginTop на написі.
-    const wordmarkHeight = Math.round(size * 0.72);
-    const drop = Math.round(size * 0.16); // на скільки px опустити напис
+    // inline: дракон + напис. Вирівнювання по НИЖНЬОМУ краю (items-end),
+    // тому нижня лінія напису завжди збігається з низом дракона.
+    const wordmarkHeight = Math.round(size * 0.6);
     return (
-      <span className="inline-flex items-start gap-2">
+      <span className="inline-flex items-end gap-2">
         <Image
           src="/logo-mark.png"
           alt=""
@@ -79,12 +72,7 @@ export default function Logo({
           width={Math.round(wordmarkHeight * 5.62)}
           height={wordmarkHeight}
           priority={priority}
-          style={{
-            height: wordmarkHeight,
-            width: 'auto',
-            display: 'block',
-            marginTop: drop,
-          }}
+          style={{ height: wordmarkHeight, width: 'auto', display: 'block' }}
         />
       </span>
     );
