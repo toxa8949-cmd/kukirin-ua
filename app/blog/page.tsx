@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import PageShell from '@/components/kukirin/PageShell';
+import JsonLd, { blogSchema, breadcrumbSchema } from '@/components/seo/JsonLd';
 import { createClient } from '@/lib/supabase/server';
 
 export const revalidate = 300; // кеш 5 хв
@@ -37,6 +38,25 @@ export default async function BlogIndexPage() {
       title="Блог"
       subtitle="Новини, огляди, технічні поради й порівняння моделей KUKIRIN."
     >
+      {/* SEO: Blog + BreadcrumbList */}
+      <JsonLd
+        data={[
+          blogSchema(
+            items.map((n) => ({
+              title: n.title,
+              slug: n.slug,
+              excerpt: n.excerpt,
+              image: n.cover_url,
+              publishedAt: n.published_at,
+            }))
+          ),
+          breadcrumbSchema([
+            { name: 'Головна', url: '/' },
+            { name: 'Блог', url: '/blog' },
+          ]),
+        ]}
+      />
+
       {items.length === 0 ? (
         <div className="rounded-sm border border-dashed border-[#E8E6DE] dark:border-white/15 bg-[#FAFAF7] dark:bg-[#0A0A0A] p-12 text-center">
           <p className="text-sm text-[#4A4A48] dark:text-white/55">

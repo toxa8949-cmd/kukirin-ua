@@ -37,6 +37,7 @@ export async function generateMetadata({
     title: `${row.title} · KUKIRIN.UA`,
     description: row.excerpt ?? undefined,
     openGraph: row.cover_url ? { images: [row.cover_url] } : undefined,
+    alternates: { canonical: `/blog/${slug}` },
   };
 }
 
@@ -85,6 +86,9 @@ export default async function BlogArticlePage({
             excerpt: article.excerpt,
             image: article.cover_url,
             publishedAt: article.published_at,
+            // Поки в news немає updated_at — використовуємо published_at
+            // як dateModified (валідно для Google).
+            updatedAt: article.published_at,
           }),
           breadcrumbSchema([
             { name: 'Головна', url: '/' },
