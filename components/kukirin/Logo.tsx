@@ -62,6 +62,9 @@ export default function Logo({
     }
 
     // inline: іконка дракона + напис-wordmark (PNG, вирізаний з оригіналу)
+    // Напис трохи більший і зсунутий униз, щоб базова лінія тексту
+    // збігалася з оптичним центром дракона.
+    const wordmarkHeight = Math.round(size * 0.72);
     return (
       <span className="inline-flex items-center gap-2">
         <Image
@@ -75,10 +78,14 @@ export default function Logo({
         <Image
           src="/logo-wordmark.png"
           alt="Kukirin"
-          width={Math.round(size * 0.62 * 5.62)}
-          height={Math.round(size * 0.62)}
+          width={Math.round(wordmarkHeight * 5.62)}
+          height={wordmarkHeight}
           priority={priority}
-          style={{ height: Math.round(size * 0.62), width: 'auto' }}
+          style={{
+            height: wordmarkHeight,
+            width: 'auto',
+            transform: `translateY(${Math.round(size * 0.12)}px)`,
+          }}
         />
       </span>
     );
