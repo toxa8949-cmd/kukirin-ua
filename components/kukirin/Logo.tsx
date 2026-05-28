@@ -20,9 +20,6 @@ interface LogoProps {
  * - inline — кірін + текст "Kukirin" горизонтально (для десктоп хедера)
  *
  * За замовчуванням загорнуто в <Link href="/">. Передай href={null} щоб вимкнути.
- *
- * Performance: розміри статичні (width × height) → Next.js не шукає natural size,
- * автоматично генерує WebP, ленива загрузка крім priority=true.
  */
 export default function Logo({
   variant = 'inline',
@@ -31,7 +28,6 @@ export default function Logo({
   href = '/',
   priority = false,
 }: LogoProps) {
-  // Pixel ratio адаптується автоматично через sizes
   const content = (() => {
     if (variant === 'mark') {
       // Натуральне співвідношення logo-mark: 384 × 242 → 1.59
@@ -61,19 +57,21 @@ export default function Logo({
       );
     }
 
-    // inline: іконка дракона + напис-wordmark (PNG, вирізаний з оригіналу)
-    // Напис трохи більший і зсунутий униз, щоб базова лінія тексту
-    // збігалася з оптичним центром дракона.
+    // inline: іконка дракона + напис-wordmark.
+    // Напис трохи більший і опущений униз через marginTop, щоб його базова
+    // лінія збіглася з оптичним центром дракона. Контейнер вирівнюється
+    // по верху (items-start), а точне положення задає marginTop на написі.
     const wordmarkHeight = Math.round(size * 0.72);
+    const drop = Math.round(size * 0.16); // на скільки px опустити напис
     return (
-      <span className="inline-flex items-center gap-2">
+      <span className="inline-flex items-start gap-2">
         <Image
           src="/logo-mark.png"
           alt=""
           width={Math.round(size * 1.59)}
           height={size}
           priority={priority}
-          style={{ height: size, width: 'auto' }}
+          style={{ height: size, width: 'auto', display: 'block' }}
         />
         <Image
           src="/logo-wordmark.png"
@@ -84,7 +82,8 @@ export default function Logo({
           style={{
             height: wordmarkHeight,
             width: 'auto',
-            transform: `translateY(${Math.round(size * 0.12)}px)`,
+            display: 'block',
+            marginTop: drop,
           }}
         />
       </span>
