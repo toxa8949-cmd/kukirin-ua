@@ -22,15 +22,28 @@ type ProductRow = Product & {
  * and dual-motor notation ("2x1200W", "2 × 1200 W").
  */
 
+/**
+ * Головне фото товара.
+ *
+ * ПРІОРИТЕТ: cover_url завжди головне (це те, що адмінка зберігає як перше
+ * фото в галереї — drag&drop ставить головне саме в cover_url).
+ * product_images використовується лише якщо cover_url порожній.
+ *
+ * Раніше було навпаки (images[0] перебивав cover_url), через що головне
+ * фото з галереї не показувалось — показувалось друге.
+ */
 function pickPrimaryImage(
   images: ProductRow["images"],
-  fallback?: string | null,
+  cover?: string | null,
 ): string | undefined {
-  if (!images || images.length === 0) return fallback ?? undefined;
+  // 1. cover_url — головне фото, завжди в пріоритеті
+  if (cover) return cover;
+  // 2. fallback: перше фото галереї за sort_order
+  if (!images || images.length === 0) return undefined;
   const sorted = [...images].sort(
     (a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0),
   );
-  return sorted[0]?.url ?? fallback ?? undefined;
+  return sorted[0]?.url ?? undefined;
 }
 
 function readSpec<T = unknown>(
@@ -192,9 +205,16 @@ export async function getProductBySlug(slug: string): Promise<
   }
   const row = data as unknown as ProductRow;
   const base = toKukirin(row);
-  const gallery = [...(row.images ?? [])]
+  // Галерея: cover_url першим (головне), потім решта з product_images за sort_order.
+  // Уникаємо дублювання якщо cover_url випадково є і в product_images.
+  const galleryFromImages = [...(row.images ?? [])]
     .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
     .map((i) => i.url);
+  const gallery: string[] = [];
+  if (row.cover_url) gallery.push(row.cover_url);
+  for (const url of galleryFromImages) {
+    if (url !== row.cover_url) gallery.push(url);
+  }
   if (gallery.length === 0 && row.cover_url) gallery.push(row.cover_url);
   return {
     ...base,
