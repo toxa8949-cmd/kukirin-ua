@@ -96,6 +96,7 @@ export default async function CatalogPage() {
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       className="object-contain p-8 transition duration-500 group-hover:scale-105"
+                      unoptimized
                     />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center text-[10px] tracking-[0.2em] text-[#1a1a1a]/25 dark:text-white/25">KUKIRIN</div>

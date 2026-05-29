@@ -215,6 +215,7 @@ export default async function ProductPage({
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 priority
                 className="object-contain p-10"
+                unoptimized
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center text-[#FF6B00]/30">
@@ -242,6 +243,7 @@ export default async function ProductPage({
                     fill
                     sizes="(max-width: 1024px) 16vw, 8vw"
                     className="object-contain p-2"
+                    unoptimized
                   />
                 </div>
               ))}

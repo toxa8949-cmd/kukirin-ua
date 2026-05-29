@@ -79,6 +79,7 @@ export default async function KukirinModels() {
                     fill
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     className="object-contain p-3 transition duration-500 group-hover:scale-105"
+                  unoptimized
                   />
                 ) : (
                   <svg viewBox="0 0 120 80" className="h-24 w-24 text-[#1a1a1a]/15 dark:text-white/15">
