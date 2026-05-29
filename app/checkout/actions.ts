@@ -2,6 +2,7 @@
 
 import { createAdminClient } from '@/lib/supabase/admin';
 import type { TablesInsert } from '@/lib/types/database';
+import { sendOrderEmails } from '@/lib/email/sendOrderEmails';
 
 export type CheckoutItem = {
   slug: string;
@@ -169,6 +170,29 @@ export async function createOrder(input: CheckoutInput): Promise<CheckoutResult>
       console.error('createOrder: items insert failed', itemsErr);
       await supabase.from('orders').delete().eq('id', order.id);
       return { ok: false, error: 'Не вдалось зберегти товари замовлення.' };
+    }
+
+    // ─── Email confirmation ──────────────────────────────────────────────
+    // Надсилається non-blocking: помилка email НЕ ламає замовлення.
+    // Якщо RESEND_API_KEY відсутній — sendOrderEmails просто пропустить виклик.
+    try {
+      await sendOrderEmails({
+        customerName: name,
+        customerEmail: email || null,
+        phone,
+        orderId: order.id,
+        total,
+        items: lineItems.map((li) => ({
+          name: li.name_snapshot,
+          price: li.price_snapshot,
+          quantity: li.quantity,
+        })),
+        notes: combinedNotes,
+        siteUrl: 'https://kukirinstore.com.ua',
+      });
+    } catch (emailErr) {
+      console.error('[createOrder] email send failed:', emailErr);
+      // не повертаємо помилку — замовлення вже створено в БД
     }
 
     return { ok: true, orderNumber: order.id };
