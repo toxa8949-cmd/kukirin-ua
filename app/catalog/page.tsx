@@ -2,10 +2,43 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import PageShell from '@/components/kukirin/PageShell';
+import JsonLd, { itemListSchema, breadcrumbSchema } from '@/components/seo/JsonLd';
 import { getAllProducts } from '@/lib/data/products';
 
-export const metadata = { title: 'Каталог самокатів' };
 export const revalidate = 60; // кеш 1 хв
+
+export async function generateMetadata() {
+  return {
+    title: 'Каталог електросамокатів KUKIRIN — купити в Україні',
+    description:
+      'Усі моделі KUKIRIN: G2 Pro, G2 Master, G4 Max, M4 Pro та інші. Купити електросамокат в Україні з офіційною гарантією, доставкою Новою Поштою і розтермінуванням.',
+    keywords: [
+      'каталог електросамокатів',
+      'kukirin каталог',
+      'купити електросамокат',
+      'електросамокати україна',
+      'kukirin g2 pro',
+      'kukirin g4 max',
+      'kukirin m4 pro',
+    ],
+    alternates: { canonical: '/catalog' },
+    openGraph: {
+      title: 'Каталог KUKIRIN — усі моделі електросамокатів в Україні',
+      description:
+        'Електросамокати KUKIRIN з офіційною гарантією. Безкоштовна доставка Новою Поштою, розтермінування без переплат, сервіс у Києві.',
+      url: 'https://kukirinstore.com.ua/catalog',
+      type: 'website',
+      locale: 'uk_UA',
+      siteName: 'KUKIRIN.UA',
+      images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Каталог KUKIRIN' }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Каталог KUKIRIN — електросамокати в Україні',
+      images: ['/og-image.png'],
+    },
+  };
+}
 
 const CATEGORY_LABELS: Record<string, string> = {
   urban: 'Місто',
@@ -21,8 +54,23 @@ export default async function CatalogPage() {
     <PageShell
       breadcrumb="CATALOG · 2026"
       title="Усі моделі KUKIRIN"
-      subtitle={`${list.length} електросамокатів — від міських до off-road флагманів. Усі офіційні, з гарантією 12 місяців.`}
+      subtitle={`${list.length} електросамокатів — від міських до off-road флагманів. Офіційна гарантія, доставка Новою Поштою по Україні.`}
     >
+      <JsonLd
+        data={[
+          breadcrumbSchema([
+            { name: 'Головна', url: '/' },
+            { name: 'Каталог', url: '/catalog' },
+          ]),
+          itemListSchema(
+            list.map((s) => ({
+              name: s.name,
+              url: `/product/${s.slug}`,
+            }))
+          ),
+        ]}
+      />
+
       {list.length === 0 ? (
         <div className="rounded-sm border border-[#E8E6DE] p-8 text-center text-[#6C6A65] dark:border-white/10 dark:text-white/55">
           Поки що немає товарів у каталозі.
@@ -44,7 +92,7 @@ export default async function CatalogPage() {
                   {cover ? (
                     <Image
                       src={cover}
-                      alt={s.name}
+                      alt={`${s.name} — електросамокат KUKIRIN`}
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       className="object-contain p-8 transition duration-500 group-hover:scale-105"

@@ -3,7 +3,11 @@ import KukirinModels from '@/components/kukirin/KukirinModels';
 import KukirinFeatures from '@/components/kukirin/KukirinFeatures';
 import KukirinCTA from '@/components/kukirin/KukirinCTA';
 import KukirinFooter from '@/components/kukirin/KukirinFooter';
-import JsonLd, { organizationSchema, websiteSchema } from '@/components/seo/JsonLd';
+import JsonLd, {
+  organizationSchema,
+  websiteSchema,
+  localBusinessSchema,
+} from '@/components/seo/JsonLd';
 
 // Регенерація головної кожні 5 хв (на випадок якщо revalidatePath з admin
 // не спрацював — наприклад через CDN edge cache).
@@ -12,7 +16,13 @@ export const revalidate = 300;
 export default function HomePage() {
   return (
     <main>
-      <JsonLd data={[organizationSchema(), websiteSchema()]} />
+      <JsonLd
+        data={[
+          organizationSchema(),
+          websiteSchema(),
+          localBusinessSchema(), // ← геопошук Київ / "магазин кукірін поруч"
+        ]}
+      />
       <KukirinHero />
       <KukirinModels />
       <KukirinFeatures />

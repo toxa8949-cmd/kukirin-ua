@@ -297,3 +297,75 @@ export function videoSchema(v: {
     publisher,
   };
 }
+
+/**
+ * LocalBusiness / Store — для геопошуку у Google ("електросамокати київ", "магазин кукірін").
+ * Дає карточку магазину з адресою, годинами, телефоном у результатах пошуку,
+ * а також підвищує шанси з'явитись у Google Maps і "Поруч зі мною".
+ *
+ * Тип Store наслідує LocalBusiness — обидва типи валідні для Google.
+ */
+export function localBusinessSchema() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Store',
+    '@id': `${SITE}/#localbusiness`,
+    name: BRAND,
+    image: [LOGO, `${SITE}/og-image.png`],
+    url: SITE,
+    telephone: '+380958981007',
+    email: 'info@kukirin.ua',
+    priceRange: '15000 ₴ – 80000 ₴',
+    description: 'Офіційний магазин електросамокатів KUKIRIN у Києві. Шоурум, тест-драйв, сервіс, доставка по Україні.',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: 'вул. Ревуцького, 40В',
+      addressLocality: 'Київ',
+      addressRegion: 'Київська обл.',
+      postalCode: '02091',
+      addressCountry: 'UA',
+    },
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude: 50.4001,
+      longitude: 30.6429,
+    },
+    openingHoursSpecification: [
+      {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+        opens: '09:30',
+        closes: '16:30',
+      },
+    ],
+    areaServed: { '@type': 'Country', name: 'Україна' },
+    currenciesAccepted: 'UAH',
+    paymentAccepted: 'Готівка, Картка, Розтермінування ПриватБанк, Розтермінування Monobank, Накладений платіж',
+    sameAs: [
+      // Сюди можна додати посилання на соц-мережі (Instagram, Facebook, YouTube),
+      // коли вони будуть — Google використовує це для зв'язку профілів з організацією.
+    ],
+  };
+}
+
+/**
+ * ItemList — для сторінок каталогу і категорій.
+ * Підказує Google що це список товарів, а не просто текст;
+ * допомагає індексувати товари через сторінку-список.
+ *
+ * Передавай повний URL у items, або відносний (буде додано SITE).
+ */
+export function itemListSchema(items: { name: string; url: string }[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    numberOfItems: items.length,
+    itemListElement: items.map((it, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: it.name,
+      url: it.url.startsWith('http') ? it.url : `${SITE}${it.url}`,
+    })),
+  };
+}
+
