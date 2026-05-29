@@ -44,9 +44,9 @@ export default function KukirinHero() {
         </nav>
 
         {/* Геро-блок */}
-        <div className="grid grid-cols-1 items-center gap-8 py-12 lg:grid-cols-[1.1fr_1fr] lg:gap-12 lg:py-16">
-          {/* ЛІВА: текст */}
-          <div className="relative">
+        <div className="grid grid-cols-1 items-center gap-6 py-6 sm:gap-8 sm:py-10 lg:grid-cols-[1.1fr_1fr] lg:gap-12 lg:py-16">
+          {/* ЛІВА: текст — на mobile показуємо ДРУГОЮ, фото перше */}
+          <div className="relative order-2 lg:order-1">
             <div className="kukirin-fade-1 mb-5 flex items-center gap-2 text-[11px] tracking-[0.15em] text-[#4A4A48] dark:text-white/60">
               <span className="kukirin-pulse-dot" />
               В НАЯВНОСТІ · 12 МОДЕЛЕЙ
@@ -105,7 +105,7 @@ export default function KukirinHero() {
           </div>
 
           {/* ПРАВА: Tech Sheet з фото */}
-          <div className="kukirin-fade-3 relative">
+          <div className="kukirin-fade-3 relative order-1 lg:order-2">
             <div
               className="relative aspect-square overflow-hidden rounded-md border border-[#E8E6DE] bg-white dark:border-white/15 dark:bg-[#0A0A0A]"
               style={{

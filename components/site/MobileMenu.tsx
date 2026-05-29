@@ -73,11 +73,11 @@ export default function MobileMenu({ items = DEFAULT_NAV }: { items?: NavItem[] 
         role="dialog"
         aria-modal="true"
         aria-label="Меню навігації"
-        className={`fixed inset-y-0 right-0 z-[90] flex w-[85%] max-w-sm flex-col bg-[#FAFAF7] shadow-2xl transition-transform duration-300 dark:bg-[#0A0A0A] md:hidden ${
+        className={`fixed top-0 right-0 z-[90] flex h-[100dvh] max-h-screen w-[85%] max-w-sm flex-col bg-[#FAFAF7] shadow-2xl transition-transform duration-300 dark:bg-[#0A0A0A] md:hidden ${
           open ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
-        <div className="flex items-center justify-between border-b border-[#E8E6DE] px-5 py-4 dark:border-white/10">
+        <div className="flex flex-shrink-0 items-center justify-between border-b border-[#E8E6DE] px-5 py-4 dark:border-white/10">
           <div className="text-[10px] tracking-[0.25em] text-[#993C1D] dark:text-[#FF8A33]">// MENU</div>
           <button
             type="button"
@@ -89,7 +89,7 @@ export default function MobileMenu({ items = DEFAULT_NAV }: { items?: NavItem[] 
           </button>
         </div>
 
-        <nav className="flex-1 overflow-y-auto px-5 py-4">
+        <nav className="min-h-0 flex-1 overflow-y-auto px-5 py-4">
           <ul className="space-y-1">
             {items.map((it) => (
               <li key={it.href}>
@@ -106,7 +106,7 @@ export default function MobileMenu({ items = DEFAULT_NAV }: { items?: NavItem[] 
           </ul>
         </nav>
 
-        <div className="border-t border-[#E8E6DE] px-5 py-4 dark:border-white/10">
+        <div className="flex-shrink-0 border-t border-[#E8E6DE] px-5 py-4 dark:border-white/10">
           <a
             href="tel:+380958981007"
             className="inline-flex w-full items-center justify-center gap-2 rounded-sm bg-[#FF6B00] px-4 py-3 text-sm font-medium text-white transition hover:bg-[#FF8A33] dark:text-black"
