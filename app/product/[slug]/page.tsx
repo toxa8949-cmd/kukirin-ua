@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { Check, Phone, Truck, Shield, Wrench } from 'lucide-react';
 import PageShell from '@/components/kukirin/PageShell';
@@ -13,6 +12,7 @@ import JsonLd, {
 import ProductFAQ from '@/components/product/ProductFAQ';
 import ProductVideo from '@/components/product/ProductVideo';
 import ProductReviews from '@/components/product/ProductReviews';
+import ProductGallery from '@/components/product/ProductGallery';
 import ReviewStars from '@/components/product/ReviewStars';
 import { getAllProducts, getProductBySlug } from '@/lib/data/products';
 import { getReviewsForProduct, getAggregateRating } from '@/lib/data/reviews';
@@ -186,70 +186,13 @@ export default async function ProductPage({
       <JsonLd data={jsonLdData} />
 
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
-        {/* Visual block з галереєю */}
-        <div>
-          <div className="relative aspect-square overflow-hidden rounded-md border border-[#E8E6DE] bg-white dark:border-white/10 dark:bg-gradient-to-br dark:from-[#1a1a1a] dark:to-[#0a0a0a]">
-            <Image
-              src="/logo-mark.png"
-              alt=""
-              width={384}
-              height={242}
-              aria-hidden="true"
-              className="pointer-events-none absolute -right-12 -bottom-8 h-72 w-auto opacity-[0.06] select-none dark:opacity-[0.10]"
-            />
-            <div className="absolute left-5 top-5 z-10 flex flex-col gap-2">
-              {scooter.badge && (
-                <span className="rounded-sm bg-[#FF6B00] px-2 py-1 text-[10px] font-medium tracking-[0.15em] text-white dark:text-black">
-                  {scooter.badge.toUpperCase()}
-                </span>
-              )}
-              <span className="rounded-sm border border-[#E8E6DE] bg-white/80 px-2 py-1 text-[10px] tracking-[0.15em] text-[#4A4A48] backdrop-blur dark:border-white/20 dark:bg-transparent dark:text-white/70">
-                KUKIRIN · 2026
-              </span>
-            </div>
-            {primaryImage ? (
-              <Image
-                src={primaryImage}
-                alt={`${safeName} — електросамокат KUKIRIN, ${safeTagline || 'купити в Україні'}`}
-                fill
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                priority
-                className="object-contain p-10"
-                unoptimized
-              />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center text-[#FF6B00]/30">
-                <div className="text-center">
-                  <div className="text-7xl font-medium tracking-tight">{placeholderLabel}</div>
-                  <div className="mt-2 text-xs tracking-[0.3em] text-[#6C6A65] dark:text-white/30">
-                    // {safeTagline ? safeTagline.toUpperCase() : 'KUKIRIN'}
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Галерея — додаткові фото */}
-          {galleryRest.length > 0 && (
-            <div className="mt-3 grid grid-cols-6 gap-2">
-              {galleryRest.map((url, i) => (
-                <div
-                  key={url}
-                  className="relative aspect-square overflow-hidden rounded-sm border border-[#E8E6DE] bg-white dark:border-white/10 dark:bg-[#0A0A0A]"
-                >
-                  <Image
-                    src={url}
-                    alt={`${safeName} — фото ${i + 2}`}
-                    fill
-                    sizes="(max-width: 1024px) 16vw, 8vw"
-                    className="object-contain p-2"
-                    unoptimized
-                  />
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        {/* Visual block з галереєю (клікабельна, з lightbox) */}
+        <ProductGallery
+          images={gallery.length > 0 ? gallery.slice(0, 7) : (primaryImage ? [primaryImage] : [])}
+          name={safeName}
+          tagline={safeTagline}
+          badge={scooter.badge ?? null}
+        />
 
         {/* Details */}
         <div>
