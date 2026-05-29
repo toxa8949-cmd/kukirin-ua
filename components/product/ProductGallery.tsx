@@ -131,9 +131,14 @@ export default function ProductGallery({ images, name, tagline, badge }: Props) 
       </div>
 
       {/* ============ Thumbnails ============ */}
-      {total > 1 && (
-        <div className="mt-3 grid grid-cols-6 gap-2">
-          {safeImages.slice(0, 7).map((url, i) => {
+      {total > 1 && (() => {
+        const thumbs = safeImages.slice(0, 6);
+        return (
+        <div
+          className="mt-3 grid gap-2"
+          style={{ gridTemplateColumns: `repeat(${thumbs.length}, minmax(0, 1fr))` }}
+        >
+          {thumbs.map((url, i) => {
             const isActive = i === safeIndex;
             return (
               <button
@@ -160,7 +165,8 @@ export default function ProductGallery({ images, name, tagline, badge }: Props) 
             );
           })}
         </div>
-      )}
+        );
+      })()}
 
       {/* ============ Lightbox ============ */}
       {lightboxOpen && (
