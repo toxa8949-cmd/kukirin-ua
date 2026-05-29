@@ -8,6 +8,7 @@ import {
   FolderTree,
   ClipboardList,
   Newspaper,
+  MessageSquare,
   Settings,
   LogOut,
 } from 'lucide-react';
@@ -19,6 +20,7 @@ const NAV = [
   { href: '/admin/categories', label: 'Категорії', icon: FolderTree },
   { href: '/admin/orders', label: 'Замовлення', icon: ClipboardList },
   { href: '/admin/news', label: 'Новини', icon: Newspaper },
+  { href: '/admin/reviews', label: 'Відгуки', icon: MessageSquare },
   { href: '/admin/settings', label: 'Налаштування', icon: Settings },
 ];
 
@@ -44,7 +46,7 @@ export default function AdminNav({ email }: { email: string | null }) {
                 className={`flex items-center gap-2 rounded-sm px-3 py-2 text-sm transition ${
                   active
                     ? 'bg-[#FF6B00] text-white dark:text-black'
-                    : 'text-[#4A4A48] dark:text-white/75 hover:bg-[#FFFCF5] dark:bg-white/[0.04] hover:text-[#1a1a1a] dark:hover:text-[#1a1a1a] dark:text-white'
+                    : 'text-[#4A4A48] dark:text-white/75 hover:bg-[#FFFCF5] dark:hover:bg-white/[0.04] hover:text-[#1a1a1a]'
                 }`}
               >
                 <Icon size={14} />
@@ -57,7 +59,7 @@ export default function AdminNav({ email }: { email: string | null }) {
         <form action={signOut} className="mt-5 border-t border-[#E8E6DE] dark:border-white/10 pt-4">
           <button
             type="submit"
-            className="flex w-full items-center gap-2 rounded-sm border border-[#E8E6DE] dark:border-white/15 px-3 py-2 text-sm text-[#4A4A48] dark:text-white/70 hover:border-[#DCDAD0] dark:hover:border-white/30 hover:text-[#1a1a1a] dark:hover:text-[#1a1a1a] dark:text-white"
+            className="flex w-full items-center gap-2 rounded-sm border border-[#E8E6DE] dark:border-white/15 px-3 py-2 text-sm text-[#4A4A48] dark:text-white/70 hover:border-[#DCDAD0] dark:hover:border-white/30 hover:text-[#1a1a1a]"
           >
             <LogOut size={14} /> Вийти
           </button>

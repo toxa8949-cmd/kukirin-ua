@@ -12,7 +12,10 @@ import JsonLd, {
 } from '@/components/seo/JsonLd';
 import ProductFAQ from '@/components/product/ProductFAQ';
 import ProductVideo from '@/components/product/ProductVideo';
+import ProductReviews from '@/components/product/ProductReviews';
+import ReviewStars from '@/components/product/ReviewStars';
 import { getAllProducts, getProductBySlug } from '@/lib/data/products';
+import { getReviewsForProduct, getAggregateRating } from '@/lib/data/reviews';
 import {
   getLongDescription,
   getFAQ,
@@ -22,6 +25,7 @@ import {
   getExtraSpecs,
   getFeatureList,
 } from '@/lib/data/product-extras';
+import { renderMarkdown } from '@/lib/markdown';
 
 export const revalidate = 120; // кеш 2 хв
 
@@ -37,20 +41,17 @@ export async function generateMetadata({
     const s = await getProductBySlug(slug).catch(() => null);
     if (!s) return { title: 'Модель не знайдена' };
 
-    // Опис під топ-сніпети: модель + ключові специфікації + ціна + переваги
     const specs: string[] = [];
     if (s.power)    specs.push(`${s.power}Вт`);
     if (s.maxSpeed) specs.push(`до ${s.maxSpeed} км/год`);
     if (s.range)    specs.push(`запас ходу ${s.range} км`);
     if (s.battery)  specs.push(`батарея ${s.battery}`);
     const specsStr = specs.length ? specs.join(', ') + '. ' : '';
-
     const price = Number.isFinite(s.price)
       ? `Ціна ${Number(s.price).toLocaleString('uk-UA')} ₴. `
       : '';
 
     const description = `Електросамокат ${s.name} ${s.tagline ? `— ${s.tagline}. ` : ''}${specsStr}${price}Офіційна гарантія, безкоштовна доставка Новою Поштою, розтермінування.`;
-
     const ogImage = s.gallery?.[0] ?? s.image ?? '/og-image.png';
 
     return {
@@ -61,6 +62,7 @@ export async function generateMetadata({
         `${s.name} купити`,
         `${s.name} ціна`,
         `${s.name} україна`,
+        `${s.name} відгуки`,
         'kukirin',
         'кукірін',
         'електросамокат',
@@ -99,12 +101,17 @@ export default async function ProductPage({
   });
   if (!scooter) notFound();
 
-  const all = await getAllProducts().catch(() => []);
+  const [all, reviews, aggregate] = await Promise.all([
+    getAllProducts().catch(() => []),
+    getReviewsForProduct(scooter.id).catch(() => []),
+    getAggregateRating(scooter.id).catch(() => null),
+  ]);
+
   const related = all.filter((r) => r.slug !== scooter.slug).slice(0, 3);
+  const gallery = scooter.gallery ?? [];
+  const primaryImage = gallery[0] ?? scooter.image ?? null;
+  const galleryRest = gallery.slice(1, 7); // показуємо до 6 додаткових мініатюр
 
-  const primaryImage = scooter.gallery?.[0] ?? scooter.image ?? null;
-
-  // Безпечні дефолти
   const safeName     = scooter.name ?? 'KUKIRIN';
   const safeTagline  = scooter.tagline ?? '';
   const safeCategory = scooter.category ?? 'urban';
@@ -113,8 +120,9 @@ export default async function ProductPage({
   const safeSpeed    = Number.isFinite(scooter.maxSpeed) ? scooter.maxSpeed : 0;
   const safeRange    = Number.isFinite(scooter.range)    ? scooter.range    : 0;
 
-  // SEO-розширення з specs jsonb (усе опційне)
+  // SEO-розширення з specs jsonb
   const longDescription = getLongDescription(scooter.specs);
+  const longDescriptionHtml = longDescription ? renderMarkdown(longDescription) : '';
   const faq = getFAQ(scooter.specs);
   const videoUrl = getVideoUrl(scooter.specs);
   const videoId = extractYouTubeId(videoUrl);
@@ -129,12 +137,11 @@ export default async function ProductPage({
 
   const features = [
     { icon: Truck,  label: 'Доставка',  value: 'Новою Поштою по Україні' },
-    { icon: Shield, label: 'Гарантія',  value: extra.warranty || 'Офіційна' },
+    { icon: Shield, label: 'Гарантія',  value: extra.warranty || '3 місяці' },
     { icon: Wrench, label: 'Сервіс',    value: 'Власні майстерні' },
     { icon: Phone,  label: 'Підтримка', value: '0 (95) 898-10-07' },
   ];
 
-  // Збираємо JSON-LD масив динамічно
   const jsonLdData: Record<string, unknown>[] = [
     productSchema({
       name: safeName,
@@ -142,7 +149,7 @@ export default async function ProductPage({
       description: scooter.description,
       price: Number(scooter.price),
       oldPrice: scooter.oldPrice,
-      images: scooter.gallery && scooter.gallery.length > 0 ? scooter.gallery : (primaryImage ? [primaryImage] : []),
+      images: gallery.length > 0 ? gallery : (primaryImage ? [primaryImage] : []),
       inStock: (scooter.stock ?? 0) > 0,
       sku: extra.sku,
       mpn: extra.mpn,
@@ -153,6 +160,8 @@ export default async function ProductPage({
       maxSpeed: safeSpeed || undefined,
       range: safeRange || undefined,
       battery: safeBattery !== '—' ? safeBattery : undefined,
+      ratingValue: aggregate?.ratingValue,
+      ratingCount: aggregate?.ratingCount,
     }),
     breadcrumbSchema([
       { name: 'Головна', url: '/' },
@@ -160,9 +169,7 @@ export default async function ProductPage({
       { name: safeName, url: `/product/${scooter.slug}` },
     ]),
   ];
-  if (faq.length > 0) {
-    jsonLdData.push(faqSchema(faq));
-  }
+  if (faq.length > 0) jsonLdData.push(faqSchema(faq));
   if (videoId && primaryImage) {
     jsonLdData.push(
       videoSchema({
@@ -179,43 +186,65 @@ export default async function ProductPage({
       <JsonLd data={jsonLdData} />
 
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
-        {/* Visual */}
-        <div className="relative aspect-square overflow-hidden rounded-md border border-[#E8E6DE] bg-white dark:border-white/10 dark:bg-gradient-to-br dark:from-[#1a1a1a] dark:to-[#0a0a0a]">
-          <Image
-            src="/logo-mark.png"
-            alt=""
-            width={384}
-            height={242}
-            aria-hidden="true"
-            className="pointer-events-none absolute -right-12 -bottom-8 h-72 w-auto opacity-[0.06] select-none dark:opacity-[0.10]"
-          />
-          <div className="absolute left-5 top-5 z-10 flex flex-col gap-2">
-            {scooter.badge && (
-              <span className="rounded-sm bg-[#FF6B00] px-2 py-1 text-[10px] font-medium tracking-[0.15em] text-white dark:text-black">
-                {scooter.badge.toUpperCase()}
-              </span>
-            )}
-            <span className="rounded-sm border border-[#E8E6DE] bg-white/80 px-2 py-1 text-[10px] tracking-[0.15em] text-[#4A4A48] backdrop-blur dark:border-white/20 dark:bg-transparent dark:text-white/70">
-              KUKIRIN · 2026
-            </span>
-          </div>
-          {primaryImage ? (
+        {/* Visual block з галереєю */}
+        <div>
+          <div className="relative aspect-square overflow-hidden rounded-md border border-[#E8E6DE] bg-white dark:border-white/10 dark:bg-gradient-to-br dark:from-[#1a1a1a] dark:to-[#0a0a0a]">
             <Image
-              src={primaryImage}
-              alt={`${safeName} — електросамокат KUKIRIN`}
-              fill
-              sizes="(max-width: 1024px) 100vw, 50vw"
-              priority
-              className="object-contain p-10"
+              src="/logo-mark.png"
+              alt=""
+              width={384}
+              height={242}
+              aria-hidden="true"
+              className="pointer-events-none absolute -right-12 -bottom-8 h-72 w-auto opacity-[0.06] select-none dark:opacity-[0.10]"
             />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center text-[#FF6B00]/30">
-              <div className="text-center">
-                <div className="text-7xl font-medium tracking-tight">{placeholderLabel}</div>
-                <div className="mt-2 text-xs tracking-[0.3em] text-[#6C6A65] dark:text-white/30">
-                  // {safeTagline ? safeTagline.toUpperCase() : 'KUKIRIN'}
+            <div className="absolute left-5 top-5 z-10 flex flex-col gap-2">
+              {scooter.badge && (
+                <span className="rounded-sm bg-[#FF6B00] px-2 py-1 text-[10px] font-medium tracking-[0.15em] text-white dark:text-black">
+                  {scooter.badge.toUpperCase()}
+                </span>
+              )}
+              <span className="rounded-sm border border-[#E8E6DE] bg-white/80 px-2 py-1 text-[10px] tracking-[0.15em] text-[#4A4A48] backdrop-blur dark:border-white/20 dark:bg-transparent dark:text-white/70">
+                KUKIRIN · 2026
+              </span>
+            </div>
+            {primaryImage ? (
+              <Image
+                src={primaryImage}
+                alt={`${safeName} — електросамокат KUKIRIN, ${safeTagline || 'купити в Україні'}`}
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                priority
+                className="object-contain p-10"
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center text-[#FF6B00]/30">
+                <div className="text-center">
+                  <div className="text-7xl font-medium tracking-tight">{placeholderLabel}</div>
+                  <div className="mt-2 text-xs tracking-[0.3em] text-[#6C6A65] dark:text-white/30">
+                    // {safeTagline ? safeTagline.toUpperCase() : 'KUKIRIN'}
+                  </div>
                 </div>
               </div>
+            )}
+          </div>
+
+          {/* Галерея — додаткові фото */}
+          {galleryRest.length > 0 && (
+            <div className="mt-3 grid grid-cols-6 gap-2">
+              {galleryRest.map((url, i) => (
+                <div
+                  key={url}
+                  className="relative aspect-square overflow-hidden rounded-sm border border-[#E8E6DE] bg-white dark:border-white/10 dark:bg-[#0A0A0A]"
+                >
+                  <Image
+                    src={url}
+                    alt={`${safeName} — фото ${i + 2}`}
+                    fill
+                    sizes="(max-width: 1024px) 16vw, 8vw"
+                    className="object-contain p-2"
+                  />
+                </div>
+              ))}
             </div>
           )}
         </div>
@@ -226,9 +255,20 @@ export default async function ProductPage({
             // {safeCategory.toUpperCase()}
           </div>
           <h1 className="mb-2 text-3xl font-medium leading-tight tracking-tight sm:text-4xl">{safeName}</h1>
-          <p className="mb-6 text-sm text-[#4A4A48] dark:text-white/55">
+          <p className="mb-4 text-sm text-[#4A4A48] dark:text-white/55">
             {safeTagline || 'Електросамокат KUKIRIN'}. Офіційно від KUKIRIN.UA з гарантією та сервісом.
           </p>
+
+          {/* Rating snippet — видно одразу під підзаголовком */}
+          {aggregate && (
+            <a href="#reviews" className="mb-4 inline-flex items-center gap-2 text-sm hover:underline">
+              <ReviewStars value={aggregate.ratingValue} size={14} />
+              <span className="text-[#4A4A48] dark:text-white/65">
+                <strong>{aggregate.ratingValue.toFixed(1)}</strong> ·{' '}
+                {aggregate.ratingCount} {aggregate.ratingCount === 1 ? 'відгук' : 'відгуків'}
+              </span>
+            </a>
+          )}
 
           <div className="mb-6 flex items-end gap-3">
             <div className="text-3xl font-medium text-[#FF6B00] sm:text-4xl">
@@ -281,16 +321,10 @@ export default async function ProductPage({
             </div>
           </div>
 
-          {/* Ключові переваги — з specs.features або дефолтні */}
           <ul className="mb-6 space-y-2 text-sm text-[#4A4A48] dark:text-white/70">
             {(featuresList.length > 0
               ? featuresList
-              : [
-                  'Офіційна гарантія',
-                  'Доставка Новою Поштою',
-                  'Доступне розтермінування',
-                  'Передпродажна підготовка',
-                ]
+              : ['Офіційна гарантія', 'Доставка Новою Поштою', 'Доступне розтермінування', 'Передпродажна підготовка']
             ).map((f, i) => (
               <li key={i} className="flex gap-2">
                 <Check size={16} className="mt-0.5 text-[#FF6B00]" /> {f}
@@ -306,8 +340,8 @@ export default async function ProductPage({
         </div>
       </div>
 
-      {/* Розширений опис (SEO-текст) */}
-      {longDescription && (
+      {/* Розширений опис — рендериться як Markdown (заголовки, жирне, списки) */}
+      {longDescriptionHtml && (
         <section className="mt-16 border-t border-[#E8E6DE] dark:border-white/10 pt-10">
           <div className="mb-2 text-[10px] tracking-[0.2em] text-[#993C1D] dark:text-[#FF8A33]">
             // ДЕТАЛЬНИЙ ОГЛЯД
@@ -315,13 +349,13 @@ export default async function ProductPage({
           <h2 className="mb-6 text-2xl font-medium tracking-tight sm:text-3xl">
             Про {safeName}
           </h2>
-          <div className="prose-kukirin max-w-none whitespace-pre-line text-[15px] leading-relaxed text-[#4A4A48] dark:text-white/70">
-            {longDescription}
-          </div>
+          <div
+            className="prose-kukirin max-w-none text-[15px] leading-relaxed text-[#4A4A48] dark:text-white/70"
+            dangerouslySetInnerHTML={{ __html: longDescriptionHtml }}
+          />
         </section>
       )}
 
-      {/* Детальна таблиця характеристик */}
       <section className="mt-16 border-t border-[#E8E6DE] dark:border-white/10 pt-10">
         <div className="mb-2 text-[10px] tracking-[0.2em] text-[#993C1D] dark:text-[#FF8A33]">
           // ХАРАКТЕРИСТИКИ
@@ -348,10 +382,7 @@ export default async function ProductPage({
           ]
             .filter((x): x is [string, string] => x !== null)
             .map(([k, v]) => (
-              <div
-                key={k}
-                className="flex justify-between gap-4 border-b border-[#E8E6DE] py-3 dark:border-white/10"
-              >
+              <div key={k} className="flex justify-between gap-4 border-b border-[#E8E6DE] py-3 dark:border-white/10">
                 <dt className="text-sm text-[#6C6A65] dark:text-white/55">{k}</dt>
                 <dd className="text-right text-sm font-medium">{v}</dd>
               </div>
@@ -359,15 +390,21 @@ export default async function ProductPage({
         </dl>
       </section>
 
-      {/* Відео-огляд */}
-      {videoId && (
-        <ProductVideo youtubeId={videoId} title={videoTitle || `${safeName} — огляд`} />
-      )}
+      {videoId && <ProductVideo youtubeId={videoId} title={videoTitle || `${safeName} — огляд`} />}
 
-      {/* FAQ */}
       {faq.length > 0 && <ProductFAQ items={faq} />}
 
-      {/* Features бар */}
+      {/* ВІДГУКИ — з anchor link для jump from rating snippet */}
+      <div id="reviews">
+        <ProductReviews
+          productId={scooter.id}
+          productSlug={scooter.slug}
+          productName={safeName}
+          initialReviews={reviews}
+          aggregate={aggregate}
+        />
+      </div>
+
       <div className="mt-12 grid grid-cols-2 gap-3 border-t border-[#E8E6DE] dark:border-white/10 pt-8 sm:grid-cols-4">
         {features.map((f) => (
           <div key={f.label} className="flex flex-col gap-2">
