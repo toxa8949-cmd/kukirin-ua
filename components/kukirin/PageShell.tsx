@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Search, User, Menu, Instagram, Facebook, Youtube, Send } from 'lucide-react';
+import { PackageSearch, Menu, Instagram, Facebook, Youtube, Send } from 'lucide-react';
 import CartIcon from '@/components/cart/CartIcon';
 import Logo from '@/components/kukirin/Logo';
 
@@ -25,8 +25,7 @@ export default function PageShell({
             </ul>
           </div>
           <div className="flex items-center gap-3 sm:gap-4">
-            <button aria-label="Пошук" className="text-[#4A4A48] hover:text-[#1a1a1a] dark:text-white/80 dark:hover:text-white"><Search size={18} /></button>
-            <Link href="/account" aria-label="Кабінет" className="text-[#4A4A48] hover:text-[#1a1a1a] dark:text-white/80 dark:hover:text-white"><User size={18} /></Link>
+            <Link href="/orders/track" aria-label="Відстежити замовлення" title="Відстежити замовлення" className="flex h-11 w-11 items-center justify-center text-[#4A4A48] hover:text-[#1a1a1a] dark:text-white/80 dark:hover:text-white"><PackageSearch size={18} /></Link>
             <CartIcon />
             <details className="relative md:hidden">
               <summary className="list-none cursor-pointer text-[#4A4A48] hover:text-[#1a1a1a] dark:text-white/80 dark:hover:text-white"><Menu size={20} /></summary>
