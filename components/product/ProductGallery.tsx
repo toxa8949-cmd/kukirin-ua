@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import { X, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
 
@@ -62,6 +62,21 @@ export default function ProductGallery({ images, name, tagline, badge }: Props) 
     };
   }, [lightboxOpen, goPrev, goNext]);
 
+  // Touch swipe — для primary view і lightbox
+  const touchStartX = useRef<number | null>(null);
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0]?.clientX ?? null;
+  };
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current == null || total < 2) return;
+    const endX = e.changedTouches[0]?.clientX ?? touchStartX.current;
+    const dx = endX - touchStartX.current;
+    touchStartX.current = null;
+    if (Math.abs(dx) < 40) return; // ігноруємо короткі тапи
+    if (dx > 0) goPrev();
+    else goNext();
+  };
+
   if (total === 0) {
     // Fallback — placeholder, як було
     return (
@@ -115,6 +130,8 @@ export default function ProductGallery({ images, name, tagline, badge }: Props) 
         <button
           type="button"
           onClick={() => setLightboxOpen(true)}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
           aria-label="Збільшити фото"
           className="group/primary absolute inset-0 z-[1] flex h-full w-full cursor-zoom-in items-center justify-center"
         >
@@ -209,6 +226,8 @@ export default function ProductGallery({ images, name, tagline, badge }: Props) 
           <div
             className="relative flex max-h-[90vh] max-w-[90vw] items-center justify-center"
             onClick={(e) => e.stopPropagation()}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img

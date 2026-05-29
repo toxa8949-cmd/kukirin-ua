@@ -13,6 +13,7 @@ import ProductFAQ from '@/components/product/ProductFAQ';
 import ProductVideo from '@/components/product/ProductVideo';
 import ProductReviews from '@/components/product/ProductReviews';
 import ProductGallery from '@/components/product/ProductGallery';
+import MobileStickyBar from '@/components/product/MobileStickyBar';
 import ReviewStars from '@/components/product/ReviewStars';
 import { getAllProducts, getProductBySlug } from '@/lib/data/products';
 import { getReviewsForProduct, getAggregateRating } from '@/lib/data/reviews';
@@ -227,12 +228,14 @@ export default async function ProductPage({
           </div>
 
           <div className="mb-6 flex flex-col gap-3 sm:flex-row">
-            <AddToCartButton
-              slug={scooter.slug}
-              name={safeName}
-              price={Number(scooter.price)}
-              image={primaryImage}
-            />
+            <div data-primary-cta>
+              <AddToCartButton
+                slug={scooter.slug}
+                name={safeName}
+                price={Number(scooter.price)}
+                image={primaryImage}
+              />
+            </div>
             <Link href="/test-drive" className="inline-flex items-center justify-center rounded-sm border border-[#E8E6DE] dark:border-white/25 px-6 py-3 text-xs font-medium tracking-wide text-[#1a1a1a] dark:text-white transition hover:border-[#DCDAD0] dark:hover:border-white/50">
               Тест-драйв
             </Link>
@@ -380,6 +383,15 @@ export default async function ProductPage({
           </div>
         </div>
       )}
+      {/* Sticky CTA для мобільного — з'являється коли primary CTA пішла з viewport */}
+      <MobileStickyBar
+        triggerSelector="[data-primary-cta]"
+        slug={scooter.slug}
+        name={safeName}
+        price={Number(scooter.price)}
+        oldPrice={scooter.oldPrice}
+        image={primaryImage}
+      />
     </PageShell>
   );
 }

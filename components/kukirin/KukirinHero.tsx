@@ -2,6 +2,7 @@ import { Search, User, ShoppingCart, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import { HERO_STATS } from '@/lib/kukirin-data';
 import Logo from '@/components/kukirin/Logo';
+import MobileMenu from '@/components/site/MobileMenu';
 
 export default function KukirinHero() {
   return (
@@ -28,16 +29,17 @@ export default function KukirinHero() {
               <li><a href="/blog" className="hover:text-[#1a1a1a] dark:hover:text-white">Блог</a></li>
             </ul>
           </div>
-          <div className="flex items-center gap-4">
-            <button aria-label="Пошук" className="text-[#4A4A48] hover:text-[#1a1a1a] dark:text-white/80 dark:hover:text-white">
+          <div className="flex items-center gap-1 sm:gap-2">
+            <button aria-label="Пошук" className="flex h-11 w-11 items-center justify-center text-[#4A4A48] hover:text-[#1a1a1a] dark:text-white/80 dark:hover:text-white">
               <Search size={18} />
             </button>
-            <a href="/account" aria-label="Кабінет" className="text-[#4A4A48] hover:text-[#1a1a1a] dark:text-white/80 dark:hover:text-white">
+            <a href="/account" aria-label="Кабінет" className="flex h-11 w-11 items-center justify-center text-[#4A4A48] hover:text-[#1a1a1a] dark:text-white/80 dark:hover:text-white">
               <User size={18} />
             </a>
-            <a href="/cart" aria-label="Кошик" className="text-[#4A4A48] hover:text-[#1a1a1a] dark:text-white/80 dark:hover:text-white">
+            <a href="/cart" aria-label="Кошик" className="flex h-11 w-11 items-center justify-center text-[#4A4A48] hover:text-[#1a1a1a] dark:text-white/80 dark:hover:text-white">
               <ShoppingCart size={18} />
             </a>
+            <MobileMenu />
           </div>
         </nav>
 
@@ -54,7 +56,7 @@ export default function KukirinHero() {
               // SYS.BOOT // KUKIRIN G2 PRO 2026
             </div>
 
-            <h1 className="kukirin-fade-2 mb-1 text-5xl font-medium leading-[0.9] tracking-[-0.04em] md:text-7xl lg:text-7xl xl:text-8xl">
+            <h1 className="kukirin-fade-2 mb-1 text-4xl font-medium leading-[0.9] tracking-[-0.04em] sm:text-5xl md:text-7xl lg:text-7xl xl:text-8xl">
               <span className="kukirin-glitch relative inline-block" data-text="FEEL">FEEL</span>
               <span className="text-[#1a1a1a]/30 dark:text-white/30"> THE</span>
             </h1>
