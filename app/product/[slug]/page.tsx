@@ -344,7 +344,7 @@ export default async function ProductPage({
             extra.dimensions ? ['Габарити', extra.dimensions] : null,
             extra.ipRating ? ['Захист від вологи', extra.ipRating] : null,
             extra.color ? ['Колір', extra.color] : null,
-            ['Гарантія', extra.warranty || '12 місяців'],
+            ['Гарантія', extra.warranty || '3 місяці'],
           ]
             .filter((x): x is [string, string] => x !== null)
             .map(([k, v]) => (
