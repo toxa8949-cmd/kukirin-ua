@@ -1,8 +1,7 @@
 import Link from 'next/link';
-import { Search, User, Instagram, Facebook, Youtube, Send } from 'lucide-react';
+import { Search, User, Menu, Instagram, Facebook, Youtube, Send } from 'lucide-react';
 import CartIcon from '@/components/cart/CartIcon';
 import Logo from '@/components/kukirin/Logo';
-import MobileMenu from '@/components/site/MobileMenu';
 
 export default function PageShell({
   children, title, subtitle, breadcrumb,
@@ -25,11 +24,20 @@ export default function PageShell({
               <li><Link href="/blog" className="hover:text-[#1a1a1a] dark:hover:text-white">Блог</Link></li>
             </ul>
           </div>
-          <div className="flex items-center gap-1 sm:gap-2">
-            <button aria-label="Пошук" className="flex h-11 w-11 items-center justify-center text-[#4A4A48] hover:text-[#1a1a1a] dark:text-white/80 dark:hover:text-white"><Search size={18} /></button>
-            <Link href="/account" aria-label="Кабінет" className="flex h-11 w-11 items-center justify-center text-[#4A4A48] hover:text-[#1a1a1a] dark:text-white/80 dark:hover:text-white"><User size={18} /></Link>
+          <div className="flex items-center gap-3 sm:gap-4">
+            <button aria-label="Пошук" className="text-[#4A4A48] hover:text-[#1a1a1a] dark:text-white/80 dark:hover:text-white"><Search size={18} /></button>
+            <Link href="/account" aria-label="Кабінет" className="text-[#4A4A48] hover:text-[#1a1a1a] dark:text-white/80 dark:hover:text-white"><User size={18} /></Link>
             <CartIcon />
-            <MobileMenu />
+            <details className="relative md:hidden">
+              <summary className="list-none cursor-pointer text-[#4A4A48] hover:text-[#1a1a1a] dark:text-white/80 dark:hover:text-white"><Menu size={20} /></summary>
+              <div className="absolute right-0 mt-3 w-48 rounded-sm border border-[#E8E6DE] bg-white p-3 text-sm shadow-xl dark:border-white/10 dark:bg-[#111]">
+                <Link href="/catalog" className="block py-2 text-[#4A4A48] hover:text-[#1a1a1a] dark:text-white/80 dark:hover:text-white">Самокати</Link>
+                <Link href="/accessories" className="block py-2 text-[#4A4A48] hover:text-[#1a1a1a] dark:text-white/80 dark:hover:text-white">Аксесуари</Link>
+                <Link href="/service" className="block py-2 text-[#4A4A48] hover:text-[#1a1a1a] dark:text-white/80 dark:hover:text-white">Сервіс</Link>
+                <Link href="/blog" className="block py-2 text-[#4A4A48] hover:text-[#1a1a1a] dark:text-white/80 dark:hover:text-white">Блог</Link>
+                <Link href="/contacts" className="block py-2 text-[#4A4A48] hover:text-[#1a1a1a] dark:text-white/80 dark:hover:text-white">Контакти</Link>
+              </div>
+            </details>
           </div>
         </div>
       </header>
@@ -82,7 +90,7 @@ export default function PageShell({
                 <li><Link href="/delivery" className="hover:text-[#FF6B00]">Доставка й оплата</Link></li>
                 <li><Link href="/warranty" className="hover:text-[#FF6B00]">Гарантія</Link></li>
                 <li><Link href="/service" className="hover:text-[#FF6B00]">Сервіс</Link></li>
-                <li><Link href="/contacts" className="hover:text-[#FF6B00]">Контакти</Link></li>
+                <li><Link href="/contacts" className="hover:text-[#FF6B00]">Контакти</Link></li><li><Link href="/orders/track" className="hover:text-[#FF6B00]">Відстежити замовлення</Link></li>
               </ul>
             </div>
             <div>

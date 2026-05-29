@@ -198,6 +198,20 @@ export default async function CheckoutSuccessPage({
           </Link>
         </div>
       </div>
+        {/* Як відстежити статус */}
+        <div className="mt-8 rounded-sm border border-[#E8E6DE] bg-[#FAFAF7] p-5 dark:border-white/10 dark:bg-[#0F0F0F]">
+          <div className="mb-2 text-[10px] tracking-[0.2em] text-[#993C1D] dark:text-[#FF8A33]">
+            // ВІДСТЕЖЕННЯ ЗАМОВЛЕННЯ
+          </div>
+          <p className="mb-3 text-sm leading-relaxed text-[#4A4A48] dark:text-white/65">
+            Збережіть номер замовлення — у будь-який момент можна перевірити статус на сторінці{' '}
+            <Link href="/orders/track" className="text-[#FF6B00] hover:underline">/orders/track</Link>, ввівши номер і ваш телефон.
+          </p>
+          <div className="rounded-sm border border-dashed border-[#E8E6DE] bg-white p-3 font-mono text-xs text-[#4A4A48] dark:border-white/15 dark:bg-[#0A0A0A] dark:text-white/65">
+            {data?.order?.id ?? orderNumber}
+          </div>
+        </div>
+
     </PageShell>
   );
 }
