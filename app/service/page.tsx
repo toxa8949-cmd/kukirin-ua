@@ -1,7 +1,28 @@
 import PageShell from '@/components/kukirin/PageShell';
 import { Wrench, Battery, Cpu, Settings, Phone, MapPin, Gauge, ShieldCheck } from 'lucide-react';
 
-export const metadata = { title: 'Сервісний центр KUKIRIN' };
+export const metadata = {
+  title: 'Сервіс і ремонт електросамокатів KUKIRIN у Києві',
+  description:
+    "Сервісний центр KUKIRIN у Києві (Ревуцького 40В): діагностика, ремонт двигуна та контролера, заміна батареї, прошивка. Безкоштовна діагностика, оригінальні запчастини.",
+  keywords: ['ремонт електросамоката київ', 'сервіс kukirin', 'заміна батареї електросамоката', 'ремонт kugoo kirin', 'діагностика самоката'],
+  alternates: { canonical: '/service' },
+  openGraph: {
+    title: 'Сервіс KUKIRIN у Києві — ремонт, діагностика, запчастини',
+    description:
+      "Сервісний центр KUKIRIN у Києві (Ревуцького 40В): діагностика, ремонт двигуна та контролера, заміна батареї, прошивка. Безкоштовна діагностика, оригінальні запчастини.",
+    url: 'https://kukirinstore.com.ua/service',
+    type: 'website',
+    locale: 'uk_UA',
+    siteName: 'KUKIRIN.UA',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Сервіс KUKIRIN у Києві — ремонт, діагностика, запчастини' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Сервіс KUKIRIN у Києві — ремонт, діагностика, запчастини',
+    images: ['/og-image.png'],
+  },
+};
 
 const SERVICES = [
   { icon: Wrench, title: 'Технічне обслуговування', desc: 'Планове ТО: перевірка всіх вузлів, протяжка кріплень, змащення, підготовка до сезону' },

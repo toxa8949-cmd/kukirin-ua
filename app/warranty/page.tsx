@@ -1,7 +1,28 @@
 import PageShell from '@/components/kukirin/PageShell';
 import { Shield, CheckCircle2, XCircle, FileText } from 'lucide-react';
 
-export const metadata = { title: 'Гарантія KUKIRIN' };
+export const metadata = {
+  title: 'Гарантія на електросамокати KUKIRIN — офіційна, 3 місяці',
+  description:
+    "Офіційна гарантія KUKIRIN на 3 місяці: двигун, контролер, акумулятор, електроніка. Власна сервісна майстерня у Києві, безкоштовний ремонт несправних вузлів.",
+  keywords: ['гарантія kukirin', 'гарантія електросамоката', 'ремонт kukirin', 'офіційна гарантія самокат'],
+  alternates: { canonical: '/warranty' },
+  openGraph: {
+    title: 'Гарантія KUKIRIN — 3 місяці офіційно',
+    description:
+      "Офіційна гарантія KUKIRIN на 3 місяці: двигун, контролер, акумулятор, електроніка. Власна сервісна майстерня у Києві, безкоштовний ремонт несправних вузлів.",
+    url: 'https://kukirinstore.com.ua/warranty',
+    type: 'website',
+    locale: 'uk_UA',
+    siteName: 'KUKIRIN.UA',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Гарантія KUKIRIN — 3 місяці офіційно' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Гарантія KUKIRIN — 3 місяці офіційно',
+    images: ['/og-image.png'],
+  },
+};
 
 export default function WarrantyPage() {
   return (

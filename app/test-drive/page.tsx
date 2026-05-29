@@ -2,7 +2,28 @@ import PageShell from '@/components/kukirin/PageShell';
 import { Phone, MapPin, Calendar, Clock } from 'lucide-react';
 import { getAllProducts } from '@/lib/data/products';
 
-export const metadata = { title: 'Тест-драйв KUKIRIN' };
+export const metadata = {
+  title: 'Тест-драйв електросамокатів KUKIRIN у Києві — безкоштовно',
+  description:
+    "Запис на безкоштовний тест-драйв електросамокатів KUKIRIN у Києві. Будь-яка модель з наявності — G2 Pro, G2 Master, G4 Max, M4 Pro. Запис телефоном 0 (95) 898-10-07.",
+  keywords: ['тест-драйв електросамоката', 'kukirin тест', 'де покататись на самокаті', 'тест електросамоката київ'],
+  alternates: { canonical: '/test-drive' },
+  openGraph: {
+    title: 'Тест-драйв KUKIRIN — безкоштовно у Києві',
+    description:
+      "Запис на безкоштовний тест-драйв електросамокатів KUKIRIN у Києві. Будь-яка модель з наявності — G2 Pro, G2 Master, G4 Max, M4 Pro. Запис телефоном 0 (95) 898-10-07.",
+    url: 'https://kukirinstore.com.ua/test-drive',
+    type: 'website',
+    locale: 'uk_UA',
+    siteName: 'KUKIRIN.UA',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Тест-драйв KUKIRIN — безкоштовно у Києві' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Тест-драйв KUKIRIN — безкоштовно у Києві',
+    images: ['/og-image.png'],
+  },
+};
 export const dynamic = 'force-dynamic';
 
 export default async function TestDrivePage() {

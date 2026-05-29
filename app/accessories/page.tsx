@@ -1,7 +1,28 @@
 import PageShell from '@/components/kukirin/PageShell';
 import { ShieldCheck, Battery, Zap, Bike, Lock, Lightbulb } from 'lucide-react';
 
-export const metadata = { title: 'Аксесуари для електросамокатів' };
+export const metadata = {
+  title: 'Аксесуари для електросамокатів KUKIRIN — батареї, шини, шоломи',
+  description:
+    "Оригінальні аксесуари KUKIRIN: запасні батареї (48V/52V/60V), шини, шоломи, замки, GPS-трекери, тримачі. Офіційна гарантія, доставка Новою Поштою по Україні.",
+  keywords: ['аксесуари електросамоката', 'запасна батарея kukirin', 'шини електросамоката', 'шолом самокат', 'замок для самоката'],
+  alternates: { canonical: '/accessories' },
+  openGraph: {
+    title: 'Аксесуари KUKIRIN — батареї, шини, захист',
+    description:
+      "Оригінальні аксесуари KUKIRIN: запасні батареї (48V/52V/60V), шини, шоломи, замки, GPS-трекери, тримачі. Офіційна гарантія, доставка Новою Поштою по Україні.",
+    url: 'https://kukirinstore.com.ua/accessories',
+    type: 'website',
+    locale: 'uk_UA',
+    siteName: 'KUKIRIN.UA',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Аксесуари KUKIRIN — батареї, шини, захист' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Аксесуари KUKIRIN — батареї, шини, захист',
+    images: ['/og-image.png'],
+  },
+};
 
 const ACCESSORIES = [
   { icon: Battery, title: 'Запасні батареї', desc: '48V / 52V / 60V — оригінальні KUKIRIN з гарантією 6 міс', price: 'від 6 999 ₴' },

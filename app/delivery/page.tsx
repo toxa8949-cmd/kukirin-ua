@@ -1,7 +1,28 @@
 import PageShell from '@/components/kukirin/PageShell';
 import { Truck, CreditCard, Banknote, Calendar } from 'lucide-react';
 
-export const metadata = { title: 'Доставка й оплата' };
+export const metadata = {
+  title: 'Доставка електросамокатів по Україні — Новою Поштою',
+  description:
+    "Доставка KUKIRIN Новою Поштою по всій Україні: безкоштовно при передплаті, накладений платіж від 200 ₴, самовивіз у Києві (Ревуцького 40В). Відправка 1–3 дні.",
+  keywords: ['доставка електросамоката', 'kukirin доставка', 'доставка нова пошта', 'самовивіз київ', 'оплата при отриманні'],
+  alternates: { canonical: '/delivery' },
+  openGraph: {
+    title: 'Доставка KUKIRIN — Новою Поштою по Україні',
+    description:
+      "Доставка KUKIRIN Новою Поштою по всій Україні: безкоштовно при передплаті, накладений платіж від 200 ₴, самовивіз у Києві (Ревуцького 40В). Відправка 1–3 дні.",
+    url: 'https://kukirinstore.com.ua/delivery',
+    type: 'website',
+    locale: 'uk_UA',
+    siteName: 'KUKIRIN.UA',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Доставка KUKIRIN — Новою Поштою по Україні' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Доставка KUKIRIN — Новою Поштою по Україні',
+    images: ['/og-image.png'],
+  },
+};
 
 export default function DeliveryPage() {
   return (

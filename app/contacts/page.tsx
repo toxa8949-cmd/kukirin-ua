@@ -1,7 +1,28 @@
 import PageShell from '@/components/kukirin/PageShell';
 import { Phone, Mail, MapPin, Clock, Send, MessageCircle } from 'lucide-react';
 
-export const metadata = { title: 'Контакти KUKIRIN.UA' };
+export const metadata = {
+  title: 'Контакти KUKIRIN.UA — Київ, телефон, шоурум',
+  description:
+    "Звʼяжіться з KUKIRIN.UA: телефон 0 (95) 898-10-07, email info@kukirin.ua. Шоурум у Києві: вул. Ревуцького, 40В. Графік роботи: щодня 9:30–16:30.",
+  keywords: ['kukirin контакти', 'kukirin київ', 'магазин електросамокатів київ', 'kukirin адреса'],
+  alternates: { canonical: '/contacts' },
+  openGraph: {
+    title: 'Контакти KUKIRIN — телефон, адреса, графік',
+    description:
+      "Звʼяжіться з KUKIRIN.UA: телефон 0 (95) 898-10-07, email info@kukirin.ua. Шоурум у Києві: вул. Ревуцького, 40В. Графік роботи: щодня 9:30–16:30.",
+    url: 'https://kukirinstore.com.ua/contacts',
+    type: 'website',
+    locale: 'uk_UA',
+    siteName: 'KUKIRIN.UA',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Контакти KUKIRIN — телефон, адреса, графік' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Контакти KUKIRIN — телефон, адреса, графік',
+    images: ['/og-image.png'],
+  },
+};
 
 export default function ContactsPage() {
   return (
