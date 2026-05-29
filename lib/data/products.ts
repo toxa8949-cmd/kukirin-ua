@@ -189,6 +189,7 @@ export async function getProductBySlug(slug: string): Promise<
       description: string | null;
       gallery: string[];
       stock: number;
+      specs: Json | null;
     })
   | null
 > {
@@ -222,6 +223,7 @@ export async function getProductBySlug(slug: string): Promise<
     description: row.description,
     gallery,
     stock: row.stock ?? 0,
+    specs: row.specs ?? null,
   };
 }
 

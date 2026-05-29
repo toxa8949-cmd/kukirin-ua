@@ -12,9 +12,10 @@ export const metadata: Metadata = {
   description:
     'Офіційний дистриб’ютор KUKIRIN в Україні. Електросамокати G2 Pro, G2 Master, G4 Max, M4 Pro. Офіційна гарантія, доставка Новою Поштою, розтермінування.',
   keywords: ['kukirin', 'кукірін', 'електросамокат', 'kukirin g2 pro', 'kukirin g4 max', 'kukirin україна', 'купити електросамокат'],
-  alternates: {
-    canonical: '/',
-  },
+  // НЕ задаємо тут alternates.canonical: '/' — інакше це каскадно
+  // ставить canonical='/' на ВСІ сторінки сайту, через що Google може
+  // ігнорувати товари, категорії й статті як дублікати головної.
+  // Canonical для кожної сторінки задається в її власному generateMetadata.
   openGraph: {
     title: 'KUKIRIN Україна — електросамокати з гарантією',
     description: 'Офіційний KUKIRIN в Україні. До 70 км/год, 2000W, офіційна гарантія.',

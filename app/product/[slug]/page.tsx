@@ -4,38 +4,94 @@ import { notFound } from 'next/navigation';
 import { Check, Phone, Truck, Shield, Wrench } from 'lucide-react';
 import PageShell from '@/components/kukirin/PageShell';
 import AddToCartButton from '@/components/cart/AddToCartButton';
-import JsonLd, { productSchema, breadcrumbSchema } from '@/components/seo/JsonLd';
+import JsonLd, {
+  productSchema,
+  breadcrumbSchema,
+  faqSchema,
+  videoSchema,
+} from '@/components/seo/JsonLd';
+import ProductFAQ from '@/components/product/ProductFAQ';
+import ProductVideo from '@/components/product/ProductVideo';
+import { getAllProducts, getProductBySlug } from '@/lib/data/products';
 import {
-  getAllProducts,
-  getProductBySlug,
-} from '@/lib/data/products';
+  getLongDescription,
+  getFAQ,
+  getVideoUrl,
+  extractYouTubeId,
+  getVideoTitle,
+  getExtraSpecs,
+  getFeatureList,
+} from '@/lib/data/product-extras';
 
-// Force per-request rendering. Prevents Vercel from serving a stale 500
-// generated before RLS / schema-sync were applied. Also stops generateStaticParams
-// from baking the slug set at build time (we now resolve everything at request time).
 export const revalidate = 120; // кеш 2 хв
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+const SITE = 'https://kukirinstore.com.ua';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   try {
     const { slug } = await params;
     const s = await getProductBySlug(slug).catch(() => null);
     if (!s) return { title: 'Модель не знайдена' };
-    const parts: string[] = [];
-    if (s.power)    parts.push(`${s.power}W`);
-    if (s.maxSpeed) parts.push(`до ${s.maxSpeed} км/год`);
-    if (s.range)    parts.push(`${s.range} км ходу`);
-    const specs = parts.length ? ` ${parts.join(', ')}.` : '';
-    const tag = s.tagline ? `${s.tagline}.` : '';
+
+    // Опис під топ-сніпети: модель + ключові специфікації + ціна + переваги
+    const specs: string[] = [];
+    if (s.power)    specs.push(`${s.power}Вт`);
+    if (s.maxSpeed) specs.push(`до ${s.maxSpeed} км/год`);
+    if (s.range)    specs.push(`запас ходу ${s.range} км`);
+    if (s.battery)  specs.push(`батарея ${s.battery}`);
+    const specsStr = specs.length ? specs.join(', ') + '. ' : '';
+
+    const price = Number.isFinite(s.price)
+      ? `Ціна ${Number(s.price).toLocaleString('uk-UA')} ₴. `
+      : '';
+
+    const description = `Електросамокат ${s.name} ${s.tagline ? `— ${s.tagline}. ` : ''}${specsStr}${price}Офіційна гарантія, безкоштовна доставка Новою Поштою, розтермінування.`;
+
+    const ogImage = s.gallery?.[0] ?? s.image ?? '/og-image.png';
+
     return {
-      title: `${s.name} — купити в Україні`,
-      description: `${s.name}.${tag ? ` ${tag}` : ''}${specs} Офіційна гарантія, доставка Новою Поштою.`,
+      title: `${s.name} — купити в Україні, ціна ${Number(s.price).toLocaleString('uk-UA')} ₴`,
+      description: description.slice(0, 160),
+      keywords: [
+        s.name,
+        `${s.name} купити`,
+        `${s.name} ціна`,
+        `${s.name} україна`,
+        'kukirin',
+        'кукірін',
+        'електросамокат',
+      ],
+      alternates: { canonical: `/product/${slug}` },
+      openGraph: {
+        title: `${s.name} — KUKIRIN.UA`,
+        description: description.slice(0, 200),
+        url: `${SITE}/product/${slug}`,
+        type: 'website',
+        locale: 'uk_UA',
+        siteName: 'KUKIRIN.UA',
+        images: [{ url: ogImage, width: 1200, height: 630, alt: s.name }],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: `${s.name} — KUKIRIN.UA`,
+        description: description.slice(0, 200),
+        images: [ogImage],
+      },
     };
   } catch {
     return { title: 'Модель' };
   }
 }
 
-export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function ProductPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const { slug } = await params;
   const scooter = await getProductBySlug(slug).catch((e) => {
     console.error('[ProductPage] getProductBySlug threw', e);
@@ -48,7 +104,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
   const primaryImage = scooter.gallery?.[0] ?? scooter.image ?? null;
 
-  // Defensive defaults for everything the UI reads.
+  // Безпечні дефолти
   const safeName     = scooter.name ?? 'KUKIRIN';
   const safeTagline  = scooter.tagline ?? '';
   const safeCategory = scooter.category ?? 'urban';
@@ -57,42 +113,74 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const safeSpeed    = Number.isFinite(scooter.maxSpeed) ? scooter.maxSpeed : 0;
   const safeRange    = Number.isFinite(scooter.range)    ? scooter.range    : 0;
 
-  // Avoid `.split(' ').slice(-1)[0]` on a possibly empty name.
+  // SEO-розширення з specs jsonb (усе опційне)
+  const longDescription = getLongDescription(scooter.specs);
+  const faq = getFAQ(scooter.specs);
+  const videoUrl = getVideoUrl(scooter.specs);
+  const videoId = extractYouTubeId(videoUrl);
+  const videoTitle = getVideoTitle(scooter.specs);
+  const extra = getExtraSpecs(scooter.specs);
+  const featuresList = getFeatureList(scooter.specs);
+
   const placeholderLabel = (() => {
     const parts = safeName.split(' ').filter(Boolean);
     return parts.length > 0 ? parts[parts.length - 1] : 'KUKIRIN';
   })();
 
   const features = [
-    { icon: Truck,  label: 'Доставка',   value: 'Новою Поштою по Україні' },
-    { icon: Shield, label: 'Гарантія',   value: 'Офіційна' },
-    { icon: Wrench, label: 'Сервіс',     value: 'Власні майстерні' },
-    { icon: Phone,  label: 'Підтримка',  value: '0 (95) 898-10-07' },
+    { icon: Truck,  label: 'Доставка',  value: 'Новою Поштою по Україні' },
+    { icon: Shield, label: 'Гарантія',  value: extra.warranty || 'Офіційна' },
+    { icon: Wrench, label: 'Сервіс',    value: 'Власні майстерні' },
+    { icon: Phone,  label: 'Підтримка', value: '0 (95) 898-10-07' },
   ];
+
+  // Збираємо JSON-LD масив динамічно
+  const jsonLdData: Record<string, unknown>[] = [
+    productSchema({
+      name: safeName,
+      slug: scooter.slug,
+      description: scooter.description,
+      price: Number(scooter.price),
+      oldPrice: scooter.oldPrice,
+      images: scooter.gallery && scooter.gallery.length > 0 ? scooter.gallery : (primaryImage ? [primaryImage] : []),
+      inStock: (scooter.stock ?? 0) > 0,
+      sku: extra.sku,
+      mpn: extra.mpn,
+      gtin: extra.gtin,
+      weight: extra.weight,
+      color: extra.color,
+      power: safePower || undefined,
+      maxSpeed: safeSpeed || undefined,
+      range: safeRange || undefined,
+      battery: safeBattery !== '—' ? safeBattery : undefined,
+    }),
+    breadcrumbSchema([
+      { name: 'Головна', url: '/' },
+      { name: 'Каталог', url: '/catalog' },
+      { name: safeName, url: `/product/${scooter.slug}` },
+    ]),
+  ];
+  if (faq.length > 0) {
+    jsonLdData.push(faqSchema(faq));
+  }
+  if (videoId && primaryImage) {
+    jsonLdData.push(
+      videoSchema({
+        name: videoTitle || `${safeName} — відео-огляд`,
+        description: scooter.description || `Огляд електросамоката ${safeName}`,
+        thumbnailUrl: primaryImage.startsWith('http') ? primaryImage : `${SITE}${primaryImage}`,
+        youtubeId: videoId,
+      })
+    );
+  }
 
   return (
     <PageShell breadcrumb={`PRODUCT · ${scooter.slug.toUpperCase()}`}>
-      <JsonLd
-        data={[
-          productSchema({
-            name: safeName,
-            slug: scooter.slug,
-            description: scooter.description,
-            price: Number(scooter.price),
-            image: primaryImage,
-            inStock: (scooter.stock ?? 0) > 0,
-          }),
-          breadcrumbSchema([
-            { name: 'Головна', url: '/' },
-            { name: 'Каталог', url: '/catalog' },
-            { name: safeName, url: `/product/${scooter.slug}` },
-          ]),
-        ]}
-      />
+      <JsonLd data={jsonLdData} />
+
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
         {/* Visual */}
         <div className="relative aspect-square overflow-hidden rounded-md border border-[#E8E6DE] bg-white dark:border-white/10 dark:bg-gradient-to-br dark:from-[#1a1a1a] dark:to-[#0a0a0a]">
-          {/* Дракон-watermark ззаду — великий, дуже прозорий */}
           <Image
             src="/logo-mark.png"
             alt=""
@@ -114,7 +202,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           {primaryImage ? (
             <Image
               src={primaryImage}
-              alt={safeName}
+              alt={`${safeName} — електросамокат KUKIRIN`}
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
               priority
@@ -193,11 +281,21 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             </div>
           </div>
 
+          {/* Ключові переваги — з specs.features або дефолтні */}
           <ul className="mb-6 space-y-2 text-sm text-[#4A4A48] dark:text-white/70">
-            <li className="flex gap-2"><Check size={16} className="mt-0.5 text-[#FF6B00]" /> Офіційна гарантія</li>
-            <li className="flex gap-2"><Check size={16} className="mt-0.5 text-[#FF6B00]" /> Доставка Новою Поштою</li>
-            <li className="flex gap-2"><Check size={16} className="mt-0.5 text-[#FF6B00]" /> Доступне розтермінування</li>
-            <li className="flex gap-2"><Check size={16} className="mt-0.5 text-[#FF6B00]" /> Передпродажна підготовка</li>
+            {(featuresList.length > 0
+              ? featuresList
+              : [
+                  'Офіційна гарантія',
+                  'Доставка Новою Поштою',
+                  'Доступне розтермінування',
+                  'Передпродажна підготовка',
+                ]
+            ).map((f, i) => (
+              <li key={i} className="flex gap-2">
+                <Check size={16} className="mt-0.5 text-[#FF6B00]" /> {f}
+              </li>
+            ))}
           </ul>
 
           {scooter.description && (
@@ -208,6 +306,68 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         </div>
       </div>
 
+      {/* Розширений опис (SEO-текст) */}
+      {longDescription && (
+        <section className="mt-16 border-t border-[#E8E6DE] dark:border-white/10 pt-10">
+          <div className="mb-2 text-[10px] tracking-[0.2em] text-[#993C1D] dark:text-[#FF8A33]">
+            // ДЕТАЛЬНИЙ ОГЛЯД
+          </div>
+          <h2 className="mb-6 text-2xl font-medium tracking-tight sm:text-3xl">
+            Про {safeName}
+          </h2>
+          <div className="prose-kukirin max-w-none whitespace-pre-line text-[15px] leading-relaxed text-[#4A4A48] dark:text-white/70">
+            {longDescription}
+          </div>
+        </section>
+      )}
+
+      {/* Детальна таблиця характеристик */}
+      <section className="mt-16 border-t border-[#E8E6DE] dark:border-white/10 pt-10">
+        <div className="mb-2 text-[10px] tracking-[0.2em] text-[#993C1D] dark:text-[#FF8A33]">
+          // ХАРАКТЕРИСТИКИ
+        </div>
+        <h2 className="mb-6 text-2xl font-medium tracking-tight sm:text-3xl">
+          Технічні характеристики
+        </h2>
+        <dl className="grid grid-cols-1 gap-x-12 gap-y-0 sm:grid-cols-2">
+          {[
+            ['Модель', safeName],
+            ['Категорія', safeCategory === 'urban' ? 'Міський' : safeCategory === 'offroad' ? 'Off-road' : 'Флагман'],
+            safePower    ? ['Потужність двигуна', `${safePower} Вт`] : null,
+            safeSpeed    ? ['Максимальна швидкість', `${safeSpeed} км/год`] : null,
+            safeRange    ? ['Запас ходу', `до ${safeRange} км`] : null,
+            safeBattery !== '—' ? ['Батарея', safeBattery] : null,
+            extra.chargingTime ? ['Час заряджання', extra.chargingTime] : null,
+            extra.tireSize ? ['Розмір коліс', extra.tireSize] : null,
+            extra.weight ? ['Вага', `${extra.weight} кг`] : null,
+            extra.loadCapacity ? ['Макс. навантаження', `${extra.loadCapacity} кг`] : null,
+            extra.dimensions ? ['Габарити', extra.dimensions] : null,
+            extra.ipRating ? ['Захист від вологи', extra.ipRating] : null,
+            extra.color ? ['Колір', extra.color] : null,
+            ['Гарантія', extra.warranty || '12 місяців'],
+          ]
+            .filter((x): x is [string, string] => x !== null)
+            .map(([k, v]) => (
+              <div
+                key={k}
+                className="flex justify-between gap-4 border-b border-[#E8E6DE] py-3 dark:border-white/10"
+              >
+                <dt className="text-sm text-[#6C6A65] dark:text-white/55">{k}</dt>
+                <dd className="text-right text-sm font-medium">{v}</dd>
+              </div>
+            ))}
+        </dl>
+      </section>
+
+      {/* Відео-огляд */}
+      {videoId && (
+        <ProductVideo youtubeId={videoId} title={videoTitle || `${safeName} — огляд`} />
+      )}
+
+      {/* FAQ */}
+      {faq.length > 0 && <ProductFAQ items={faq} />}
+
+      {/* Features бар */}
       <div className="mt-12 grid grid-cols-2 gap-3 border-t border-[#E8E6DE] dark:border-white/10 pt-8 sm:grid-cols-4">
         {features.map((f) => (
           <div key={f.label} className="flex flex-col gap-2">
@@ -222,7 +382,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         <div className="mt-12 border-t border-[#E8E6DE] dark:border-white/10 pt-10">
           <div className="mb-6 flex items-end justify-between">
             <h2 className="text-2xl font-medium tracking-tight sm:text-3xl">Інші моделі</h2>
-            <Link href="/catalog" className="text-xs text-[#4A4A48] dark:text-white/60 hover:text-[#1a1a1a] dark:hover:text-[#1a1a1a] dark:text-white">Усі моделі →</Link>
+            <Link href="/catalog" className="text-xs text-[#4A4A48] dark:text-white/60 hover:text-[#1a1a1a]">Усі моделі →</Link>
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             {related.map((s) => (
@@ -231,7 +391,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                 <div className="mb-3 text-xs text-[#6C6A65] dark:text-white/45">{s.tagline}</div>
                 <div className="flex items-end justify-between">
                   <div className="text-lg font-medium text-[#FF6B00]">{Number(s.price).toLocaleString('uk-UA')} ₴</div>
-                  <span className="text-xs text-[#4A4A48] dark:text-white/60 group-hover:text-[#1a1a1a] dark:hover:text-[#1a1a1a] dark:text-white">→</span>
+                  <span className="text-xs text-[#4A4A48] dark:text-white/60 group-hover:text-[#1a1a1a]">→</span>
                 </div>
               </Link>
             ))}
