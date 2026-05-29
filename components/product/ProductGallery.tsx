@@ -81,7 +81,7 @@ export default function ProductGallery({ images, name, tagline, badge }: Props) 
   const altMain = `${name} — електросамокат KUKIRIN${tagline ? `, ${tagline}` : ''}`;
 
   return (
-    <>
+    <div>
       {/* ============ Primary view ============ */}
       <div className="relative aspect-square overflow-hidden rounded-md border border-[#E8E6DE] bg-white dark:border-white/10 dark:bg-gradient-to-br dark:from-[#1a1a1a] dark:to-[#0a0a0a]">
         {/* Watermark dragon */}
@@ -241,6 +241,6 @@ export default function ProductGallery({ images, name, tagline, badge }: Props) 
           )}
         </div>
       )}
-    </>
+    </div>
   );
 }
