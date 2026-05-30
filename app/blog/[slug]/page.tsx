@@ -8,21 +8,6 @@ import { renderMarkdown } from '@/lib/markdown';
 
 export const revalidate = 600; // кеш 10 хв
 
-// Pre-render всіх опублікованих статей блогу на build.
-export async function generateStaticParams() {
-  try {
-    const supabase = await createClient();
-    const { data } = await supabase
-      .from('news')
-      .select('slug')
-      .eq('published', true);
-    return ((data ?? []) as Array<{ slug: string }>).map((r) => ({ slug: r.slug }));
-  } catch (e) {
-    console.error('[generateStaticParams blog]', e);
-    return [];
-  }
-}
-
 type Article = {
   id: string;
   slug: string;
