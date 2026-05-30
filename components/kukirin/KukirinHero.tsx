@@ -112,7 +112,7 @@ export default async function KukirinHero() {
             <a href="/" className="inline-flex items-center" aria-label="kukirinstore.com.ua — головна">
               <Logo variant="inline" size={32} href={null} />
             </a>
-            <ul className="hidden gap-5 text-sm text-[#4A4A48] dark:text-white/70 md:flex">
+            <ul className="hidden gap-5 text-sm font-medium text-[#4A4A48] dark:text-white/80 md:flex">
               <li><a href="#models" className="hover:text-[#1a1a1a] dark:hover:text-white">Самокати</a></li>
               <li><a href="/accessories" className="hover:text-[#1a1a1a] dark:hover:text-white">Аксесуари</a></li>
               <li><a href="/service" className="hover:text-[#1a1a1a] dark:hover:text-white">Сервіс</a></li>

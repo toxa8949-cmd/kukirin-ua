@@ -17,7 +17,7 @@ export default function PageShell({
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-10">
           <div className="flex items-center gap-4 md:gap-8">
             <Logo variant="inline" size={28} />
-            <ul className="hidden gap-5 text-sm text-[#4A4A48] dark:text-white/70 md:flex">
+            <ul className="hidden gap-5 text-sm font-medium text-[#4A4A48] dark:text-white/80 md:flex">
               <li><Link href="/catalog" className="hover:text-[#1a1a1a] dark:hover:text-white">Самокати</Link></li>
               <li><Link href="/accessories" className="hover:text-[#1a1a1a] dark:hover:text-white">Аксесуари</Link></li>
               <li><Link href="/service" className="hover:text-[#1a1a1a] dark:hover:text-white">Сервіс</Link></li>
@@ -89,7 +89,7 @@ export default function PageShell({
                 <li><Link href="/delivery" className="hover:text-[#FF6B00]">Доставка й оплата</Link></li>
                 <li><Link href="/warranty" className="hover:text-[#FF6B00]">Гарантія</Link></li>
                 <li><Link href="/service" className="hover:text-[#FF6B00]">Сервіс</Link></li>
-                <li><Link href="/contacts" className="hover:text-[#FF6B00]">Контакти</Link></li><li><Link href="/orders/track" className="hover:text-[#FF6B00]">Відстежити замовлення</Link></li><li><Link href="/compare" className="hover:text-[#FF6B00]">Порівняти моделі</Link></li>
+                <li><Link href="/contacts" className="hover:text-[#FF6B00]">Контакти</Link></li><li><Link href="/orders/track" className="hover:text-[#FF6B00]">Відстежити замовлення</Link></li>
               </ul>
             </div>
             <div>
