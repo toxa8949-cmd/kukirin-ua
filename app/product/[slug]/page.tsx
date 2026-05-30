@@ -9,9 +9,16 @@ import JsonLd, {
   faqSchema,
   videoSchema,
 } from '@/components/seo/JsonLd';
-import ProductFAQ from '@/components/product/ProductFAQ';
+import dynamic from 'next/dynamic';
 import ProductVideo from '@/components/product/ProductVideo';
-import ProductReviews from '@/components/product/ProductReviews';
+// Lazy-load: FAQ і відгуки — accordion, відкриваються рідко.
+// Винесені в окремі chunks щоб не роздувати initial JS.
+const ProductFAQ = dynamic(() => import('@/components/product/ProductFAQ'), {
+  loading: () => <div className="h-10 animate-pulse rounded-sm bg-[#F0EEE6] dark:bg-white/5" />,
+});
+const ProductReviews = dynamic(() => import('@/components/product/ProductReviews'), {
+  loading: () => <div className="h-10 animate-pulse rounded-sm bg-[#F0EEE6] dark:bg-white/5" />,
+});
 import ProductGallery from '@/components/product/ProductGallery';
 import MobileStickyBar from '@/components/product/MobileStickyBar';
 import ReviewStars from '@/components/product/ReviewStars';
@@ -28,7 +35,20 @@ import {
 } from '@/lib/data/product-extras';
 import { renderMarkdown } from '@/lib/markdown';
 
-export const revalidate = 120; // кеш 2 хв
+export const revalidate = 120;
+
+// Pre-render всіх товарів на build — миттєвий перший response з CDN.
+// ISR (revalidate 120s) продовжує оновлювати кеш при змінах.
+// dynamicParams=true (за замовч.) — нові товари рендеряться on-demand.
+export async function generateStaticParams() {
+  try {
+    const products = await getAllProducts();
+    return products.map((p) => ({ slug: p.slug }));
+  } catch (e) {
+    console.error('[generateStaticParams products]', e);
+    return [];
+  }
+} // кеш 2 хв
 
 const SITE = 'https://kukirinstore.com.ua';
 

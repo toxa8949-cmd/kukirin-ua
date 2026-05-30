@@ -3,10 +3,24 @@ import { notFound } from 'next/navigation';
 import { ArrowRight } from 'lucide-react';
 import PageShell from '@/components/kukirin/PageShell';
 import JsonLd, { breadcrumbSchema, itemListSchema } from '@/components/seo/JsonLd';
-import { getCategoryBySlug } from '@/lib/data/categories';
+import { getAllCategories, getCategoryBySlug } from '@/lib/data/categories';
 import { getProductsByCategorySlug } from '@/lib/data/products';
 
 export const revalidate = 120; // кеш 2 хв
+
+// Pre-render всіх категорій з БД на build (плюс legacy-категорії з LEGACY_INFO).
+export async function generateStaticParams() {
+  try {
+    const cats = await getAllCategories();
+    const dbSlugs = cats.map((c) => c.slug);
+    const legacySlugs = ['urban', 'offroad', 'flagship'];
+    const allSlugs = Array.from(new Set([...dbSlugs, ...legacySlugs]));
+    return allSlugs.map((slug) => ({ slug }));
+  } catch (e) {
+    console.error('[generateStaticParams categories]', e);
+    return [];
+  }
+}
 
 const SITE = 'https://kukirinstore.com.ua';
 
