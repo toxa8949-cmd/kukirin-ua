@@ -13,9 +13,9 @@ export async function generateStaticParams() {
   try {
     const supabase = await createClient();
     const { data } = await supabase
-      .from('blog_posts')
+      .from('news')
       .select('slug')
-      .eq('is_published', true);
+      .eq('published', true);
     return ((data ?? []) as Array<{ slug: string }>).map((r) => ({ slug: r.slug }));
   } catch (e) {
     console.error('[generateStaticParams blog]', e);
