@@ -19,6 +19,14 @@ const TECH_DIMS: Record<string, { h: string; l: string }> = {
   'kukirin-g2-pro':              { h: '1156mm', l: '1206mm' },
 };
 
+// Hero-фото без фону (PNG з transparent background).
+// Файли лежать у /public/hero/ і повинні мати ці точні імена.
+const HERO_IMAGES: Record<string, string> = {
+  'kukirin-g2-pro':              '/hero/g2-pro.png',
+  'kukirin-g2-master-dual-2025': '/hero/g2-master.png',
+  'kukirin-g4-max-dual':         '/hero/g4-max.png',
+};
+
 // Fallback модель, якщо БД порожня — щоб сторінка не падала
 const FALLBACK: HeroModel = {
   slug: 'kukirin-g2-pro',
@@ -64,7 +72,7 @@ function toHeroModel(
     number: String(idx + 1).padStart(2, '0'),
     category,
     tagline: p.tagline ?? '',
-    image: p.image || '/hero/g2-pro.png',
+    image: HERO_IMAGES[p.slug] || p.image || '/hero/g2-pro.png',
     height: dims.h,
     length: dims.l,
     stats: [
