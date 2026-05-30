@@ -2,27 +2,39 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
 import PageShell from '@/components/kukirin/PageShell';
-import JsonLd, { articleSchema, breadcrumbSchema } from '@/components/seo/JsonLd';
+import JsonLd, { articleSchema, breadcrumbSchema, howToSchema } from '@/components/seo/JsonLd';
 import { createClient } from '@/lib/supabase/server';
 import { renderMarkdown } from '@/lib/markdown';
-import { createAdminClient } from '@/lib/supabase/admin';
+
+
+// Slug-and-data для статей з HowTo schema. Якщо стаття має slug у цьому об'єкті —
+// на сторінці додатково рендериться JSON-LD HowTo, що дає rich snippets у Google.
+const HOWTO_GUIDES: Record<string, {
+  name: string;
+  description: string;
+  totalTime: string;
+  steps: Array<{ name: string; text: string }>;
+}> = {
+  'yak-vybraty-elektrosamokat': {
+    name: 'Як вибрати електросамокат у 2026',
+    description: 'Покроковий гайд для тих, хто обирає перший електросамокат. Поради по бюджету, дальності, безпеці й потужності.',
+    totalTime: 'PT10M',
+    steps: [
+      { name: 'Визначте мету використання', text: 'Місто, офроуд, спорт чи довгі поїздки — від цього залежить категорія самоката.' },
+      { name: 'Визначте дальність маршруту', text: 'Запас ходу має бути на 30-40% більше реального маршруту.' },
+      { name: 'Оберіть потужність мотора', text: 'До 500W — місто, 500-1500W — універсал, 1500W+ Dual — спорт і офроуд.' },
+      { name: 'Перевірте тип шин', text: 'Пневматичні — комфорт, суцільні — без проколів. Розмір 8-10 дюймів.' },
+      { name: 'Перевірте гальмівну систему', text: 'Комбінація електронних і механічних (дискових/барабанних) — найбезпечніше.' },
+      { name: 'Зверніть увагу на вагу', text: 'Для метро і підйомів важливо щоб самокат був до 20-22 кг.' },
+      { name: 'Перевірте захист від води (IP)', text: 'Мінімум IP54 для дощу, IP55+ — спокійно під зливою.' },
+      { name: 'Перевірте підвіску', text: 'Для українських доріг — обов\'язково передня + задня амортизація.' },
+      { name: 'Перевірте гарантію і сервіс', text: 'Офіційний імпортер дає 12+ місяців гарантії і має сервіс у Києві.' },
+      { name: 'Замовте тест-драйв', text: 'Спробуйте 2-3 моделі перед покупкою — це не зобов\'язує і займе 20 хвилин.' },
+    ],
+  },
+};
 
 export const revalidate = 600; // кеш 10 хв
-
-// Build-time pre-render всіх опублікованих статей блогу.
-export async function generateStaticParams() {
-  try {
-    const supabase = createAdminClient();
-    const { data } = await supabase
-      .from('news')
-      .select('slug')
-      .eq('published', true);
-    return ((data ?? []) as Array<{ slug: string }>).map((r) => ({ slug: r.slug }));
-  } catch (e) {
-    console.error('[generateStaticParams blog]', e);
-    return [];
-  }
-}
 
 type Article = {
   id: string;
@@ -92,6 +104,8 @@ export default async function BlogArticlePage({
     published_at: string | null;
   }>;
 
+  const howto = HOWTO_GUIDES[slug] ?? null;
+
   return (
     <PageShell breadcrumb="BLOG">
       <JsonLd
@@ -111,6 +125,17 @@ export default async function BlogArticlePage({
             { name: 'Блог', url: '/blog' },
             { name: article.title, url: `/blog/${article.slug}` },
           ]),
+          ...(howto
+            ? [
+                howToSchema({
+                  name: howto.name,
+                  description: howto.description,
+                  totalTime: howto.totalTime,
+                  image: article.cover_url ?? undefined,
+                  steps: howto.steps,
+                }),
+              ]
+            : []),
         ]}
       />
       <article className="mx-auto max-w-3xl">

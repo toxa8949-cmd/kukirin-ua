@@ -355,6 +355,52 @@ export function localBusinessSchema() {
  *
  * Передавай повний URL у items, або відносний (буде додано SITE).
  */
+export function howToSchema(h: {
+  name: string;
+  description: string;
+  image?: string;
+  totalTime?: string; // ISO 8601 duration, e.g. 'PT10M' for 10 minutes
+  estimatedCost?: { currency: string; value: number };
+  supply?: string[];
+  tool?: string[];
+  steps: Array<{
+    name: string;
+    text: string;
+    image?: string;
+    url?: string;
+  }>;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name: h.name,
+    description: h.description,
+    ...(h.image && { image: h.image }),
+    ...(h.totalTime && { totalTime: h.totalTime }),
+    ...(h.estimatedCost && {
+      estimatedCost: {
+        '@type': 'MonetaryAmount',
+        currency: h.estimatedCost.currency,
+        value: h.estimatedCost.value,
+      },
+    }),
+    ...(h.supply && {
+      supply: h.supply.map((s) => ({ '@type': 'HowToSupply', name: s })),
+    }),
+    ...(h.tool && {
+      tool: h.tool.map((t) => ({ '@type': 'HowToTool', name: t })),
+    }),
+    step: h.steps.map((s, i) => ({
+      '@type': 'HowToStep',
+      position: i + 1,
+      name: s.name,
+      text: s.text,
+      ...(s.image && { image: s.image }),
+      ...(s.url && { url: s.url }),
+    })),
+  };
+}
+
 export function itemListSchema(items: { name: string; url: string }[]) {
   return {
     '@context': 'https://schema.org',
