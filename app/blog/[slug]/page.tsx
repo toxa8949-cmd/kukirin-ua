@@ -5,8 +5,24 @@ import PageShell from '@/components/kukirin/PageShell';
 import JsonLd, { articleSchema, breadcrumbSchema } from '@/components/seo/JsonLd';
 import { createClient } from '@/lib/supabase/server';
 import { renderMarkdown } from '@/lib/markdown';
+import { createAdminClient } from '@/lib/supabase/admin';
 
 export const revalidate = 600; // кеш 10 хв
+
+// Build-time pre-render всіх опублікованих статей блогу.
+export async function generateStaticParams() {
+  try {
+    const supabase = createAdminClient();
+    const { data } = await supabase
+      .from('news')
+      .select('slug')
+      .eq('published', true);
+    return ((data ?? []) as Array<{ slug: string }>).map((r) => ({ slug: r.slug }));
+  } catch (e) {
+    console.error('[generateStaticParams blog]', e);
+    return [];
+  }
+}
 
 type Article = {
   id: string;

@@ -5,8 +5,24 @@ import PageShell from '@/components/kukirin/PageShell';
 import JsonLd, { breadcrumbSchema, itemListSchema } from '@/components/seo/JsonLd';
 import { getCategoryBySlug } from '@/lib/data/categories';
 import { getProductsByCategorySlug } from '@/lib/data/products';
+import { createAdminClient } from '@/lib/supabase/admin';
 
 export const revalidate = 120; // кеш 2 хв
+
+// Build-time pre-render всіх категорій з БД + legacy slugs.
+export async function generateStaticParams() {
+  try {
+    const supabase = createAdminClient();
+    const { data } = await supabase.from('categories').select('slug');
+    const dbSlugs = ((data ?? []) as Array<{ slug: string }>).map((r) => r.slug);
+    const legacySlugs = ['urban', 'offroad', 'flagship'];
+    const allSlugs = Array.from(new Set([...dbSlugs, ...legacySlugs]));
+    return allSlugs.map((slug) => ({ slug }));
+  } catch (e) {
+    console.error('[generateStaticParams categories]', e);
+    return [];
+  }
+}
 
 const SITE = 'https://kukirinstore.com.ua';
 

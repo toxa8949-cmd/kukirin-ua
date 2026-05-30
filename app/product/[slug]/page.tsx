@@ -32,8 +32,25 @@ import {
   getFeatureList,
 } from '@/lib/data/product-extras';
 import { renderMarkdown } from '@/lib/markdown';
+import { createAdminClient } from '@/lib/supabase/admin';
 
-export const revalidate = 120; // кеш 2 хв
+export const revalidate = 120;
+
+// Build-time: pre-render всіх активних товарів. Admin-клієнт (без cookies) безпечний на build.
+// dynamicParams=true (за замовч.) — нові товари все одно рендеряться on-demand з ISR.
+export async function generateStaticParams() {
+  try {
+    const supabase = createAdminClient();
+    const { data } = await supabase
+      .from('products')
+      .select('slug')
+      .eq('is_active', true);
+    return ((data ?? []) as Array<{ slug: string }>).map((r) => ({ slug: r.slug }));
+  } catch (e) {
+    console.error('[generateStaticParams products]', e);
+    return [];
+  }
+} // кеш 2 хв
 
 const SITE = 'https://kukirinstore.com.ua';
 
