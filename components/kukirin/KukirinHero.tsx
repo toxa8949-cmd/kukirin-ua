@@ -19,6 +19,14 @@ const TECH_DIMS: Record<string, { h: string; l: string }> = {
   'kukirin-g2-pro':              { h: '1156mm', l: '1206mm' },
 };
 
+// Витягуємо тільки амперну ємність з рядка батареї.
+// "52V 20.8Ah" → "20.8Ah",  "60V 35.2Ah" → "35.2Ah",  fallback → весь рядок.
+function batteryAh(s: string | undefined | null): string {
+  if (!s) return '—';
+  const m = s.match(/(\d+(?:[.,]\d+)?\s*A[h·]?\.?г?\.?\w*)/i);
+  return m ? m[1].trim() : s;
+}
+
 // Hero-фото без фону (PNG з transparent background).
 // Файли лежать у /public/hero/ і повинні мати ці точні імена.
 const HERO_IMAGES: Record<string, string> = {
@@ -42,7 +50,7 @@ const FALLBACK: HeroModel = {
     { value: '45', unit: 'km/h', label: 'МАКС. ШВИДКІСТЬ' },
     { value: '600',  unit: 'W',   label: 'МОТОР' },
     { value: '50',  unit: 'km',  label: 'ЗАПАС ХОДУ' },
-    { value: '48V', unit: '',    label: 'БАТАРЕЯ' },
+    { value: '20Ah', unit: '',   label: 'БАТАРЕЯ' },
   ],
   bottomLabel: 'FLAGSHIP · 600W · 45 KM/H',
 };
@@ -79,7 +87,7 @@ function toHeroModel(
       { value: String(p.maxSpeed ?? '—'), unit: 'km/h', label: 'МАКС. ШВИДКІСТЬ' },
       { value: String(p.power ?? '—'),    unit: 'W',    label: isDual ? 'DUAL MOTOR' : 'МОТОР' },
       { value: String(p.range ?? '—'),    unit: 'km',   label: 'ЗАПАС ХОДУ' },
-      { value: p.battery || '—',          unit: '',     label: 'БАТАРЕЯ' },
+      { value: batteryAh(p.battery),       unit: '',     label: 'БАТАРЕЯ' },
     ],
     bottomLabel: `${category} · ${p.power ?? '—'}W · ${p.maxSpeed ?? '—'} KM/H`,
   };
