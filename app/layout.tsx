@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import './prose-kukirin.css';
 import ThemeToggle from '@/components/site/ThemeToggle';
 import GoogleAnalytics from '@/components/site/GoogleAnalytics';
 

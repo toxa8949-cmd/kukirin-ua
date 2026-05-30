@@ -1,161 +1,199 @@
-/* Styles for rendered Markdown articles (.prose-kukirin) */
+/* ============================================================================
+ * Стилі для markdown-статей (.prose-kukirin)
+ * За замовч. — світла тема. dark mode через [data-theme="dark"].
+ * ========================================================================== */
 
 .prose-kukirin {
-  color: rgba(255, 255, 255, 0.85);
+  color: #1a1a1a;
   font-size: 16px;
-  line-height: 1.7;
+  line-height: 1.75;
 }
 
+[data-theme="dark"] .prose-kukirin {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Вертикальний ритм між блоками */
 .prose-kukirin > * + * {
   margin-top: 1.25em;
 }
 
+/* ── Заголовки ───────────────────────────────────────── */
 .prose-kukirin h1,
 .prose-kukirin h2,
 .prose-kukirin h3,
 .prose-kukirin h4 {
-  color: #ffffff;
+  color: #1a1a1a;
   font-weight: 500;
   letter-spacing: -0.01em;
   line-height: 1.25;
 }
-
-.prose-kukirin h1 {
-  font-size: 2rem;
-  margin-top: 2em;
+[data-theme="dark"] .prose-kukirin h1,
+[data-theme="dark"] .prose-kukirin h2,
+[data-theme="dark"] .prose-kukirin h3,
+[data-theme="dark"] .prose-kukirin h4 {
+  color: #ffffff;
 }
 
+.prose-kukirin h1 { font-size: 2rem;    margin-top: 2.5em; }
 .prose-kukirin h2 {
-  font-size: 1.6rem;
-  margin-top: 2em;
+  font-size: 1.625rem;
+  margin-top: 2.5em;
+  padding-bottom: 0.4em;
+  border-bottom: 1px solid #E8E6DE;
+}
+[data-theme="dark"] .prose-kukirin h2 { border-bottom-color: rgba(255,255,255,0.1); }
+
+.prose-kukirin h3 { font-size: 1.25rem; margin-top: 1.875em; }
+.prose-kukirin h4 { font-size: 1.05rem; margin-top: 1.5em; }
+
+/* Перший заголовок без margin-top — щоб не було великого пустого простору на початку */
+.prose-kukirin > h1:first-child,
+.prose-kukirin > h2:first-child,
+.prose-kukirin > h3:first-child {
+  margin-top: 0;
 }
 
-.prose-kukirin h3 {
-  font-size: 1.25rem;
-  margin-top: 1.75em;
-}
-
-.prose-kukirin h4 {
-  font-size: 1.05rem;
-  margin-top: 1.5em;
-}
-
-.prose-kukirin p {
-  margin: 0;
-}
+/* ── Текст і inline-елементи ────────────────────────── */
+.prose-kukirin p { margin: 0; }
 
 .prose-kukirin a {
-  color: #ff8a33;
+  color: #FF6B00;
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
 }
-
-.prose-kukirin a:hover {
-  color: #ff6b00;
-}
+.prose-kukirin a:hover { color: #993C1D; }
+[data-theme="dark"] .prose-kukirin a:hover { color: #FF8A33; }
 
 .prose-kukirin strong {
-  color: #ffffff;
+  color: #1a1a1a;
   font-weight: 600;
 }
+[data-theme="dark"] .prose-kukirin strong { color: #ffffff; }
 
 .prose-kukirin em {
   font-style: italic;
-  color: rgba(255, 255, 255, 0.9);
+  color: #4A4A48;
 }
+[data-theme="dark"] .prose-kukirin em { color: rgba(255,255,255,0.9); }
 
+/* ── Списки ─────────────────────────────────────────── */
 .prose-kukirin ul,
 .prose-kukirin ol {
   padding-left: 1.5em;
-}
-
-.prose-kukirin ul {
-  list-style: disc;
-}
-
-.prose-kukirin ol {
-  list-style: decimal;
-}
-
-.prose-kukirin li + li {
-  margin-top: 0.5em;
-}
-
-.prose-kukirin li > ul,
-.prose-kukirin li > ol {
-  margin-top: 0.5em;
-}
-
-.prose-kukirin blockquote {
-  margin-left: 0;
-  padding: 0.5em 1.25em;
-  border-left: 3px solid #ff6b00;
-  background: rgba(255, 107, 0, 0.04);
-  color: rgba(255, 255, 255, 0.8);
-  font-style: italic;
-}
-
-.prose-kukirin blockquote p {
   margin: 0;
 }
+.prose-kukirin ul { list-style: disc; }
+.prose-kukirin ol { list-style: decimal; }
+.prose-kukirin li + li { margin-top: 0.5em; }
+.prose-kukirin li > ul,
+.prose-kukirin li > ol { margin-top: 0.5em; }
 
-.prose-kukirin hr {
-  border: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  margin: 2.5em 0;
+.prose-kukirin li::marker {
+  color: #FF6B00;
 }
 
+/* ── Цитати ─────────────────────────────────────────── */
+.prose-kukirin blockquote {
+  margin-left: 0;
+  padding: 0.6em 1.25em;
+  border-left: 3px solid #FF6B00;
+  background: rgba(255, 107, 0, 0.06);
+  color: #4A4A48;
+  font-style: italic;
+}
+[data-theme="dark"] .prose-kukirin blockquote {
+  background: rgba(255, 107, 0, 0.08);
+  color: rgba(255,255,255,0.8);
+}
+.prose-kukirin blockquote p { margin: 0; }
+
+/* ── Розділювач ─────────────────────────────────────── */
+.prose-kukirin hr {
+  border: none;
+  border-top: 1px solid #E8E6DE;
+  margin: 2.5em 0;
+}
+[data-theme="dark"] .prose-kukirin hr { border-top-color: rgba(255,255,255,0.1); }
+
+/* ── Код ────────────────────────────────────────────── */
 .prose-kukirin code {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #F0EEE6;
+  border: 1px solid #E8E6DE;
   border-radius: 2px;
   padding: 0.1em 0.4em;
   font-size: 0.9em;
   font-family: 'JetBrains Mono', ui-monospace, monospace;
-  color: #ffd1b0;
+  color: #993C1D;
+}
+[data-theme="dark"] .prose-kukirin code {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.08);
+  color: #FFD1B0;
 }
 
 .prose-kukirin pre {
-  background: #0a0a0a;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #F0EEE6;
+  border: 1px solid #E8E6DE;
   border-radius: 2px;
   padding: 1em 1.25em;
   overflow-x: auto;
   font-size: 0.875em;
   line-height: 1.6;
 }
-
+[data-theme="dark"] .prose-kukirin pre {
+  background: #0a0a0a;
+  border-color: rgba(255,255,255,0.1);
+}
 .prose-kukirin pre code {
   background: transparent;
   border: none;
   padding: 0;
-  color: rgba(255, 255, 255, 0.85);
+  color: inherit;
 }
 
+/* ── Зображення ─────────────────────────────────────── */
 .prose-kukirin img {
   display: block;
   width: 100%;
   height: auto;
   border-radius: 2px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid #E8E6DE;
 }
+[data-theme="dark"] .prose-kukirin img { border-color: rgba(255,255,255,0.08); }
 
+/* ── Таблиці ────────────────────────────────────────── */
 .prose-kukirin table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.9em;
+  margin: 1.5em 0;
 }
-
 .prose-kukirin th,
 .prose-kukirin td {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 0.6em 0.75em;
+  border-bottom: 1px solid #E8E6DE;
+  padding: 0.7em 0.85em;
   text-align: left;
+  vertical-align: top;
+}
+[data-theme="dark"] .prose-kukirin th,
+[data-theme="dark"] .prose-kukirin td { border-bottom-color: rgba(255,255,255,0.08); }
+.prose-kukirin th {
+  font-weight: 500;
+  background: #FAFAF7;
+}
+[data-theme="dark"] .prose-kukirin th {
+  background: rgba(255,255,255,0.02);
 }
 
-.prose-kukirin th {
-  color: #ffffff;
-  font-weight: 500;
-  background: rgba(255, 255, 255, 0.02);
+/* ── Checkbox-список (GFM task list) ────────────────── */
+.prose-kukirin input[type="checkbox"] {
+  margin-right: 0.5em;
+  accent-color: #FF6B00;
+}
+.prose-kukirin li.task-list-item,
+.prose-kukirin .task-list-item {
+  list-style: none;
+  margin-left: -1.5em;
 }
