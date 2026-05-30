@@ -89,7 +89,7 @@ export default function PageShell({
                 <li><Link href="/delivery" className="hover:text-[#FF6B00]">Доставка й оплата</Link></li>
                 <li><Link href="/warranty" className="hover:text-[#FF6B00]">Гарантія</Link></li>
                 <li><Link href="/service" className="hover:text-[#FF6B00]">Сервіс</Link></li>
-                <li><Link href="/contacts" className="hover:text-[#FF6B00]">Контакти</Link></li><li><Link href="/orders/track" className="hover:text-[#FF6B00]">Відстежити замовлення</Link></li>
+                <li><Link href="/contacts" className="hover:text-[#FF6B00]">Контакти</Link></li><li><Link href="/orders/track" className="hover:text-[#FF6B00]">Відстежити замовлення</Link></li><li><Link href="/compare" className="hover:text-[#FF6B00]">Порівняти моделі</Link></li>
               </ul>
             </div>
             <div>
