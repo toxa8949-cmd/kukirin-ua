@@ -15,7 +15,7 @@ export default function KukirinFeatures() {
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
         <div className="mb-10">
           <div className="mb-2 text-[11px] tracking-[0.3em] text-[#993C1D] dark:text-[#FF8A33]">
-            // WHY KUKIRIN.UA
+            // WHY kukirinstore.com.ua
           </div>
           <h2 className="text-3xl font-medium tracking-[-0.02em] md:text-4xl">
             Чому беруть<br />

@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://kukirinstore.com.ua'),
   title: {
     default: 'KUKIRIN Україна — електросамокати з гарантією',
-    template: '%s | KUKIRIN.UA',
+    template: '%s | kukirinstore.com.ua',
   },
   description:
     'Офіційний дистриб’ютор KUKIRIN в Україні. Електросамокати G2 Pro, G2 Master, G4 Max, M4 Pro. Офіційна гарантія, доставка Новою Поштою, розтермінування.',
@@ -19,9 +19,9 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'KUKIRIN Україна — електросамокати з гарантією',
     description: 'Офіційний KUKIRIN в Україні. До 70 км/год, 2000W, офіційна гарантія.',
-    type: 'website', locale: 'uk_UA', siteName: 'KUKIRIN.UA',
+    type: 'website', locale: 'uk_UA', siteName: 'kukirinstore.com.ua',
     url: 'https://kukirinstore.com.ua',
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'KUKIRIN.UA — FEEL THE RUSH' }],
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'kukirinstore.com.ua — FEEL THE RUSH' }],
   },
   twitter: {
     card: 'summary_large_image',

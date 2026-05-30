@@ -32,9 +32,9 @@ export async function generateMetadata({
     .eq('published', true)
     .maybeSingle();
   const row = data as { title: string; excerpt: string | null; cover_url: string | null } | null;
-  if (!row) return { title: 'Стаття · KUKIRIN.UA' };
+  if (!row) return { title: 'Стаття · kukirinstore.com.ua' };
   return {
-    title: `${row.title} · KUKIRIN.UA`,
+    title: `${row.title} · kukirinstore.com.ua`,
     description: row.excerpt ?? undefined,
     openGraph: row.cover_url ? { images: [row.cover_url] } : undefined,
     alternates: { canonical: `/blog/${slug}` },

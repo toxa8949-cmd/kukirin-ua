@@ -4,7 +4,7 @@ export const metadata = { title: 'Угода користувача' };
 
 export default function TermsPage() {
   return (
-    <PageShell breadcrumb="LEGAL · TERMS" title="Угода користувача" subtitle="Правила користування сайтом KUKIRIN.UA і умови продажу електросамокатів.">
+    <PageShell breadcrumb="LEGAL · TERMS" title="Угода користувача" subtitle="Правила користування сайтом kukirinstore.com.ua і умови продажу електросамокатів.">
       <article className="max-w-3xl space-y-5 text-sm leading-relaxed text-[#4A4A48] dark:text-white/75">
         <p>Останнє оновлення: 11.05.2026</p>
 
@@ -27,7 +27,7 @@ export default function TermsPage() {
         <p>Усі товари мають офіційну гарантію виробника KUKIRIN та сервісну підтримку від нас. Деталі — у розділі «Гарантія».</p>
 
         <h2 className="text-xl font-medium text-[#1a1a1a] dark:text-white">7. Інтелектуальна власність</h2>
-        <p>Усі тексти, фото, логотипи й дизайн Сайту належать KUKIRIN.UA або використовуються за ліцензією. Копіювання без дозволу заборонене.</p>
+        <p>Усі тексти, фото, логотипи й дизайн Сайту належать kukirinstore.com.ua або використовуються за ліцензією. Копіювання без дозволу заборонене.</p>
 
         <h2 className="text-xl font-medium text-[#1a1a1a] dark:text-white">8. Контакти для запитань</h2>
         <p>Якщо у вас є запитання по Угоді — пишіть на <a href="mailto:info@kukirin.ua" className="text-[#FF6B00] hover:underline">info@kukirin.ua</a> або телефонуйте <a href="tel:+380800338899" className="text-[#FF6B00] hover:underline">0 800 33 88 99</a>.</p>

@@ -29,7 +29,7 @@ export async function generateMetadata() {
       url: 'https://kukirinstore.com.ua/catalog',
       type: 'website',
       locale: 'uk_UA',
-      siteName: 'KUKIRIN.UA',
+      siteName: 'kukirinstore.com.ua',
       images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Каталог KUKIRIN' }],
     },
     twitter: {

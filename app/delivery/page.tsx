@@ -14,7 +14,7 @@ export const metadata = {
     url: 'https://kukirinstore.com.ua/delivery',
     type: 'website',
     locale: 'uk_UA',
-    siteName: 'KUKIRIN.UA',
+    siteName: 'kukirinstore.com.ua',
     images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Доставка KUKIRIN — Новою Поштою по Україні' }],
   },
   twitter: {

@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/server';
 
 export const revalidate = 300; // кеш 5 хв
 export const metadata = {
-  title: 'Блог · KUKIRIN.UA',
+  title: 'Блог · kukirinstore.com.ua',
   description: 'Новини, огляди та поради про електросамокати Kukirin.',
 };
 
@@ -81,7 +81,7 @@ export default async function BlogIndexPage() {
                     />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center text-[10px] tracking-[0.2em] text-[#6C6A65] dark:text-white/30">
-                      KUKIRIN.UA
+                      kukirinstore.com.ua
                     </div>
                   )}
                 </div>

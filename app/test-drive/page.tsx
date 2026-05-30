@@ -15,7 +15,7 @@ export const metadata = {
     url: 'https://kukirinstore.com.ua/test-drive',
     type: 'website',
     locale: 'uk_UA',
-    siteName: 'KUKIRIN.UA',
+    siteName: 'kukirinstore.com.ua',
     images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Тест-драйв KUKIRIN — безкоштовно у Києві' }],
   },
   twitter: {

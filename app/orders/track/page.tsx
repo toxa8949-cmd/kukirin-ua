@@ -2,18 +2,18 @@ import PageShell from '@/components/kukirin/PageShell';
 import OrderTrackForm from '@/components/order/OrderTrackForm';
 
 export const metadata = {
-  title: 'Відстеження замовлення — KUKIRIN.UA',
+  title: 'Відстеження замовлення — kukirinstore.com.ua',
   description:
     'Перевірити статус замовлення KUKIRIN. Введіть номер замовлення і телефон — побачите поточний статус, склад і деталі доставки.',
   alternates: { canonical: '/orders/track' },
   openGraph: {
-    title: 'Відстеження замовлення — KUKIRIN.UA',
+    title: 'Відстеження замовлення — kukirinstore.com.ua',
     description: 'Перевірити статус замовлення KUKIRIN за номером і телефоном.',
     url: 'https://kukirinstore.com.ua/orders/track',
     type: 'website',
     locale: 'uk_UA',
-    siteName: 'KUKIRIN.UA',
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'KUKIRIN.UA' }],
+    siteName: 'kukirinstore.com.ua',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'kukirinstore.com.ua' }],
   },
   // Це не цільова SEO-сторінка для індексації (вона приватна за змістом),
   // але робимо доступною для пошуку якщо хтось гуглить

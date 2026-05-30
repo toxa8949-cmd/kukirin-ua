@@ -13,7 +13,7 @@ export default function JsonLd({ data }: { data: Record<string, unknown> | Recor
 }
 
 const SITE = 'https://kukirinstore.com.ua';
-const BRAND = 'KUKIRIN.UA';
+const BRAND = 'kukirinstore.com.ua';
 const LOGO = `${SITE}/logo-full.png`;
 
 const publisher = {

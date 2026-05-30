@@ -1,5 +1,5 @@
 /* ============================================================
-   KUKIRIN.UA — Orange accents layer
+   kukirinstore.com.ua — Orange accents layer
    Імпортується в app/layout.tsx ОДИН раз через `import './kukirin-accents.css'`.
    НЕ переписує globals.css, не зачіпає поточні стилі — лише додає акценти.
    ============================================================ */

@@ -94,7 +94,7 @@ export default async function AdminDashboardPage() {
     <div className="space-y-8">
       <div>
         <div className="mb-1 text-[10px] tracking-[0.2em] text-[#993C1D] dark:text-[#FF8A33]">// DASHBOARD</div>
-        <h1 className="text-3xl font-medium tracking-tight">Адмін-панель KUKIRIN.UA</h1>
+        <h1 className="text-3xl font-medium tracking-tight">Адмін-панель kukirinstore.com.ua</h1>
         <p className="mt-2 text-sm text-[#4A4A48] dark:text-white/55">
           {data.productsCount} товарів · {data.categoriesCount} категорій · {data.ordersCount} замовлень за 30 днів
         </p>

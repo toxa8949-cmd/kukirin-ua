@@ -9,7 +9,7 @@ export default function PrivacyPage() {
         <p>Останнє оновлення: 11.05.2026</p>
 
         <h2 className="text-xl font-medium text-[#1a1a1a] dark:text-white">1. Хто ми</h2>
-        <p>Сайт KUKIRIN.UA (далі — «Сайт») належить ФОП «KUKIRIN.UA», ЄДРПОУ 12345678, який є офіційним дистрибʼютором електросамокатів KUKIRIN в Україні.</p>
+        <p>Сайт kukirinstore.com.ua (далі — «Сайт») належить ФОП «kukirinstore.com.ua», ЄДРПОУ 12345678, який є офіційним дистрибʼютором електросамокатів KUKIRIN в Україні.</p>
 
         <h2 className="text-xl font-medium text-[#1a1a1a] dark:text-white">2. Які дані ми збираємо</h2>
         <ul className="list-disc space-y-1 pl-5">

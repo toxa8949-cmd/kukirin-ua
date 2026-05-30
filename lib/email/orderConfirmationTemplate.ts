@@ -97,7 +97,7 @@ export function renderOrderConfirmationHtml(d: OrderEmailData): string {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Замовлення прийнято · KUKIRIN.UA</title>
+  <title>Замовлення прийнято · kukirinstore.com.ua</title>
 </head>
 <body style="margin:0;padding:0;background:${COLORS.bg};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:${COLORS.text};line-height:1.5;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${COLORS.bg};">
@@ -109,7 +109,7 @@ export function renderOrderConfirmationHtml(d: OrderEmailData): string {
           <!-- HEADER -->
           <tr>
             <td style="background:${COLORS.black};padding:28px 32px;text-align:center;">
-              <div style="color:${COLORS.orange};font-size:22px;font-weight:700;letter-spacing:0.05em;">KUKIRIN.UA</div>
+              <div style="color:${COLORS.orange};font-size:22px;font-weight:700;letter-spacing:0.05em;">kukirinstore.com.ua</div>
               <div style="color:#888;font-size:10px;letter-spacing:0.25em;margin-top:6px;">// ЗАМОВЛЕННЯ ПРИЙНЯТО</div>
             </td>
           </tr>
@@ -190,7 +190,7 @@ export function renderOrderConfirmationHtml(d: OrderEmailData): string {
           <tr>
             <td style="padding:16px 32px;background:${COLORS.footerBg};text-align:center;border-top:1px solid ${COLORS.border};">
               <div style="font-size:10px;color:${COLORS.textLight};letter-spacing:0.1em;">
-                KUKIRIN.UA · ОФІЦІЙНИЙ ДИСТРИБ'ЮТОР В УКРАЇНІ
+                kukirinstore.com.ua · ОФІЦІЙНИЙ ДИСТРИБ'ЮТОР В УКРАЇНІ
               </div>
               <div style="margin-top:8px;font-size:10px;color:${COLORS.textLight};">
                 <a href="${d.siteUrl}" style="color:${COLORS.textLight};text-decoration:underline;">kukirinstore.com.ua</a>
@@ -237,6 +237,6 @@ export function renderOrderConfirmationText(d: OrderEmailData): string {
   lines.push(`Відстежити статус: ${d.siteUrl}/orders/track`);
   lines.push('');
   lines.push('Контакти: 0 (95) 898-10-07 · щодня 9:30–16:30');
-  lines.push('KUKIRIN.UA · kukirinstore.com.ua');
+  lines.push('kukirinstore.com.ua · kukirinstore.com.ua');
   return lines.join('\n');
 }

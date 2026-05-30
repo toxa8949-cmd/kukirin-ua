@@ -16,7 +16,7 @@ import {
  *
  * Env vars:
  *   RESEND_API_KEY — обовʼязково для роботи. Створюється в resend.com/api-keys.
- *   RESEND_FROM_EMAIL — наприклад "KUKIRIN.UA <orders@kukirinstore.com.ua>".
+ *   RESEND_FROM_EMAIL — наприклад "kukirinstore.com.ua <orders@kukirinstore.com.ua>".
  *     Домен має бути верифікований у Resend (DNS-записи SPF/DKIM).
  *     За замовчанням використовується дефолтний for testing 'onboarding@resend.dev'.
  *   ADMIN_NOTIFICATION_EMAIL — куди надсилати копію адміну (опційно).
@@ -34,7 +34,7 @@ export async function sendOrderEmails(
 
   const from =
     process.env.RESEND_FROM_EMAIL ||
-    'KUKIRIN.UA <onboarding@resend.dev>'; // fallback для тестування до верифікації домена
+    'kukirinstore.com.ua <onboarding@resend.dev>'; // fallback для тестування до верифікації домена
 
   const adminEmail = process.env.ADMIN_NOTIFICATION_EMAIL || null;
   const resend = new Resend(apiKey);
@@ -52,7 +52,7 @@ export async function sendOrderEmails(
       const res = await resend.emails.send({
         from,
         to: data.customerEmail,
-        subject: `Замовлення #${shortId} прийнято — KUKIRIN.UA`,
+        subject: `Замовлення #${shortId} прийнято — kukirinstore.com.ua`,
         html,
         text,
         replyTo: process.env.RESEND_REPLY_TO || undefined,

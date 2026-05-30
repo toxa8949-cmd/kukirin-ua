@@ -2,19 +2,19 @@ import PageShell from '@/components/kukirin/PageShell';
 import { Phone, Mail, MapPin, Clock, Send, MessageCircle } from 'lucide-react';
 
 export const metadata = {
-  title: 'Контакти KUKIRIN.UA — Київ, телефон, шоурум',
+  title: 'Контакти kukirinstore.com.ua — Київ, телефон, шоурум',
   description:
-    "Звʼяжіться з KUKIRIN.UA: телефон 0 (95) 898-10-07, email info@kukirin.ua. Шоурум у Києві: вул. Ревуцького, 40В. Графік роботи: щодня 9:30–16:30.",
+    "Звʼяжіться з kukirinstore.com.ua: телефон 0 (95) 898-10-07, email info@kukirin.ua. Шоурум у Києві: вул. Ревуцького, 40В. Графік роботи: щодня 9:30–16:30.",
   keywords: ['kukirin контакти', 'kukirin київ', 'магазин електросамокатів київ', 'kukirin адреса'],
   alternates: { canonical: '/contacts' },
   openGraph: {
     title: 'Контакти KUKIRIN — телефон, адреса, графік',
     description:
-      "Звʼяжіться з KUKIRIN.UA: телефон 0 (95) 898-10-07, email info@kukirin.ua. Шоурум у Києві: вул. Ревуцького, 40В. Графік роботи: щодня 9:30–16:30.",
+      "Звʼяжіться з kukirinstore.com.ua: телефон 0 (95) 898-10-07, email info@kukirin.ua. Шоурум у Києві: вул. Ревуцького, 40В. Графік роботи: щодня 9:30–16:30.",
     url: 'https://kukirinstore.com.ua/contacts',
     type: 'website',
     locale: 'uk_UA',
-    siteName: 'KUKIRIN.UA',
+    siteName: 'kukirinstore.com.ua',
     images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Контакти KUKIRIN — телефон, адреса, графік' }],
   },
   twitter: {
@@ -70,7 +70,7 @@ export default function ContactsPage() {
       <div className="mt-10 rounded-sm border border-[#E8E6DE] dark:border-white/10 bg-white dark:bg-[#0F0F0F] p-6">
         <h3 className="mb-2 text-lg font-medium">Реквізити</h3>
         <div className="grid grid-cols-1 gap-3 text-xs text-[#4A4A48] dark:text-white/60 sm:grid-cols-2">
-          <div><span className="text-[#6C6A65] dark:text-white/40">Назва:</span> ФОП «KUKIRIN.UA»</div>
+          <div><span className="text-[#6C6A65] dark:text-white/40">Назва:</span> ФОП «kukirinstore.com.ua»</div>
           <div><span className="text-[#6C6A65] dark:text-white/40">ЄДРПОУ:</span> 12345678</div>
           <div><span className="text-[#6C6A65] dark:text-white/40">IBAN:</span> UA00 0000 0000 0000 0000 0000 000</div>
           <div><span className="text-[#6C6A65] dark:text-white/40">Платник ПДВ:</span> ні</div>

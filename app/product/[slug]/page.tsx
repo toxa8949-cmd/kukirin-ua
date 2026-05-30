@@ -70,17 +70,17 @@ export async function generateMetadata({
       ],
       alternates: { canonical: `/product/${slug}` },
       openGraph: {
-        title: `${s.name} — KUKIRIN.UA`,
+        title: `${s.name} — kukirinstore.com.ua`,
         description: description.slice(0, 200),
         url: `${SITE}/product/${slug}`,
         type: 'website',
         locale: 'uk_UA',
-        siteName: 'KUKIRIN.UA',
+        siteName: 'kukirinstore.com.ua',
         images: [{ url: ogImage, width: 1200, height: 630, alt: s.name }],
       },
       twitter: {
         card: 'summary_large_image',
-        title: `${s.name} — KUKIRIN.UA`,
+        title: `${s.name} — kukirinstore.com.ua`,
         description: description.slice(0, 200),
         images: [ogImage],
       },
@@ -202,7 +202,7 @@ export default async function ProductPage({
           </div>
           <h1 className="mb-2 text-3xl font-medium leading-tight tracking-tight sm:text-4xl">{safeName}</h1>
           <p className="mb-4 text-sm text-[#4A4A48] dark:text-white/55">
-            {safeTagline || 'Електросамокат KUKIRIN'}. Офіційно від KUKIRIN.UA з гарантією та сервісом.
+            {safeTagline || 'Електросамокат KUKIRIN'}. Офіційно від kukirinstore.com.ua з гарантією та сервісом.
           </p>
 
           {/* Rating snippet — видно одразу під підзаголовком */}

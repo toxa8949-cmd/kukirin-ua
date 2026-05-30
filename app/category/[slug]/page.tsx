@@ -84,18 +84,18 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   // 1) Категорія є в БД
   if (cat) {
     return {
-      title: `${cat.name} — KUKIRIN.UA`,
+      title: `${cat.name} — kukirinstore.com.ua`,
       description:
         cat.description ??
         `Електросамокати KUKIRIN категорії ${cat.name}. Офіційна гарантія, доставка Новою Поштою по Україні.`,
       alternates: { canonical: `/category/${slug}` },
       openGraph: {
-        title: `${cat.name} — KUKIRIN.UA`,
+        title: `${cat.name} — kukirinstore.com.ua`,
         description: cat.description ?? `Електросамокати KUKIRIN — ${cat.name}`,
         url: `${SITE}/category/${slug}`,
         type: 'website',
         locale: 'uk_UA',
-        siteName: 'KUKIRIN.UA',
+        siteName: 'kukirinstore.com.ua',
         images: [{ url: '/og-image.png', width: 1200, height: 630, alt: cat.name }],
       },
     };
@@ -114,7 +114,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         url: `${SITE}/category/${slug}`,
         type: 'website',
         locale: 'uk_UA',
-        siteName: 'KUKIRIN.UA',
+        siteName: 'kukirinstore.com.ua',
         images: [{ url: '/og-image.png', width: 1200, height: 630, alt: info.title }],
       },
     };

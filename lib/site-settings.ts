@@ -32,9 +32,9 @@ const DEFAULTS: SiteSettings = {
   facebook_url: '',
   tiktok_url: '',
   viber_url: '',
-  site_title: 'KUKIRIN.UA',
+  site_title: 'kukirinstore.com.ua',
   footer_about: '',
-  copyright: '© KUKIRIN.UA',
+  copyright: '© kukirinstore.com.ua',
 };
 
 /**

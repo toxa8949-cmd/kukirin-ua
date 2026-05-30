@@ -102,7 +102,7 @@ export default function PageShell({
             </div>
           </div>
           <div className="flex flex-col items-start justify-between gap-2 pt-6 text-[11px] text-[#6C6A65] dark:text-white/40 md:flex-row md:items-center">
-            <div>© {new Date().getFullYear()} KUKIRIN.UA · Усі права захищені</div>
+            <div>© {new Date().getFullYear()} kukirinstore.com.ua · Усі права захищені</div>
             <div className="flex gap-4">
               <Link href="/privacy" className="hover:text-[#1a1a1a] dark:hover:text-white">Конфіденційність</Link>
               <Link href="/terms" className="hover:text-[#1a1a1a] dark:hover:text-white">Угода</Link>

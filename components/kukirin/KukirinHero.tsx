@@ -19,7 +19,7 @@ export default function KukirinHero() {
         {/* Навігація */}
         <nav className="flex items-center justify-between border-b border-[#E8E6DE] py-4 dark:border-white/10">
           <div className="flex items-center gap-8">
-            <a href="/" className="inline-flex items-center" aria-label="KUKIRIN.UA — головна">
+            <a href="/" className="inline-flex items-center" aria-label="kukirinstore.com.ua — головна">
               <Logo variant="inline" size={32} href={null} />
             </a>
             <ul className="hidden gap-5 text-sm text-[#4A4A48] dark:text-white/70 md:flex">
